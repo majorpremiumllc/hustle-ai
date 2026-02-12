@@ -1,0 +1,317 @@
+/* ═══  AI Greeter Widget  ═══════════════════ */
+.greeter {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.greeter.exit {
+    animation: slideDown 0.4s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+}
+
+/* ═══ Prompt Button ══════════════════════ */
+.promptBtn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px 10px 10px;
+    background: rgba(15, 15, 30, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(108, 92, 231, 0.25);
+    border-radius: 60px;
+    cursor: pointer;
+    font-family: inherit;
+    color: white;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(0, 210, 255, 0.08),
+        0 0 60px rgba(108, 92, 231, 0.1);
+    transition: all 0.3s ease;
+    max-width: 320px;
+}
+
+.promptBtn:hover {
+    border-color: rgba(0, 210, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(0, 210, 255, 0.15),
+        0 0 80px rgba(108, 92, 231, 0.15);
+}
+
+/* Avatar */
+.avatarWrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+}
+
+.avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.avatarPulse,
+.avatarPulse2 {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 210, 255, 0.25);
+    animation: pulseExpand 2s ease-out infinite;
+}
+
+.avatarPulse2 {
+    animation-delay: 0.7s;
+}
+
+@keyframes pulseExpand {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.promptText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+}
+
+.promptName {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: white;
+}
+
+.promptHint {
+    font-size: 0.7rem;
+    color: rgba(0, 210, 255, 0.8);
+}
+
+.playIcon {
+    margin-left: auto;
+    font-size: 0.9rem;
+    color: rgba(0, 210, 255, 0.7);
+    background: rgba(0, 210, 255, 0.08);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ═══ Speaking Card ══════════════════════ */
+.card {
+    width: 340px;
+    background: rgba(15, 15, 30, 0.95);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(108, 92, 231, 0.2);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow:
+        0 12px 48px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(0, 210, 255, 0.06),
+        0 0 80px rgba(108, 92, 231, 0.08);
+    animation: cardAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.dismissBtn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.dismissBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Card Header */
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.avatarSmall {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.speakingRing {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 210, 255, 0.4);
+    animation: speakPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes speakPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+.headerInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.agentName {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white;
+}
+
+.agentStatus {
+    font-size: 0.7rem;
+    color: var(--accent, #00d2ff);
+    font-weight: 500;
+}
+
+/* Waveform */
+.waveform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 36px;
+    margin-bottom: 12px;
+}
+
+.waveBar {
+    width: 3px;
+    background: linear-gradient(to top, var(--primary, #6c5ce7), var(--accent, #00d2ff));
+    border-radius: 3px;
+    transition: height 0.08s ease;
+    min-height: 3px;
+}
+
+/* Transcript */
+.transcript {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.85);
+    min-height: 50px;
+    margin-bottom: 12px;
+}
+
+/* Progress Bar */
+.progressBar {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary, #6c5ce7), var(--accent, #00d2ff));
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* ═══ Responsive ═════════════════════════ */
+@media (max-width: 480px) {
+    .greeter {
+        bottom: 16px;
+        right: 12px;
+        left: 12px;
+    }
+
+    .promptBtn {
+        max-width: 100%;
+    }
+
+    .card {
+        width: calc(100vw - 24px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .greeter,
+    .greeter.exit {
+        animation: none;
+    }
+
+    .avatarPulse,
+    .avatarPulse2,
+    .speakingRing {
+        animation: none;
+    }
+}

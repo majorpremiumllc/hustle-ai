@@ -23,6 +23,7 @@ const LightningJourney = dynamic(() => import("./components/LightningJourney"), 
 const NeuralProof = dynamic(() => import("./components/NeuralProof"), { ssr: false });
 const LossSimulation = dynamic(() => import("./components/LossSimulation"), { ssr: false });
 const RevenueSimulator = dynamic(() => import("./components/RevenueSimulator"), { ssr: false });
+const AIGreeter = dynamic(() => import("./components/AIGreeter"), { ssr: false });
 
 /* ── SVG Icon Components ───────────────────────── */
 
@@ -430,6 +431,7 @@ export default function LandingPage() {
       <div className={styles.landing}>
         <ParticleNetwork />
         <CustomCursor />
+        <AIGreeter />
         <NeuralGuideSpine />
 
         {/* ── Scroll Progress Bar ──────────────────────── */}
