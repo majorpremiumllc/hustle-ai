@@ -1173,6 +1173,116 @@ select.input {
   background-clip: text;
 }
 
+/* ── Heading Shimmer Highlight ──────────────── */
+.text-gradient::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 40%,
+      rgba(255, 255, 255, 0.02) 60%,
+      transparent 100%);
+  animation: shimmerSweep 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+
+  0%,
+  70% {
+    left: -100%;
+  }
+
+  100% {
+    left: 200%;
+  }
+}
+
+/* ── Card Hover Neural Glow ─────────────────── */
+.card {
+  transition: border-color 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out);
+}
+
+.card:hover {
+  border-color: rgba(0, 210, 255, 0.2);
+  box-shadow: 0 0 20px rgba(0, 210, 255, 0.06),
+    0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Card Wake on Section Activation ────────── */
+@keyframes cardWake {
+  0% {
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  40% {
+    border-color: rgba(0, 210, 255, 0.25);
+    box-shadow: 0 0 16px rgba(0, 210, 255, 0.08);
+  }
+
+  100% {
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: none;
+  }
+}
+
+/* ── Icon Wake on Section Reveal ─────────────── */
+@keyframes iconWake {
+  0% {
+    transform: scale(0.98);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(0, 210, 255, 0.3));
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: none;
+  }
+}
+
+/* ── Button Liquid Edge ──────────────────────── */
+.btn-accent::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+      rgba(0, 210, 255, 0.4),
+      rgba(108, 92, 231, 0.4),
+      rgba(0, 210, 255, 0.4));
+  background-size: 200% auto;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-accent:hover::before {
+  opacity: 1;
+  animation: liquidEdge 1.5s linear infinite;
+}
+
+@keyframes liquidEdge {
+  0% {
+    background-position: 0% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
 /* ── Animated Border ─────────────────────────── */
 
 .animated-border {

@@ -72,13 +72,43 @@
 }
 
 /* ── Settled (fully revealed) ─────────── */
-.settled {
-    /* Overlay is already unmounted from DOM,
-     but just in case: */
-}
+/* .settled: Overlay is unmounted from DOM via React.
+   This class is added for activation FX below. */
 
 .settled .frost {
     display: none !important;
+}
+
+/* ── Section Activation FX ────────────── */
+/* When section reveals, cards pulse and icons wake */
+.settled :global(.card) {
+    animation: cardWake 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.settled :global(.float-icon),
+.settled :global([data-icon]) {
+    animation: iconWake 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+
+/* Stagger card animations within section */
+.settled :global(.card:nth-child(2)) {
+    animation-delay: 0.08s;
+}
+
+.settled :global(.card:nth-child(3)) {
+    animation-delay: 0.16s;
+}
+
+.settled :global(.card:nth-child(4)) {
+    animation-delay: 0.24s;
+}
+
+.settled :global(.card:nth-child(5)) {
+    animation-delay: 0.32s;
+}
+
+.settled :global(.card:nth-child(6)) {
+    animation-delay: 0.4s;
 }
 
 /* ── Reduced Motion ──────────────────── */

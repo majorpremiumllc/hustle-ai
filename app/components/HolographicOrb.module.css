@@ -4,6 +4,40 @@
     height: 220px;
     margin: 0 auto;
     perspective: 800px;
+    contain: layout style;
+}
+
+/* Neural connection lines radiating from orb */
+.orbContainer::before,
+.orbContainer::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Left neural line */
+.orbContainer::before {
+    top: 50%;
+    right: 100%;
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to left,
+            rgba(0, 210, 255, 0.2),
+            transparent);
+    transform: translateY(-50%);
+}
+
+/* Right neural line */
+.orbContainer::after {
+    top: 50%;
+    left: 100%;
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right,
+            rgba(108, 92, 231, 0.2),
+            transparent);
+    transform: translateY(-50%);
 }
 
 .orb {
@@ -131,5 +165,27 @@
     .orbContainer {
         width: 140px;
         height: 140px;
+    }
+
+    .orbContainer::before,
+    .orbContainer::after {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .orb {
+        animation: none;
+    }
+
+    .orbInner,
+    .orbPulse,
+    .orbGlow {
+        animation: none;
+    }
+
+    .orbRing,
+    .orbRing2 {
+        animation: none;
     }
 }
