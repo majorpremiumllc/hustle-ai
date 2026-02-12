@@ -483,7 +483,7 @@ export default function LandingPage() {
           <div className="animate-fadeInUp">
             <div className={styles.heroBadge}>
               <span className={styles.heroBadgeDot} />
-              AI-Powered Dispatcher for Small Businesses
+              Your Calls Answered. Your Revenue Protected.
             </div>
           </div>
 
@@ -495,13 +495,12 @@ export default function LandingPage() {
             <span>Answering Calls</span>
           </div>
           <h1 className="animate-fadeInUp delay-1">
-            Stop Losing Customers.<br />
+            Your AI Employee That<br />
             <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
           </h1>
           <p className={`animate-fadeInUp delay-2 ${styles.heroSub}`}>
-            Small businesses lose <strong style={{ color: "var(--text-white)" }}>$126,000/year</strong> from missed calls.
-            HustleAI picks up instantly, qualifies leads, books appointments,
-            and grows your revenue — on autopilot.
+            <strong style={{ color: "var(--text-white)" }}>85% of callers who reach voicemail never call back.</strong>{" "}
+            HustleAI answers every call in under 3 seconds, qualifies leads, and books jobs — 24/7, on autopilot.
           </p>
           <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
             <MagneticButton href="/signup" className="btn btn-accent btn-lg">
@@ -529,7 +528,7 @@ export default function LandingPage() {
               <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FF6B6B, #e74c3c)" }}>R</span>
             </div>
             <span className={styles.socialProofText}>
-              <strong>2,500+</strong> business owners trust HustleAI
+              <strong>2,500+</strong> businesses recovered revenue with HustleAI
             </span>
             <span className={styles.starsRow}>
               {[...Array(5)].map((_, i) => <IconStar key={i} className={styles.starIcon} />)}
@@ -575,10 +574,10 @@ export default function LandingPage() {
       <section id="features" className={styles.features}>
         <div className="container">
           <div className="text-center reveal">
-            <span className={styles.sectionTag}>Powerful Features</span>
-            <h2>Everything to <span className="text-gradient">Automate Your Business</span></h2>
+            <span className={styles.sectionTag}>The Platform</span>
+            <h2>One System. <span className="text-gradient">Every Channel Covered.</span></h2>
             <p className={styles.sectionSub}>
-              One platform. Phone calls, SMS, Yelp, Thumbtack, Google — all automated.
+              Phone calls, SMS, Yelp, Thumbtack, Google — every lead captured and converted.
             </p>
           </div>
           <div className={`${styles.featuresGrid} stagger-children`}>
@@ -594,6 +593,10 @@ export default function LandingPage() {
                 <p>{f.desc}</p>
               </div>
             ))}
+          </div>
+          <div className={`text-center reveal ${styles.midCta}`}>
+            <p className={styles.midCtaText}>See it in action — go live in 5 minutes.</p>
+            <a href="/signup" className="btn btn-accent">Start Free Trial <IconArrowRight className={styles.btnIconInline} /></a>
           </div>
         </div>
       </section>
@@ -716,7 +719,7 @@ export default function LandingPage() {
         <div className="container">
           <div className="text-center reveal">
             <span className={styles.sectionTag}>Real Results</span>
-            <h2>Business Owners <span className="text-gradient">Love Us</span></h2>
+            <h2>They Tried It. <span className="text-gradient">Revenue Went Up.</span></h2>
           </div>
           <div className={`${styles.testimonialGrid} stagger-children`}>
             {TESTIMONIALS.map((t, i) => (

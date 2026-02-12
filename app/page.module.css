@@ -1161,6 +1161,40 @@
   letter-spacing: 0.02em;
 }
 
+/* ── Mid-Section CTA ─────────────────────── */
+.midCta {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.midCtaText {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+/* ── CTA Click Feedback ──────────────────── */
+.btn-accent:active,
+.btn-primary:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+@keyframes ctaPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.3);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 210, 255, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 210, 255, 0);
+  }
+}
+
 /* ── Reduced Motion ──────────────────────── */
 @media (prefers-reduced-motion: reduce) {
 
