@@ -1,0 +1,290 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(5, 5, 15, 0.85);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeOverlay 0.3s ease;
+}
+
+@keyframes fadeOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    background: rgba(15, 15, 30, 0.95);
+    border: 1px solid rgba(108, 92, 231, 0.2);
+    border-radius: 24px;
+    padding: 32px;
+    position: relative;
+    overflow-y: auto;
+    animation: slideModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideModal {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.closeBtn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.closeBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Chooser */
+.chooser {
+    text-align: center;
+}
+
+.chooser h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.chooserSub {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+}
+
+.chooserBtns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.chooserBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 28px 16px;
+    background: rgba(108, 92, 231, 0.06);
+    border: 1px solid rgba(108, 92, 231, 0.15);
+    border-radius: 16px;
+    cursor: pointer;
+    font-family: inherit;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.chooserBtn:hover {
+    background: rgba(108, 92, 231, 0.12);
+    border-color: rgba(0, 210, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.chooserIcon {
+    font-size: 2rem;
+}
+
+.chooserHint {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* Demo View */
+.demoView {
+    display: flex;
+    flex-direction: column;
+}
+
+.demoHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.demoDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00B894;
+    animation: demoPulse 2s ease infinite;
+    box-shadow: 0 0 6px rgba(0, 184, 148, 0.5);
+}
+
+@keyframes demoPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* Waveform */
+.waveform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 32px;
+    margin-bottom: 20px;
+}
+
+.waveBar {
+    width: 3px;
+    background: linear-gradient(to top, var(--primary), var(--accent));
+    border-radius: 3px;
+    transition: height 0.1s ease;
+    min-height: 3px;
+}
+
+/* Chat */
+.chatArea {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 240px;
+    margin-bottom: 20px;
+}
+
+.bubble {
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    max-width: 88%;
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bubble.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.ring,
+.missed {
+    align-self: center;
+    text-align: center;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    color: #FF6B6B;
+    font-weight: 600;
+    font-size: 0.82rem;
+}
+
+.wave {
+    display: none;
+}
+
+.ai,
+.ai-sms {
+    align-self: flex-start;
+    background: rgba(108, 92, 231, 0.1);
+    border: 1px solid rgba(108, 92, 231, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    border-bottom-left-radius: 4px;
+}
+
+.caller,
+.user-sms {
+    align-self: flex-end;
+    background: rgba(0, 210, 255, 0.08);
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    color: rgba(255, 255, 255, 0.85);
+    border-bottom-right-radius: 4px;
+}
+
+.confirm {
+    align-self: center;
+    text-align: center;
+    background: rgba(0, 184, 148, 0.1);
+    border: 1px solid rgba(0, 184, 148, 0.2);
+    color: #55efc4;
+    font-weight: 700;
+    font-size: 0.82rem;
+}
+
+.notify {
+    align-self: center;
+    text-align: center;
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: transparent;
+    padding: 4px 0;
+}
+
+.backBtn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 8px 0;
+    transition: color 0.2s;
+    align-self: flex-start;
+}
+
+.backBtn:hover {
+    color: var(--text-primary);
+}
+
+@media (max-width: 480px) {
+    .modal {
+        padding: 24px 20px;
+        border-radius: 16px;
+    }
+
+    .chooserBtns {
+        grid-template-columns: 1fr;
+    }
+}

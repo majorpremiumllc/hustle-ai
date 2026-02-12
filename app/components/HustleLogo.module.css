@@ -1,0 +1,95 @@
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: filter 0.3s ease;
+}
+
+.logo:hover {
+    filter: brightness(1.15);
+}
+
+.logo:hover .logoIcon {
+    transform: translateY(-1px);
+}
+
+.logoIcon {
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+    filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.3));
+}
+
+.boltPath {
+    filter: drop-shadow(0 0 4px rgba(108, 92, 231, 0.4));
+}
+
+.boltGlow {
+    transition: opacity 0.4s ease;
+}
+
+.pulse {
+    animation: logoPulse 1.2s ease-in-out;
+}
+
+@keyframes logoPulse {
+    0% {
+        opacity: 0;
+    }
+
+    40% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Wordmark */
+.wordmark {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.wordHustle {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.wordAI {
+    background: linear-gradient(135deg, #00D2FF, #6C5CE7, #00D2FF);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmerText 8s linear infinite;
+}
+
+@keyframes shimmerText {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+/* Variant: icon-only */
+.icon .wordmark {
+    display: none;
+}
+
+/* Variant: wordmark-only */
+.wordmark-only .logoIcon {
+    display: none;
+}
+
+@media (max-width: 480px) {
+    .wordmark {
+        font-size: 1.1rem;
+    }
+}

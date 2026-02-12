@@ -19,6 +19,7 @@
     border-radius: inherit;
     padding: 1px;
     background: linear-gradient(135deg, rgba(0, 210, 255, 0.15), rgba(108, 92, 231, 0.15));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -67,6 +68,7 @@
     gap: 10px;
     opacity: 0;
     transform: translateY(20px);
+    filter: blur(4px);
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.85);
@@ -75,11 +77,13 @@
 .feedItem.active {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0);
 }
 
 .feedItem.past {
     opacity: 0;
     transform: translateY(-20px);
+    filter: blur(4px);
 }
 
 .feedIcon {
@@ -91,6 +95,14 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+}
+
+.feedTime {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 @keyframes feedPulse {

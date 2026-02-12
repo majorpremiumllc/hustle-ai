@@ -1139,3 +1139,35 @@
     align-items: center;
   }
 }
+
+/* ── Demo Button ──────────────────────────── */
+.demoBtn {
+  border: 1px solid rgba(108, 92, 231, 0.2) !important;
+  color: var(--primary-light) !important;
+  font-size: 0.88rem !important;
+}
+
+.demoBtn:hover {
+  border-color: rgba(0, 210, 255, 0.4) !important;
+  color: var(--accent) !important;
+}
+
+/* ── Cancel Note ─────────────────────────── */
+.cancelNote {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 12px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Reduced Motion ──────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+
+  .scrollProgress,
+  .typingCursor,
+  .statusDot,
+  .heroBadgeDot {
+    animation: none !important;
+  }
+}

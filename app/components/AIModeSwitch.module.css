@@ -1,0 +1,61 @@
+.modeSwitch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px 5px 8px;
+    border-radius: 100px;
+    border: 1px solid rgba(108, 92, 231, 0.2);
+    background: rgba(15, 15, 30, 0.6);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
+}
+
+.modeSwitch:hover {
+    border-color: rgba(108, 92, 231, 0.4);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.modeDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    transition: all 0.5s ease;
+}
+
+.modeLabel {
+    transition: opacity 0.3s ease;
+}
+
+/* Boost mode */
+.boost {
+    border-color: rgba(0, 210, 255, 0.25);
+}
+
+.boost .modeDot {
+    background: #00D2FF;
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
+}
+
+/* Stealth mode */
+.stealth {
+    border-color: rgba(108, 92, 231, 0.15);
+}
+
+.stealth .modeDot {
+    background: rgba(162, 155, 254, 0.6);
+    box-shadow: 0 0 4px rgba(108, 92, 231, 0.3);
+}
+
+@media (max-width: 768px) {
+    .modeSwitch {
+        padding: 4px 10px 4px 6px;
+        font-size: 0.62rem;
+    }
+}

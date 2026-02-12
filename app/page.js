@@ -6,6 +6,8 @@ import Image from "next/image";
 import ChatWidget from "./components/ChatWidget";
 import AIActivityFeed from "./components/AIActivityFeed";
 import MagneticButton from "./components/MagneticButton";
+import HustleLogo from "./components/HustleLogo";
+import AIModeSwitch from "./components/AIModeSwitch";
 import styles from "./page.module.css";
 
 /* ── Lazy-loaded heavy components (performance) ── */
@@ -13,6 +15,8 @@ const ParticleNetwork = dynamic(() => import("./components/ParticleNetwork"), { 
 const CustomCursor = dynamic(() => import("./components/CustomCursor"), { ssr: false });
 const HolographicOrb = dynamic(() => import("./components/HolographicOrb"), { ssr: false });
 const VoiceDemo = dynamic(() => import("./components/VoiceDemo"), { ssr: false });
+const RevenueCounter = dynamic(() => import("./components/RevenueCounter"), { ssr: false });
+const DemoModal = dynamic(() => import("./components/DemoModal"), { ssr: false });
 
 /* ── SVG Icon Components ───────────────────────── */
 
@@ -302,6 +306,7 @@ export default function LandingPage() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [heroText, setHeroText] = useState("");
   const [heroTypingDone, setHeroTypingDone] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
   const plans = PLANS[billing];
   const heroFullText = "AI Answers Every Call & Message.";
 
@@ -431,8 +436,7 @@ export default function LandingPage() {
       <nav className={styles.nav}>
         <div className={`container ${styles.navInner}`}>
           <a href="/" className={styles.logo}>
-            <IconBolt className={styles.logoSvg} />
-            <span>Hustle<span className="text-gradient">AI</span></span>
+            <HustleLogo variant="full" size={30} />
           </a>
           <div className={styles.navLinks}>
             <a href="#features">Features</a>
@@ -440,6 +444,7 @@ export default function LandingPage() {
             <a href="#pricing">Pricing</a>
           </div>
           <div className={styles.navActions}>
+            <AIModeSwitch />
             <a href="/login" className="btn btn-ghost">Log In</a>
             <a href="/signup" className="btn btn-primary">Start Free Trial</a>
           </div>
@@ -503,6 +508,9 @@ export default function LandingPage() {
             <MagneticButton href="#how-it-works" className="btn btn-secondary btn-lg">
               Watch How It Works
             </MagneticButton>
+            <button onClick={() => setDemoOpen(true)} className={`btn btn-ghost btn-lg ${styles.demoBtn}`}>
+              ▶ Try a 10-sec Demo
+            </button>
           </div>
 
           {/* AI Activity Feed */}
@@ -531,6 +539,9 @@ export default function LandingPage() {
           <HolographicOrb />
         </div>
       </section>
+
+      {/* ── Revenue Counter ──────────────────────────── */}
+      <RevenueCounter />
 
       {/* ── Value Propositions ──────────────────────── */}
       {VALUE_PROPS.map((vp, i) => (
@@ -702,6 +713,7 @@ export default function LandingPage() {
                 >
                   {checkoutLoading === plan.name ? "Redirecting..." : plan.popular ? "Start Free Trial" : "Get Started"}
                 </button>
+                <div className={styles.cancelNote}>Cancel anytime · No contracts</div>
               </div>
             ))}
           </div>
@@ -761,8 +773,7 @@ export default function LandingPage() {
         <div className={`container ${styles.footerInner}`}>
           <div className={styles.footerBrand}>
             <div className={styles.footerLogo}>
-              <IconBolt className={styles.logoSvg} />
-              <span>Hustle<span className="text-gradient">AI</span></span>
+              <HustleLogo variant="full" size={26} />
             </div>
             <p style={{ marginTop: "8px", fontSize: "0.85rem" }}>AI-powered business growth platform.</p>
           </div>
@@ -794,6 +805,7 @@ export default function LandingPage() {
       </footer>
 
       <ChatWidget />
+      <DemoModal isOpen={demoOpen} onClose={() => setDemoOpen(false)} />
     </div>
   );
 }
