@@ -1,0 +1,367 @@
+/* ── Section ──────────────────────────── */
+.section {
+    padding: 100px 0 80px;
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(10px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section.visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+.inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+}
+
+/* ── Left: Visualization ─────────────── */
+.vizCol {
+    position: relative;
+}
+
+.vizFrame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(10, 10, 20, 0.8);
+    border: 1px solid rgba(108, 92, 231, 0.12);
+}
+
+.canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.vizOverlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 40%, rgba(0, 210, 255, 0.04) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Fact Bubble */
+.factBubble {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    padding: 14px 18px;
+    background: rgba(15, 15, 30, 0.9);
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    border-radius: 14px;
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.factBubble.factVisible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.factLabel {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(0, 210, 255, 0.6);
+    margin-bottom: 6px;
+}
+
+.factText {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+}
+
+.factNum {
+    font-size: 1.3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #00D2FF, #6C5CE7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ── Right: Content ──────────────────── */
+.contentCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionTag {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(108, 92, 231, 0.1);
+    border: 1px solid rgba(108, 92, 231, 0.15);
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--primary-light);
+    margin-bottom: 16px;
+    width: fit-content;
+}
+
+.heading {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 28px;
+    line-height: 1.2;
+}
+
+/* ── Proof Cards ─────────────────────── */
+.proofCards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.proofCard {
+    padding: 18px 20px;
+    background: rgba(15, 15, 30, 0.6);
+    border: 1px solid rgba(108, 92, 231, 0.1);
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Highlight sweep on hover */
+.proofCard::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.02), transparent);
+    transition: left 0.7s ease;
+    pointer-events: none;
+}
+
+.proofCard:hover::after {
+    left: 120%;
+}
+
+.proofCard:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 210, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Pulse sync highlight */
+.proofPulse {
+    border-color: rgba(0, 210, 255, 0.3) !important;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.08);
+}
+
+.proofHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.proofIcon {
+    font-size: 1.1rem;
+}
+
+.proofTitle {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.proofMetric {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #00D2FF;
+    margin-bottom: 4px;
+}
+
+.proofDetail {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.proofBar {
+    height: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.proofBarFill {
+    height: 100%;
+    background: linear-gradient(90deg, #00D2FF, #6C5CE7);
+    border-radius: 3px;
+    transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: 0.3s;
+}
+
+/* ── Comparison Strip ────────────────── */
+.comparison {
+    padding: 20px 22px;
+    background: rgba(10, 10, 20, 0.5);
+    border: 1px solid rgba(108, 92, 231, 0.08);
+    border-radius: 14px;
+    margin-bottom: 28px;
+}
+
+.compTitle {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.compRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.compRow:last-child {
+    border-bottom: none;
+}
+
+.compIcon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.compText {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.compText strong {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.compText span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.compCheck {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 210, 255, 0.1);
+    color: #00D2FF;
+    font-size: 0.7rem;
+    font-weight: 700;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.compCheck.checkVisible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ── CTA ─────────────────────────────── */
+.ctaRow {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ctaMicro {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 10px;
+    letter-spacing: 0.02em;
+}
+
+/* ── Responsive ──────────────────────── */
+@media (max-width: 900px) {
+    .inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .vizFrame {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+@media (max-width: 480px) {
+    .section {
+        padding: 60px 0;
+    }
+
+    .heading {
+        font-size: 1.6rem;
+    }
+
+    .ctaRow {
+        flex-direction: column;
+    }
+
+    .ctaRow .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition: none;
+    }
+
+    .proofBarFill {
+        transition: none;
+    }
+
+    .factBubble {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .compCheck {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

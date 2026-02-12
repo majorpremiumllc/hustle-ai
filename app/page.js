@@ -18,6 +18,7 @@ const VoiceDemo = dynamic(() => import("./components/VoiceDemo"), { ssr: false }
 const RevenueCounter = dynamic(() => import("./components/RevenueCounter"), { ssr: false });
 const DemoModal = dynamic(() => import("./components/DemoModal"), { ssr: false });
 const LightningJourney = dynamic(() => import("./components/LightningJourney"), { ssr: false });
+const NeuralProof = dynamic(() => import("./components/NeuralProof"), { ssr: false });
 
 /* ── SVG Icon Components ───────────────────────── */
 
@@ -637,6 +638,11 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <div className="glass-divider" />
+
+      {/* ── Neural Proof ──────────────────────────────── */}
+      <NeuralProof />
 
       <div className="glass-divider" />
 
