@@ -165,6 +165,36 @@
   box-shadow: 0 0 8px rgba(0, 184, 148, 0.5);
 }
 
+/* AI Status Chip */
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 184, 148, 0.06);
+  border: 1px solid rgba(0, 184, 148, 0.15);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(0, 184, 148, 0.9);
+  margin-bottom: var(--space-md);
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse 2s ease infinite;
+  box-shadow: 0 0 6px rgba(0, 184, 148, 0.6);
+}
+
+.statusSep {
+  opacity: 0.4;
+}
+
 .hero h1 {
   font-size: 4rem;
   font-weight: 900;

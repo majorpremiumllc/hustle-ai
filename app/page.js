@@ -1,9 +1,18 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import ChatWidget from "./components/ChatWidget";
+import AIActivityFeed from "./components/AIActivityFeed";
+import MagneticButton from "./components/MagneticButton";
 import styles from "./page.module.css";
+
+/* ── Lazy-loaded heavy components (performance) ── */
+const ParticleNetwork = dynamic(() => import("./components/ParticleNetwork"), { ssr: false });
+const CustomCursor = dynamic(() => import("./components/CustomCursor"), { ssr: false });
+const HolographicOrb = dynamic(() => import("./components/HolographicOrb"), { ssr: false });
+const VoiceDemo = dynamic(() => import("./components/VoiceDemo"), { ssr: false });
 
 /* ── SVG Icon Components ───────────────────────── */
 
@@ -294,7 +303,6 @@ export default function LandingPage() {
   const [heroText, setHeroText] = useState("");
   const [heroTypingDone, setHeroTypingDone] = useState(false);
   const plans = PLANS[billing];
-  const cursorRef = useRef(null);
   const heroFullText = "AI Answers Every Call & Message.";
 
   const handleCheckout = async (planName) => {
@@ -382,22 +390,7 @@ export default function LandingPage() {
     e.currentTarget.style.transform = "";
   }, []);
 
-  useEffect(() => {
-    const cursor = cursorRef.current;
-    if (!cursor) return;
-    const handleMove = (e) => {
-      cursor.style.left = e.clientX + "px";
-      cursor.style.top = e.clientY + "px";
-      cursor.classList.add("active");
-    };
-    const handleLeave = () => cursor.classList.remove("active");
-    window.addEventListener("mousemove", handleMove);
-    document.addEventListener("mouseleave", handleLeave);
-    return () => {
-      window.removeEventListener("mousemove", handleMove);
-      document.removeEventListener("mouseleave", handleLeave);
-    };
-  }, []);
+  /* old cursor-glow replaced by CustomCursor component */
 
   const Counter = ({ value }) => {
     const [display, setDisplay] = useState(value);
@@ -428,7 +421,8 @@ export default function LandingPage() {
 
   return (
     <div className={styles.landing}>
-      <div ref={cursorRef} className="cursor-glow" />
+      <ParticleNetwork />
+      <CustomCursor />
 
       {/* ── Scroll Progress Bar ──────────────────────── */}
       <div className={styles.scrollProgress} style={{ width: `${scrollProgress}%` }} />
@@ -485,6 +479,14 @@ export default function LandingPage() {
               AI-Powered Dispatcher for Small Businesses
             </div>
           </div>
+
+          {/* AI Status Chip */}
+          <div className={`animate-fadeInUp ${styles.statusChip}`}>
+            <span className={styles.statusDot} />
+            <span>AI Active</span>
+            <span className={styles.statusSep}>•</span>
+            <span>Answering Calls</span>
+          </div>
           <h1 className="animate-fadeInUp delay-1">
             Stop Losing Customers.<br />
             <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
@@ -495,12 +497,17 @@ export default function LandingPage() {
             and grows your revenue — on autopilot.
           </p>
           <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
-            <a href="/signup" className="btn btn-accent btn-lg">
+            <MagneticButton href="/signup" className="btn btn-accent btn-lg">
               Start Free 7-Day Trial <IconArrowRight className={styles.btnIconInline} />
-            </a>
-            <a href="#how-it-works" className="btn btn-secondary btn-lg">
+            </MagneticButton>
+            <MagneticButton href="#how-it-works" className="btn btn-secondary btn-lg">
               Watch How It Works
-            </a>
+            </MagneticButton>
+          </div>
+
+          {/* AI Activity Feed */}
+          <div className="animate-fadeInUp delay-5">
+            <AIActivityFeed />
           </div>
 
           <div className={`animate-fadeInUp delay-4 ${styles.socialProof}`}>
@@ -521,9 +528,7 @@ export default function LandingPage() {
         </div>
 
         <div className={`animate-fadeInUp delay-5 ${styles.heroImage}`}>
-          <div className={styles.heroImageWrapper}>
-            <Image src="/images/hero-ai.png" alt="AI Brain connected to business automation" width={560} height={560} priority className={styles.heroImg} />
-          </div>
+          <HolographicOrb />
         </div>
       </section>
 
@@ -569,7 +574,7 @@ export default function LandingPage() {
                 onMouseMove={handleTilt}
                 onMouseLeave={handleTiltReset}
               >
-                <div className={styles.featureImageWrap}>
+                <div className={`${styles.featureImageWrap} float-icon`}>
                   <Image src={f.image} alt={f.title} width={200} height={200} className={styles.featureImage} />
                 </div>
                 <h4>{f.title}</h4>
@@ -620,6 +625,11 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <div className="glass-divider" />
+
+      {/* ── AI Voice Demo ────────────────────────────── */}
+      <VoiceDemo />
 
       <div className="glass-divider" />
 

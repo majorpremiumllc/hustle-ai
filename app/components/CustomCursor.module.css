@@ -1,0 +1,65 @@
+.dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background: rgba(0, 210, 255, 0.9);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    opacity: 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.3s ease;
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.6),
+        0 0 24px rgba(108, 92, 231, 0.3);
+    will-change: transform;
+}
+
+.trail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid rgba(0, 210, 255, 0.25);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    opacity: 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.3s ease;
+    will-change: transform;
+}
+
+.dot.expanded {
+    width: 16px;
+    height: 16px;
+    background: rgba(0, 210, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.5),
+        0 0 40px rgba(108, 92, 231, 0.2);
+}
+
+.trail.expanded {
+    width: 48px;
+    height: 48px;
+    border-color: rgba(108, 92, 231, 0.35);
+}
+
+@media (max-width: 768px) {
+
+    .dot,
+    .trail {
+        display: none !important;
+    }
+}
+
+@media (hover: none) {
+
+    .dot,
+    .trail {
+        display: none !important;
+    }
+}
