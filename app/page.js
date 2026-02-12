@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import ChatWidget from "./components/ChatWidget";
 import styles from "./page.module.css";
@@ -289,8 +289,13 @@ const TESTIMONIALS = [
 export default function LandingPage() {
   const [billing, setBilling] = useState("month");
   const [checkoutLoading, setCheckoutLoading] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [heroText, setHeroText] = useState("");
+  const [heroTypingDone, setHeroTypingDone] = useState(false);
   const plans = PLANS[billing];
   const cursorRef = useRef(null);
+  const heroFullText = "AI Answers Every Call & Message.";
 
   const handleCheckout = async (planName) => {
     setCheckoutLoading(planName);
@@ -314,6 +319,32 @@ export default function LandingPage() {
     }
   };
 
+  /* ── Scroll progress bar ─────────────────────── */
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (window.scrollY / totalHeight) * 100;
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  /* ── Typewriter effect ──────────────────────── */
+  useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      setHeroText(heroFullText.slice(0, i + 1));
+      i++;
+      if (i >= heroFullText.length) {
+        clearInterval(timer);
+        setHeroTypingDone(true);
+      }
+    }, 50);
+    return () => clearInterval(timer);
+  }, [heroFullText]);
+
+  /* ── Scroll reveal observer ─────────────────── */
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -325,6 +356,30 @@ export default function LandingPage() {
     );
     document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
+  }, []);
+
+  /* ── Close mobile menu on resize ────────────── */
+  useEffect(() => {
+    const handleResize = () => { if (window.innerWidth > 768) setMobileMenuOpen(false); };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  /* ── 3D tilt handler for cards ───────────────── */
+  const handleTilt = useCallback((e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+  }, []);
+
+  const handleTiltReset = useCallback((e) => {
+    e.currentTarget.style.transform = "";
   }, []);
 
   useEffect(() => {
@@ -375,6 +430,9 @@ export default function LandingPage() {
     <div className={styles.landing}>
       <div ref={cursorRef} className="cursor-glow" />
 
+      {/* ── Scroll Progress Bar ──────────────────────── */}
+      <div className={styles.scrollProgress} style={{ width: `${scrollProgress}%` }} />
+
       {/* ── Navigation ──────────────────────────────── */}
       <nav className={styles.nav}>
         <div className={`container ${styles.navInner}`}>
@@ -391,8 +449,27 @@ export default function LandingPage() {
             <a href="/login" className="btn btn-ghost">Log In</a>
             <a href="/signup" className="btn btn-primary">Start Free Trial</a>
           </div>
+          {/* ── Hamburger ─────────────────────────────── */}
+          <button
+            className={`${styles.hamburger} ${mobileMenuOpen ? styles.hamburgerActive : ""}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span /><span /><span />
+          </button>
         </div>
       </nav>
+
+      {/* ── Mobile Menu Overlay ──────────────────────── */}
+      <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ""}`}>
+        <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+        <a href="#industries" onClick={() => setMobileMenuOpen(false)}>Industries</a>
+        <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+        <div className={styles.mobileMenuActions}>
+          <a href="/login" className="btn btn-ghost" onClick={() => setMobileMenuOpen(false)}>Log In</a>
+          <a href="/signup" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)}>Start Free Trial</a>
+        </div>
+      </div>
 
       {/* ── Hero ────────────────────────────────────── */}
       <section className={styles.hero}>
@@ -410,7 +487,7 @@ export default function LandingPage() {
           </div>
           <h1 className="animate-fadeInUp delay-1">
             Stop Losing Customers.<br />
-            <span className="text-gradient">AI Answers Every Call & Message.</span>
+            <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
           </h1>
           <p className={`animate-fadeInUp delay-2 ${styles.heroSub}`}>
             Small businesses lose <strong style={{ color: "var(--text-white)" }}>$126,000/year</strong> from missed calls.
@@ -488,7 +565,10 @@ export default function LandingPage() {
           </div>
           <div className={`${styles.featuresGrid} stagger-children`}>
             {FEATURES.map((f, i) => (
-              <div key={i} className={`card ${styles.featureCard} reveal`}>
+              <div key={i} className={`card ${styles.featureCard} reveal`}
+                onMouseMove={handleTilt}
+                onMouseLeave={handleTiltReset}
+              >
                 <div className={styles.featureImageWrap}>
                   <Image src={f.image} alt={f.title} width={200} height={200} className={styles.featureImage} />
                 </div>
@@ -584,7 +664,10 @@ export default function LandingPage() {
           </div>
           <div className={`${styles.pricingGrid} stagger-children`}>
             {plans.map((plan, i) => (
-              <div key={i} className={`pricing-card ${plan.popular ? "featured" : ""} reveal`}>
+              <div key={i} className={`pricing-card ${plan.popular ? "featured" : ""} reveal`}
+                onMouseMove={handleTilt}
+                onMouseLeave={handleTiltReset}
+              >
                 {plan.popular && <div className="popular-badge">Most Popular</div>}
                 <div className="plan-name">{plan.name}</div>
                 <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{plan.desc}</p>

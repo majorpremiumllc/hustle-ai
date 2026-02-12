@@ -316,8 +316,10 @@ p {
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   backdrop-filter: blur(var(--glass-blur));
-  transition: all var(--transition);
+  transition: all var(--transition), transform 0.15s ease-out;
   position: relative;
+  will-change: transform;
+  transform-style: preserve-3d;
 }
 
 /* Gradient border glow on hover */
@@ -337,7 +339,6 @@ p {
 }
 
 .card:hover {
-  transform: translateY(-4px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), var(--shadow-glow);
 }
 

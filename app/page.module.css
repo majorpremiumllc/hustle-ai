@@ -771,6 +771,149 @@
   color: var(--text-muted);
 }
 
+/* ── Scroll Progress Bar ───────────────────── */
+
+.scrollProgress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary-light));
+  z-index: 9999;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px var(--primary-glow), 0 0 20px rgba(0, 210, 255, 0.3);
+}
+
+/* ── Hamburger Button ─────────────────────── */
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 200;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.hamburgerActive span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburgerActive span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburgerActive span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ── Mobile Menu Overlay ──────────────────── */
+
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 150;
+  background: rgba(10, 10, 20, 0.97);
+  backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobileMenuOpen {
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1);
+}
+
+.mobileMenu a {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-white);
+  transition: all var(--transition);
+  position: relative;
+}
+
+.mobileMenu a:hover {
+  color: var(--accent);
+  transform: scale(1.05);
+}
+
+.mobileMenuActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  width: 100%;
+  max-width: 280px;
+}
+
+.mobileMenuActions a {
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ── Typing Cursor ────────────────────────── */
+
+.typingCursor {
+  font-weight: 100;
+  animation: blink 0.8s step-end infinite;
+  margin-left: 2px;
+}
+
+.typingDone {
+  animation: blink 0.8s step-end infinite 2s;
+  animation-fill-mode: forwards;
+  opacity: 0;
+  animation: blinkFade 0.8s step-end 4 forwards;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes blinkFade {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
 /* ── Responsive ────────────────────────────── */
 
 @media (max-width: 1024px) {
@@ -804,25 +947,47 @@
     display: none;
   }
 
+  .navActions {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
   .hero {
-    padding: 130px 0 40px;
+    padding: 110px 0 40px;
   }
 
   .hero h1 {
-    font-size: 2.2rem;
+    font-size: 1.9rem;
+    letter-spacing: -0.02em;
+    padding: 0 var(--space-sm);
   }
 
   .heroSub {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    padding: 0 var(--space-sm);
   }
 
   .heroCtas {
     flex-direction: column;
     align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .heroCtas .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .heroImage {
+    max-width: 320px;
   }
 
   .valueInner {
     grid-template-columns: 1fr;
+    gap: var(--space-xl);
   }
 
   .valueReverse {
@@ -833,24 +998,42 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
+  .valueStat strong {
+    font-size: 1.3rem;
+  }
+
+  .valueStat span {
+    font-size: 0.7rem;
+  }
+
   .featuresGrid {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
 
   .stepsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
   }
 
   .pricingGrid {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
 
   .testimonialGrid {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
 
   .allIndustriesGrid {
     grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xs);
+  }
+
+  .miniIndustryCard {
+    padding: 10px 4px;
+    font-size: 0.65rem;
   }
 
   .footerLinks {
@@ -871,5 +1054,58 @@
 
   .industryShowcases {
     grid-template-columns: 1fr;
+  }
+
+  .sectionTag {
+    font-size: 0.72rem;
+  }
+
+  .sectionSub {
+    font-size: 0.95rem;
+    padding: 0 var(--space-sm);
+  }
+
+  .industryCardImage {
+    height: 160px;
+  }
+
+  .stepNum {
+    width: 40px;
+    height: 40px;
+    font-size: 0.85rem;
+  }
+
+  .footerBrand {
+    align-items: center;
+    text-align: center;
+  }
+
+  .footerBottom {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .stepsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .allIndustriesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .valueStats {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
+  .valueStat {
+    flex-direction: row;
+    gap: var(--space-sm);
+    align-items: center;
   }
 }
