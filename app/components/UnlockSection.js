@@ -30,7 +30,10 @@ export function NeuralRevealProvider({ children, sectionIds = [] }) {
             ticking = true;
             requestAnimationFrame(() => {
                 const docH = document.documentElement.scrollHeight - window.innerHeight;
-                setProgress(docH > 0 ? Math.min(window.scrollY / docH, 1) : 0);
+                const raw = docH > 0 ? window.scrollY / docH : 0;
+                // Fail-safe: clamp to [0, 1], protect against NaN
+                const clamped = Number.isFinite(raw) ? Math.max(0, Math.min(1, raw)) : 0;
+                setProgress(clamped);
                 ticking = false;
             });
         };
@@ -56,7 +59,14 @@ export function NeuralRevealProvider({ children, sectionIds = [] }) {
     );
 }
 
-/* ── UnlockSection ───────────────────── */
+/* ── UnlockSection ───────────────────── 
+   IMPORTANT: This component uses an OVERLAY div (position:absolute)
+   to create the locked/dimmed effect. It NEVER applies filter:blur
+   or opacity to the section container itself. This ensures:
+   1) No stacking context contamination to parent/sibling elements
+   2) No compounding with other CSS blur (like .reveal classes)
+   3) Navbar and other fixed elements are never affected
+   ──────────────────────────────────── */
 export default function UnlockSection({ id, children, threshold = 0.12 }) {
     const ref = useRef(null);
     const { unlocked, unlock } = useContext(UnlockCtx);
@@ -94,25 +104,33 @@ export default function UnlockSection({ id, children, threshold = 0.12 }) {
     return (
         <div
             ref={ref}
-            className={`${styles.wrap} ${styles["phase_" + phase]}`}
+            className={styles.wrap}
             data-unlock-id={id}
+            data-phase={phase}
         >
-            {/* Wireframe grid (only visible during building phase) */}
-            <div className={styles.gridOverlay} aria-hidden="true">
-                <div className={styles.hLine} style={{ top: "20%" }} />
-                <div className={styles.hLine} style={{ top: "45%" }} />
-                <div className={styles.hLine} style={{ top: "70%" }} />
-                <div className={styles.vLine} style={{ left: "30%" }} />
-                <div className={styles.vLine} style={{ left: "60%" }} />
-            </div>
+            {/* Lock overlay — position:absolute, scoped to this container ONLY.
+          This is the ONLY element that dims/blurs. It sits ON TOP of content
+          and is removed when settled. It never affects parent elements. */}
+            {phase !== "settled" && (
+                <div
+                    className={`${styles.lockOverlay} ${styles["ov_" + phase]}`}
+                    aria-hidden="true"
+                />
+            )}
 
-            {/* Unlock ring (only during revealed phase) */}
-            <div className={styles.unlockRing} />
+            {/* Wireframe grid (building phase only) */}
+            {phase === "building" && (
+                <div className={styles.gridOverlay} aria-hidden="true">
+                    <div className={styles.hLine} style={{ top: "20%" }} />
+                    <div className={styles.hLine} style={{ top: "45%" }} />
+                    <div className={styles.hLine} style={{ top: "70%" }} />
+                    <div className={styles.vLine} style={{ left: "30%" }} />
+                    <div className={styles.vLine} style={{ left: "60%" }} />
+                </div>
+            )}
 
-            {/* Actual content — always rendered, visibility controlled by CSS */}
-            <div className={styles.inner}>
-                {children}
-            </div>
+            {/* Actual content — NO filter/blur/opacity applied to this element */}
+            {children}
         </div>
     );
 }

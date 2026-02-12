@@ -1,93 +1,71 @@
 /* ═══════════════════════════════════════
    UnlockSection — Progressive Disclosure
+   Uses OVERLAY approach (not parent filter)
    ═══════════════════════════════════════ */
 
-/* ── Container ───────────────────────── */
+/* ── Container — position:relative only ── */
 .wrap {
     position: relative;
-    will-change: opacity;
-    contain: layout style;
-    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    /* NO filter, NO opacity, NO blur on this element. EVER.
+     This prevents stacking context contamination. */
 }
 
-/* ── Phase: Locked ───────────────────── */
-.phase_locked {
-    opacity: 0.25;
+/* ═══════════════════════════════════════
+   LOCK OVERLAY — absolute, scoped to .wrap
+   This is the ONLY element that creates
+   the dimmed/blurred locked appearance.
+   It sits ON TOP of content.
+   ═══════════════════════════════════════ */
+.lockOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
     pointer-events: none;
-    user-select: none;
+    border-radius: inherit;
+    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        backdrop-filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.phase_locked .inner {
-    filter: blur(10px);
-    transform: translateY(10px);
-    transition: filter 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* ── Phase: Building ─────────────────── */
-.phase_building {
-    opacity: 0.55;
-    pointer-events: none;
-}
-
-.phase_building .inner {
-    filter: blur(5px);
-    transform: translateY(6px);
-}
-
-.phase_building .gridOverlay {
+/* Phase: Locked — fully dimmed + blurred */
+.ov_locked {
+    background: rgba(10, 10, 20, 0.7);
+    backdrop-filter: blur(8px);
     opacity: 1;
 }
 
-/* ── Phase: Revealed ─────────────────── */
-.phase_revealed {
+/* Phase: Building — lighter dim, less blur */
+.ov_building {
+    background: rgba(10, 10, 20, 0.4);
+    backdrop-filter: blur(3px);
     opacity: 1;
-    pointer-events: auto;
 }
 
-.phase_revealed .inner {
-    filter: blur(0);
-    transform: translateY(0);
-}
-
-.phase_revealed .gridOverlay {
+/* Phase: Revealed — fade out */
+.ov_revealed {
+    background: rgba(10, 10, 20, 0);
+    backdrop-filter: blur(0px);
     opacity: 0;
 }
 
-.phase_revealed .unlockRing {
-    animation: ringBurst 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
+/* Phase: Settled — overlay removed from DOM entirely */
 
-/* ── Phase: Settled ──────────────────── */
-.phase_settled {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.phase_settled .inner {
-    filter: none;
-    transform: none;
-}
-
-.phase_settled .gridOverlay,
-.phase_settled .unlockRing {
-    display: none;
-}
-
-/* ── Inner Content ───────────────────── */
-.inner {
-    position: relative;
-    z-index: 1;
-}
-
-/* ── Grid Overlay (wireframe) ────────── */
+/* ── Grid Overlay (wireframe, building phase) ── */
 .gridOverlay {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 2;
-    opacity: 0;
-    transition: opacity 0.18s ease;
+    z-index: 11;
+    animation: gridFadeIn 0.18s ease forwards;
+}
+
+@keyframes gridFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .hLine {
@@ -96,7 +74,7 @@
     right: 8%;
     height: 1px;
     background: linear-gradient(90deg,
-            transparent, rgba(0, 210, 255, 0.12) 25%, rgba(0, 210, 255, 0.12) 75%, transparent);
+            transparent, rgba(0, 210, 255, 0.1) 25%, rgba(0, 210, 255, 0.1) 75%, transparent);
 }
 
 .vLine {
@@ -105,54 +83,16 @@
     bottom: 8%;
     width: 1px;
     background: linear-gradient(180deg,
-            transparent, rgba(0, 210, 255, 0.08) 25%, rgba(0, 210, 255, 0.08) 75%, transparent);
-}
-
-/* ── Unlock Ring ─────────────────────── */
-.unlockRing {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 210, 255, 0.2);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 3;
-    opacity: 0;
-}
-
-@keyframes ringBurst {
-    0% {
-        width: 30px;
-        height: 30px;
-        opacity: 0.7;
-    }
-
-    100% {
-        width: 180vw;
-        height: 180vw;
-        opacity: 0;
-    }
+            transparent, rgba(0, 210, 255, 0.06) 25%, rgba(0, 210, 255, 0.06) 75%, transparent);
 }
 
 /* ── Reduced Motion ──────────────────── */
 @media (prefers-reduced-motion: reduce) {
-    .wrap {
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        transition: none !important;
+    .lockOverlay {
+        display: none !important;
     }
 
-    .inner {
-        filter: none !important;
-        transform: none !important;
-        transition: none !important;
-    }
-
-    .gridOverlay,
-    .unlockRing {
+    .gridOverlay {
         display: none !important;
     }
 }
