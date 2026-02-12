@@ -3,30 +3,28 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./VoiceDemo.module.css";
 
 /* ═══════════════════════════════════════════════
-   Voice Demo (In-Page) — With Audio Playback
+   Voice Demo (In-Page) — Sequential Speech Queue
    ─────────────────────────────────────────────
-   Uses Web Speech API for voice synthesis.
-   AI bot → lower pitch, faster rate
-   Customer → natural pitch, conversational rate
-   Voice auto-plays when section is visible.
+   Each spoken line waits for the previous to finish.
+   No cancel() mid-sentence. Natural pauses.
    ═══════════════════════════════════════════════ */
 
-const DEMO_STEPS = [
-    { type: "incoming", text: "📞 Incoming Call — Mike Rodriguez", delay: 0, voice: null },
-    { type: "status", text: "AI Answering...", delay: 1500, voice: null },
-    { type: "ai", text: "Thanks for calling Rodriguez Plumbing! How can I help you today?", delay: 3000, voice: "ai" },
-    { type: "caller", text: "Hi, I have a leaking pipe in my kitchen...", delay: 6500, voice: "caller" },
-    { type: "ai", text: "I can get a technician to you today. How does 2:30 PM work?", delay: 9500, voice: "ai" },
-    { type: "caller", text: "Yes, that works perfectly!", delay: 13000, voice: "caller" },
-    { type: "notification", text: "✅ Appointment Confirmed — 2:30 PM", delay: 15000, voice: null },
+const DEMO_SCRIPT = [
+    { type: "incoming", text: "📞 Incoming Call — Mike Rodriguez", speak: null },
+    { type: "status", text: "AI Answering...", speak: null },
+    { type: "ai", text: "Thanks for calling Rodriguez Plumbing! How can I help you today?", speak: "ai" },
+    { type: "caller", text: "Hi, I have a leaking pipe in my kitchen...", speak: "caller" },
+    { type: "ai", text: "I can get a technician to you today. How does 2:30 PM work?", speak: "ai" },
+    { type: "caller", text: "Yes, that works perfectly!", speak: "caller" },
+    { type: "notification", text: "✅ Appointment Confirmed — 2:30 PM", speak: null },
 ];
 
-const LOOP_DURATION = 18000;
-
-/* ── Voice Engine Hook ────────────────── */
+/* ── Voice Engine (Sequential Queue) ────── */
 function useVoiceEngine() {
     const synthRef = useRef(null);
     const voicesRef = useRef({ ai: null, caller: null });
+    const queueRef = useRef([]);
+    const busyRef = useRef(false);
 
     useEffect(() => {
         if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -36,7 +34,6 @@ function useVoiceEngine() {
             const voices = synthRef.current.getVoices();
             if (!voices.length) return;
 
-            /* PRIORITY: en-US voices for natural American English */
             const usVoices = voices.filter(v => v.lang === "en-US");
             const googleUS = usVoices.filter(v => v.name.includes("Google"));
             const naturalUS = usVoices.filter(v =>
@@ -78,33 +75,59 @@ function useVoiceEngine() {
         };
     }, []);
 
-    const speak = useCallback((text, role) => {
-        if (!synthRef.current || !text) return;
-        const cleanText = text.replace(/[📞📱✅🔧💬]/g, "").trim();
-        if (!cleanText) return;
+    const processQueue = useCallback(() => {
+        if (busyRef.current || !queueRef.current.length || !synthRef.current) return;
 
+        const { text, role, onDone } = queueRef.current.shift();
+        const cleanText = text.replace(/[📞📱✅🔧💬]/g, "").trim();
+
+        if (!cleanText) {
+            onDone?.();
+            processQueue();
+            return;
+        }
+
+        busyRef.current = true;
         const utterance = new SpeechSynthesisUtterance(cleanText);
+
         if (role === "ai") {
             utterance.voice = voicesRef.current.ai;
-            utterance.pitch = 1.0;     /* Natural pitch */
-            utterance.rate = 1.0;      /* Normal speed */
+            utterance.pitch = 1.0;
+            utterance.rate = 0.95;
             utterance.volume = 0.85;
-        } else if (role === "caller") {
+        } else {
             utterance.voice = voicesRef.current.caller;
-            utterance.pitch = 1.05;    /* Slightly warmer */
-            utterance.rate = 0.92;     /* Casual, relaxed */
+            utterance.pitch = 1.05;
+            utterance.rate = 0.9;
             utterance.volume = 0.8;
         }
 
-        synthRef.current.cancel();
+        utterance.onend = () => {
+            busyRef.current = false;
+            onDone?.();
+            setTimeout(() => processQueue(), 600);
+        };
+        utterance.onerror = () => {
+            busyRef.current = false;
+            onDone?.();
+            setTimeout(() => processQueue(), 300);
+        };
+
         synthRef.current.speak(utterance);
     }, []);
 
+    const enqueue = useCallback((text, role, onDone) => {
+        queueRef.current.push({ text, role, onDone });
+        processQueue();
+    }, [processQueue]);
+
     const stop = useCallback(() => {
+        queueRef.current = [];
+        busyRef.current = false;
         synthRef.current?.cancel();
     }, []);
 
-    return { speak, stop };
+    return { enqueue, stop };
 }
 
 export default function VoiceDemo() {
@@ -114,7 +137,8 @@ export default function VoiceDemo() {
     const [voiceEnabled, setVoiceEnabled] = useState(false);
     const containerRef = useRef(null);
     const cycleRef = useRef(0);
-    const { speak, stop } = useVoiceEngine();
+    const runningRef = useRef(false);
+    const { enqueue, stop } = useVoiceEngine();
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -125,9 +149,12 @@ export default function VoiceDemo() {
         return () => observer.disconnect();
     }, []);
 
-    // Stop voice when not visible
+    // Stop voice when scrolling away
     useEffect(() => {
-        if (!isVisible) stop();
+        if (!isVisible) {
+            stop();
+            runningRef.current = false;
+        }
     }, [isVisible, stop]);
 
     // Wave animation
@@ -142,42 +169,53 @@ export default function VoiceDemo() {
         return () => cancelAnimationFrame(raf);
     }, [isVisible]);
 
-    // Demo loop
+    /* ── Sequential Demo Runner ─────────── */
     useEffect(() => {
         if (!isVisible) return;
-        const timers = [];
+        const cycle = cycleRef.current;
+        runningRef.current = true;
 
-        const runCycle = () => {
-            const cycle = cycleRef.current;
-            setActiveSteps([]);
+        let stepIndex = 0;
 
-            DEMO_STEPS.forEach((step, i) => {
-                const t = setTimeout(() => {
+        const showNextStep = () => {
+            if (cycleRef.current !== cycle || !runningRef.current) return;
+            if (stepIndex >= DEMO_SCRIPT.length) {
+                setTimeout(() => {
                     if (cycleRef.current !== cycle) return;
-                    setActiveSteps((prev) => [...prev, i]);
+                    stepIndex = 0;
+                    setActiveSteps([]);
+                    setTimeout(() => showNextStep(), 1000);
+                }, 3000);
+                return;
+            }
 
-                    /* Speak the line if voice is on */
-                    if (voiceEnabled && step.voice) {
-                        speak(step.text, step.voice);
-                    }
-                }, step.delay);
-                timers.push(t);
-            });
+            const step = DEMO_SCRIPT[stepIndex];
+            const currentIdx = stepIndex;
 
-            const resetTimer = setTimeout(() => {
-                cycleRef.current++;
-                runCycle();
-            }, LOOP_DURATION);
-            timers.push(resetTimer);
+            setActiveSteps(prev => [...prev, currentIdx]);
+
+            if (voiceEnabled && step.speak) {
+                enqueue(step.text, step.speak, () => {
+                    stepIndex++;
+                    showNextStep();
+                });
+            } else {
+                const delay = step.text ? 1200 : 800;
+                setTimeout(() => {
+                    stepIndex++;
+                    showNextStep();
+                }, delay);
+            }
         };
 
-        runCycle();
+        setTimeout(() => showNextStep(), 500);
+
         return () => {
             cycleRef.current++;
-            timers.forEach(clearTimeout);
+            runningRef.current = false;
             stop();
         };
-    }, [isVisible, voiceEnabled, speak, stop]);
+    }, [isVisible, voiceEnabled, enqueue, stop]);
 
     const waveHeights = Array.from({ length: 32 }, (_, i) =>
         Math.abs(Math.sin(wavePhase + i * 0.3)) * 20 + 3
@@ -193,7 +231,6 @@ export default function VoiceDemo() {
                 </div>
 
                 <div className={`${styles.demoCard} reveal-scale`}>
-                    {/* Voice toggle */}
                     <button
                         className={`${styles.voiceToggle} ${voiceEnabled ? styles.voiceOn : ""}`}
                         onClick={() => setVoiceEnabled(v => !v)}
@@ -206,7 +243,6 @@ export default function VoiceDemo() {
                         </span>
                     </button>
 
-                    {/* Voice waveform */}
                     <div className={styles.waveform}>
                         {waveHeights.map((h, i) => (
                             <div
@@ -217,9 +253,8 @@ export default function VoiceDemo() {
                         ))}
                     </div>
 
-                    {/* Chat simulation */}
                     <div className={styles.chatArea}>
-                        {DEMO_STEPS.map((step, i) => (
+                        {DEMO_SCRIPT.map((step, i) => (
                             <div
                                 key={i}
                                 className={`${styles.chatBubble} ${styles[step.type]} ${activeSteps.includes(i) ? styles.visible : ""

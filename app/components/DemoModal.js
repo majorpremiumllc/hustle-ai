@@ -5,40 +5,38 @@ import styles from "./DemoModal.module.css";
 /* ═══════════════════════════════════════════════
    Demo Modal — Live Call & SMS Simulation
    ─────────────────────────────────────────────
-   Now with VOICE AUDIO using Web Speech API:
-   • AI bot → lower pitch, slightly faster rate
-   • Customer → natural pitch, normal rate
-   • Different voices automatically selected
+   Voice: Sequential speech queue — each line waits
+   for the previous to finish before starting.
+   No cancel() mid-sentence, no fixed timers.
    ═══════════════════════════════════════════════ */
 
-const CALL_STEPS = [
-    { type: "ring", text: "📞 Incoming Call — Sarah M.", delay: 0, voice: null },
-    { type: "wave", text: "", delay: 1000, voice: null },
-    { type: "ai", text: "Thanks for calling Rivera Plumbing! I'm the AI assistant. How can I help?", delay: 2000, voice: "ai" },
-    { type: "caller", text: "Hi, my kitchen sink is leaking pretty badly...", delay: 5500, voice: "caller" },
-    { type: "ai", text: "I'm sorry to hear that! I can get a licensed plumber out today. Does 3:00 PM work for you?", delay: 8500, voice: "ai" },
-    { type: "caller", text: "Yes, that's perfect!", delay: 12000, voice: "caller" },
-    { type: "confirm", text: "✅ Appointment Booked — Today 3:00 PM", delay: 14000, voice: null },
-    { type: "notify", text: "📱 Owner notified • Lead scored: High", delay: 15000, voice: null },
+const CALL_SCRIPT = [
+    { type: "ring", text: "📞 Incoming Call — Sarah M.", speak: null },
+    { type: "wave", text: "", speak: null },
+    { type: "ai", text: "Thanks for calling Rivera Plumbing! I'm the AI assistant. How can I help?", speak: "ai" },
+    { type: "caller", text: "Hi, my kitchen sink is leaking pretty badly...", speak: "caller" },
+    { type: "ai", text: "I'm sorry to hear that! I can get a licensed plumber out today. Does 3:00 PM work for you?", speak: "ai" },
+    { type: "caller", text: "Yes, that's perfect!", speak: "caller" },
+    { type: "confirm", text: "✅ Appointment Booked — Today 3:00 PM", speak: null },
+    { type: "notify", text: "📱 Owner notified • Lead scored: High", speak: null },
 ];
 
-const SMS_STEPS = [
-    { type: "missed", text: "Missed call from (555) 234-7890", delay: 0, voice: null },
-    { type: "ai-sms", text: "Hey! Sorry we missed your call. This is Rivera Plumbing's AI assistant. How can I help? 🔧", delay: 1500, voice: null },
-    { type: "user-sms", text: "Hi! I need a quote for a bathroom remodel", delay: 3500, voice: null },
-    { type: "ai-sms", text: "Great! I can schedule a free estimate. We have openings tomorrow at 9 AM or 2 PM. Which works?", delay: 5500, voice: null },
-    { type: "user-sms", text: "2 PM works!", delay: 7500, voice: null },
-    { type: "ai-sms", text: "Perfect! ✅ Booked for tomorrow at 2 PM. You'll get a confirmation text shortly!", delay: 8500, voice: null },
-    { type: "confirm", text: "📅 Estimate Visit Scheduled — Tomorrow 2:00 PM", delay: 10000, voice: null },
+const SMS_SCRIPT = [
+    { type: "missed", text: "Missed call from (555) 234-7890", speak: null },
+    { type: "ai-sms", text: "Hey! Sorry we missed your call. This is Rivera Plumbing's AI assistant. How can I help? 🔧", speak: null },
+    { type: "user-sms", text: "Hi! I need a quote for a bathroom remodel", speak: null },
+    { type: "ai-sms", text: "Great! I can schedule a free estimate. We have openings tomorrow at 9 AM or 2 PM. Which works?", speak: null },
+    { type: "user-sms", text: "2 PM works!", speak: null },
+    { type: "ai-sms", text: "Perfect! ✅ Booked for tomorrow at 2 PM. You'll get a confirmation text shortly!", speak: null },
+    { type: "confirm", text: "📅 Estimate Visit Scheduled — Tomorrow 2:00 PM", speak: null },
 ];
 
-const LOOP_DURATION = 17000;
-
-/* ── Voice Engine ──────────────────────── */
+/* ── Voice Engine (Sequential Queue) ────── */
 function useVoiceEngine() {
     const synthRef = useRef(null);
     const voicesRef = useRef({ ai: null, caller: null });
-    const isSpeakingRef = useRef(false);
+    const queueRef = useRef([]);
+    const busyRef = useRef(false);
 
     useEffect(() => {
         if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -48,29 +46,23 @@ function useVoiceEngine() {
             const voices = synthRef.current.getVoices();
             if (!voices.length) return;
 
-            /* PRIORITY: en-US voices for natural American English
-               1st pick: Google US voices (most natural in Chrome)
-               2nd pick: macOS US voices (Samantha, Alex)
-               3rd pick: any en-US voice */
+            /* en-US only — no British accents */
             const usVoices = voices.filter(v => v.lang === "en-US");
             const googleUS = usVoices.filter(v => v.name.includes("Google"));
             const naturalUS = usVoices.filter(v =>
                 !v.name.includes("Google") && !v.name.includes("Compact")
             );
 
-            /* Best pool: Google US > Natural US > any US > any en */
             const pool = googleUS.length > 1 ? googleUS
                 : naturalUS.length > 1 ? naturalUS
                     : usVoices.length > 1 ? usVoices
                         : voices.filter(v => v.lang.startsWith("en"));
 
             if (pool.length >= 2) {
-                /* AI → calmer, professional voice
-                   Caller → warmer, conversational voice */
-                const callerNames = ["samantha", "google us english 2", "karen",
+                const callerNames = ["samantha", "google us english 2",
                     "google us english female", "microsoft zira", "female"];
-                const aiNames = ["alex", "google us english", "daniel",
-                    "microsoft david", "google us english male", "male", "aaron"];
+                const aiNames = ["alex", "google us english",
+                    "microsoft david", "google us english male", "male"];
 
                 const callerVoice = pool.find(v =>
                     callerNames.some(k => v.name.toLowerCase().includes(k))
@@ -96,41 +88,63 @@ function useVoiceEngine() {
         };
     }, []);
 
-    const speak = useCallback((text, role) => {
-        if (!synthRef.current || !text) return;
+    /* Process the next item in queue */
+    const processQueue = useCallback(() => {
+        if (busyRef.current || !queueRef.current.length || !synthRef.current) return;
 
-        /* Clean text of emojis/special chars for cleaner speech */
+        const { text, role, onDone } = queueRef.current.shift();
         const cleanText = text.replace(/[📞📱✅📅🔧💬]/g, "").trim();
-        if (!cleanText) return;
 
+        if (!cleanText) {
+            onDone?.();
+            processQueue();
+            return;
+        }
+
+        busyRef.current = true;
         const utterance = new SpeechSynthesisUtterance(cleanText);
 
         if (role === "ai") {
             utterance.voice = voicesRef.current.ai;
-            utterance.pitch = 1.0;    /* Natural pitch — no robot effect */
-            utterance.rate = 1.0;     /* Normal speed — professional */
+            utterance.pitch = 1.0;
+            utterance.rate = 0.95;
             utterance.volume = 0.85;
-        } else if (role === "caller") {
+        } else {
             utterance.voice = voicesRef.current.caller;
-            utterance.pitch = 1.05;   /* Slightly warmer */
-            utterance.rate = 0.92;    /* Slightly slower — casual, real person */
+            utterance.pitch = 1.05;
+            utterance.rate = 0.9;
             utterance.volume = 0.8;
         }
 
-        utterance.onstart = () => { isSpeakingRef.current = true; };
-        utterance.onend = () => { isSpeakingRef.current = false; };
-        utterance.onerror = () => { isSpeakingRef.current = false; };
+        utterance.onend = () => {
+            busyRef.current = false;
+            onDone?.();
+            /* Small pause between lines for natural feel */
+            setTimeout(() => processQueue(), 600);
+        };
+        utterance.onerror = () => {
+            busyRef.current = false;
+            onDone?.();
+            setTimeout(() => processQueue(), 300);
+        };
 
-        synthRef.current.cancel();
         synthRef.current.speak(utterance);
     }, []);
 
+    /* Enqueue a line to be spoken */
+    const enqueue = useCallback((text, role, onDone) => {
+        queueRef.current.push({ text, role, onDone });
+        processQueue();
+    }, [processQueue]);
+
+    /* Stop everything */
     const stop = useCallback(() => {
+        queueRef.current = [];
+        busyRef.current = false;
         synthRef.current?.cancel();
-        isSpeakingRef.current = false;
     }, []);
 
-    return { speak, stop };
+    return { enqueue, stop };
 }
 
 export default function DemoModal({ isOpen, onClose }) {
@@ -140,7 +154,8 @@ export default function DemoModal({ isOpen, onClose }) {
     const [voiceEnabled, setVoiceEnabled] = useState(false);
     const cycleRef = useRef(0);
     const modalRef = useRef(null);
-    const { speak, stop } = useVoiceEngine();
+    const runningRef = useRef(false);
+    const { enqueue, stop } = useVoiceEngine();
 
     // Close on Escape
     useEffect(() => {
@@ -156,11 +171,12 @@ export default function DemoModal({ isOpen, onClose }) {
             setActiveSteps([]);
             setVoiceEnabled(false);
             cycleRef.current++;
+            runningRef.current = false;
             stop();
         }
     }, [isOpen, stop]);
 
-    // Wave animation for call demo
+    // Wave animation
     useEffect(() => {
         if (demoType !== "call") return;
         let raf;
@@ -169,40 +185,60 @@ export default function DemoModal({ isOpen, onClose }) {
         return () => cancelAnimationFrame(raf);
     }, [demoType]);
 
-    // Demo steps animation loop
+    /* ── Sequential Demo Runner ─────────── */
     useEffect(() => {
         if (!demoType) return;
-        const steps = demoType === "call" ? CALL_STEPS : SMS_STEPS;
-        const timers = [];
+        const script = demoType === "call" ? CALL_SCRIPT : SMS_SCRIPT;
         const cycle = cycleRef.current;
+        runningRef.current = true;
 
-        const run = () => {
-            setActiveSteps([]);
-            stop();
+        let stepIndex = 0;
 
-            steps.forEach((step, i) => {
-                const t = setTimeout(() => {
+        const showNextStep = () => {
+            if (cycleRef.current !== cycle || !runningRef.current) return;
+            if (stepIndex >= script.length) {
+                /* Pause then restart the loop */
+                setTimeout(() => {
                     if (cycleRef.current !== cycle) return;
-                    setActiveSteps((prev) => [...prev, i]);
+                    stepIndex = 0;
+                    setActiveSteps([]);
+                    setTimeout(() => showNextStep(), 1000);
+                }, 3000);
+                return;
+            }
 
-                    /* Speak the line if voice is on and it's a call demo */
-                    if (voiceEnabled && demoType === "call" && step.voice) {
-                        speak(step.text, step.voice);
-                    }
-                }, step.delay);
-                timers.push(t);
-            });
+            const step = script[stepIndex];
+            const currentIdx = stepIndex;
 
-            // Loop
-            const loopTimer = setTimeout(() => {
-                if (cycleRef.current !== cycle) return;
-                run();
-            }, LOOP_DURATION);
-            timers.push(loopTimer);
+            /* Show the bubble */
+            setActiveSteps(prev => [...prev, currentIdx]);
+
+            /* If voice is enabled and this step has speech */
+            if (voiceEnabled && demoType === "call" && step.speak) {
+                enqueue(step.text, step.speak, () => {
+                    /* After speech finishes → show next step */
+                    stepIndex++;
+                    showNextStep();
+                });
+            } else {
+                /* No speech → just wait a beat then show next */
+                const delay = step.text ? 1200 : 800;
+                setTimeout(() => {
+                    stepIndex++;
+                    showNextStep();
+                }, delay);
+            }
         };
-        run();
-        return () => { cycleRef.current++; timers.forEach(clearTimeout); stop(); };
-    }, [demoType, voiceEnabled, speak, stop]);
+
+        /* Kick off — small initial delay */
+        setTimeout(() => showNextStep(), 500);
+
+        return () => {
+            cycleRef.current++;
+            runningRef.current = false;
+            stop();
+        };
+    }, [demoType, voiceEnabled, enqueue, stop]);
 
     const waveHeights = Array.from({ length: 24 }, (_, i) =>
         Math.abs(Math.sin(wavePhase + i * 0.35)) * 18 + 3
@@ -237,7 +273,6 @@ export default function DemoModal({ isOpen, onClose }) {
                         <div className={styles.demoHeader}>
                             <span className={styles.demoDot} />
                             <span>{demoType === "call" ? "Live Call Simulation" : "SMS Thread Simulation"}</span>
-                            {/* Voice toggle for call demo */}
                             {demoType === "call" && (
                                 <button
                                     className={`${styles.voiceToggle} ${voiceEnabled ? styles.voiceOn : ""}`}
@@ -250,7 +285,6 @@ export default function DemoModal({ isOpen, onClose }) {
                             )}
                         </div>
 
-                        {/* Waveform for call only */}
                         {demoType === "call" && (
                             <div className={styles.waveform}>
                                 {waveHeights.map((h, i) => (
@@ -259,9 +293,8 @@ export default function DemoModal({ isOpen, onClose }) {
                             </div>
                         )}
 
-                        {/* Chat steps */}
                         <div className={styles.chatArea}>
-                            {(demoType === "call" ? CALL_STEPS : SMS_STEPS).map((step, i) => (
+                            {(demoType === "call" ? CALL_SCRIPT : SMS_SCRIPT).map((step, i) => (
                                 step.text && (
                                     <div
                                         key={i}
