@@ -20,6 +20,7 @@ const DemoModal = dynamic(() => import("./components/DemoModal"), { ssr: false }
 const LightningJourney = dynamic(() => import("./components/LightningJourney"), { ssr: false });
 const NeuralProof = dynamic(() => import("./components/NeuralProof"), { ssr: false });
 const LossSimulation = dynamic(() => import("./components/LossSimulation"), { ssr: false });
+const RevenueSimulator = dynamic(() => import("./components/RevenueSimulator"), { ssr: false });
 
 /* ── SVG Icon Components ───────────────────────── */
 
@@ -662,6 +663,11 @@ export default function LandingPage() {
 
       {/* ── Loss Simulation ───────────────────────────── */}
       <LossSimulation />
+
+      <div className="glass-divider" />
+
+      {/* ── Revenue Leakage Simulator ─────────────────── */}
+      <RevenueSimulator />
 
       <div className="glass-divider" />
 
