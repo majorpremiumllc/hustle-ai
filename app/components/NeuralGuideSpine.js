@@ -2,36 +2,74 @@
 import { useUnlockState } from "./UnlockSection";
 import styles from "./NeuralGuideSpine.module.css";
 
-const LABELS = ["INITIALIZING", "ACTIVATING", "PROCESSING", "ONLINE"];
+/* ═══════════════════════════════════════════════
+   Neuron Traveler — Scroll Progress Indicator
+   ─────────────────────────────────────────────
+   A glowing neuron dot travels down a thin neural
+   path on the left edge. Nodes light up as sections
+   are revealed. Purely decorative (aria-hidden).
+   z-index 5 → always behind page content.
+   ═══════════════════════════════════════════════ */
+
+const LABELS = ["Scanning", "Mapping", "Activating", "Optimizing", "Complete"];
 
 export default function NeuralGuideSpine() {
-    const { progress, unlocked, total } = useUnlockState();
+    const { progress, revealedSections, total } = useUnlockState();
     const pct = Math.round(progress * 100);
-    const statusIdx = Math.min(Math.floor(progress * LABELS.length), LABELS.length - 1);
+    const labelIdx = Math.min(
+        Math.floor(progress * LABELS.length),
+        LABELS.length - 1
+    );
     const nodes = total || 4;
 
     return (
         <div className={styles.spine} aria-hidden="true">
+            {/* Neural path (vertical line) */}
             <div className={styles.track}>
+                {/* Progress fill */}
                 <div className={styles.fill} style={{ height: `${pct}%` }} />
 
-                {/* Traveling dot */}
-                <div className={styles.dot} style={{ top: `${pct}%` }} />
+                {/* Traveling neuron dot */}
+                <div className={styles.neuron} style={{ top: `${pct}%` }}>
+                    <div className={styles.neuronCore} />
+                    <div className={styles.neuronGlow} />
+                    <div className={styles.neuronPulse} />
+                </div>
 
-                {/* Section nodes */}
+                {/* Trail above the dot */}
+                <div
+                    className={styles.trail}
+                    style={{
+                        top: `${Math.max(0, pct - 12)}%`,
+                        height: "12%",
+                        opacity: pct > 5 ? 0.6 : 0
+                    }}
+                />
+
+                {/* Section anchor nodes */}
                 {Array.from({ length: nodes }).map((_, i) => {
                     const y = ((i + 1) / (nodes + 1)) * 100;
-                    const on = pct >= y;
+                    const active = pct >= y;
                     return (
-                        <div key={i} className={`${styles.node} ${on ? styles.on : ""}`} style={{ top: `${y}%` }} />
+                        <div
+                            key={i}
+                            className={`${styles.node} ${active ? styles.nodeActive : ""}`}
+                            style={{ top: `${y}%` }}
+                        >
+                            {/* Branch lines from active nodes */}
+                            {active && <div className={styles.branch} />}
+                        </div>
                     );
                 })}
             </div>
 
             {/* Status badge */}
-            <div className={styles.badge} style={{ top: `${Math.min(pct + 2, 94)}%` }}>
-                <span>{LABELS[statusIdx]}</span>
-                <span className={styles.pct}>{pct}%</span>
+            <div
+                className={styles.badge}
+                style={{ top: `${Math.min(pct + 3, 94)}%` }}
+            >
+                <span className={styles.badgeLabel}>{LABELS[labelIdx]}</span>
+                <span className={styles.badgePct}>{pct}%</span>
             </div>
         </div>
     );
