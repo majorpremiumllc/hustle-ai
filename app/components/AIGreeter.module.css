@@ -1,4 +1,4 @@
-/* ═══  AI Greeter Widget  ═══════════════════ */
+/* ═══  AI Greeter + Tour Widget  ═══════════════ */
 .greeter {
     position: fixed;
     bottom: 24px;
@@ -66,7 +66,6 @@
         0 0 80px rgba(108, 92, 231, 0.15);
 }
 
-/* Avatar */
 .avatarWrap {
     position: relative;
     flex-shrink: 0;
@@ -137,9 +136,9 @@
     justify-content: center;
 }
 
-/* ═══ Speaking Card ══════════════════════ */
+/* ═══ Card (Speaking + Tour) ═════════════ */
 .card {
-    width: 340px;
+    width: 360px;
     background: rgba(15, 15, 30, 0.95);
     backdrop-filter: blur(24px);
     border: 1px solid rgba(108, 92, 231, 0.2);
@@ -150,6 +149,7 @@
         0 0 0 1px rgba(0, 210, 255, 0.06),
         0 0 80px rgba(108, 92, 231, 0.08);
     animation: cardAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
 }
 
 @keyframes cardAppear {
@@ -180,6 +180,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    z-index: 2;
 }
 
 .dismissBtn:hover {
@@ -276,6 +277,7 @@
     background: rgba(255, 255, 255, 0.06);
     border-radius: 2px;
     overflow: hidden;
+    margin-bottom: 4px;
 }
 
 .progressFill {
@@ -283,6 +285,112 @@
     background: linear-gradient(90deg, var(--primary, #6c5ce7), var(--accent, #00d2ff));
     border-radius: 2px;
     transition: width 0.3s ease;
+}
+
+/* ═══ Tour Prompt ════════════════════════ */
+.tourPromptText {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 16px;
+}
+
+.tourPromptBtns {
+    display: flex;
+    gap: 10px;
+}
+
+.tourStartBtn {
+    flex: 1;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, var(--primary, #6c5ce7), var(--accent, #00d2ff));
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.tourStartBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
+}
+
+.tourSkipBtn {
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.tourSkipBtn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+}
+
+/* ═══ Tour Step Dots ═════════════════════ */
+.tourSteps {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.stepDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.stepActive {
+    background: var(--accent, #00d2ff);
+    border-color: var(--accent, #00d2ff);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
+    transform: scale(1.2);
+}
+
+.stepDone {
+    background: var(--primary, #6c5ce7);
+    border-color: var(--primary, #6c5ce7);
+}
+
+/* ═══ Tour Navigation ════════════════════ */
+.tourNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    gap: 10px;
+}
+
+.tourNextBtn {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, var(--primary, #6c5ce7), var(--accent, #00d2ff));
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    margin-left: auto;
+}
+
+.tourNextBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
 }
 
 /* ═══ Responsive ═════════════════════════ */
@@ -300,12 +408,17 @@
     .card {
         width: calc(100vw - 24px);
     }
+
+    .tourPromptBtns {
+        flex-direction: column;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
 
     .greeter,
-    .greeter.exit {
+    .greeter.exit,
+    .card {
         animation: none;
     }
 
