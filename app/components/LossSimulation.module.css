@@ -1,0 +1,323 @@
+/* ── Section ──────────────────────────── */
+.section {
+    padding: 100px 0 80px;
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(10px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section.visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+.inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+}
+
+/* ── Left: Visualization ─────────────── */
+.vizCol {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.vizFrame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(10, 10, 20, 0.85);
+    border: 1px solid rgba(108, 92, 231, 0.1);
+    transition: border-color 1s ease;
+}
+
+.recovering .vizFrame {
+    border-color: rgba(0, 210, 255, 0.2);
+}
+
+.recovered .vizFrame {
+    border-color: rgba(0, 210, 255, 0.3);
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.06);
+}
+
+.canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.vizLabel {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(108, 92, 231, 0.4);
+    transition: color 0.8s ease;
+}
+
+.vizLabel::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 107, 107, 0.6);
+    margin-right: 6px;
+    vertical-align: middle;
+    transition: background 0.8s ease;
+}
+
+.vizLabelRecovered {
+    color: rgba(0, 210, 255, 0.6);
+}
+
+.vizLabelRecovered::before {
+    background: rgba(0, 184, 148, 0.8);
+    box-shadow: 0 0 8px rgba(0, 184, 148, 0.4);
+}
+
+/* ── Micro Story ─────────────────────── */
+.story {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.storyLine {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    font-style: italic;
+}
+
+.storyLine.storyVisible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.storyCoda {
+    margin-top: 8px;
+    font-weight: 700;
+    font-style: normal;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Right: Metrics ──────────────────── */
+.metricsCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionTag {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    width: fit-content;
+    margin-bottom: 16px;
+    transition: all 0.8s ease;
+    background: rgba(108, 92, 231, 0.08);
+    border: 1px solid rgba(108, 92, 231, 0.12);
+    color: rgba(160, 160, 184, 0.7);
+}
+
+.recovered .sectionTag {
+    background: rgba(0, 210, 255, 0.1);
+    border-color: rgba(0, 210, 255, 0.15);
+    color: var(--accent);
+}
+
+.heading {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    transition: color 0.8s ease;
+}
+
+.dimGrad {
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.5), rgba(160, 160, 184, 0.4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    transition: color 0.8s ease;
+}
+
+.recovered .subtitle {
+    color: var(--text-secondary);
+}
+
+/* ── Metric Cards ────────────────────── */
+.metricsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.metricsGrid.metricsVisible {
+    opacity: 1;
+}
+
+.metricCard {
+    padding: 16px 20px;
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.lossCard {
+    background: rgba(15, 15, 30, 0.6);
+    border: 1px solid rgba(108, 92, 231, 0.08);
+}
+
+.recoveryCard {
+    background: rgba(15, 15, 30, 0.6);
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    animation: cardGlow 0.6s ease-out;
+}
+
+@keyframes cardGlow {
+    from {
+        box-shadow: 0 0 20px rgba(0, 210, 255, 0.15);
+    }
+
+    to {
+        box-shadow: 0 0 0 transparent;
+    }
+}
+
+.metricLabel {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.35);
+    margin-bottom: 4px;
+}
+
+.metricValue {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.85);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.5s ease;
+}
+
+.lossCard .metricValue {
+    color: rgba(160, 160, 184, 0.7);
+}
+
+.metricDetail {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ── CTA ─────────────────────────────── */
+.ctaRow {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ctaRow.ctaVisible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ctaMicro {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 10px;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.3s;
+}
+
+.ctaMicro.ctaVisible {
+    opacity: 1;
+}
+
+/* ── Responsive ──────────────────────── */
+@media (max-width: 900px) {
+    .inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .vizFrame {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+@media (max-width: 480px) {
+    .section {
+        padding: 60px 0;
+    }
+
+    .heading {
+        font-size: 1.6rem;
+    }
+
+    .ctaRow {
+        flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition: none;
+    }
+
+    .storyLine {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .metricCard {
+        animation: none;
+    }
+
+    .ctaRow,
+    .ctaMicro {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

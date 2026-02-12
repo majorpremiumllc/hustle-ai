@@ -19,6 +19,7 @@ const RevenueCounter = dynamic(() => import("./components/RevenueCounter"), { ss
 const DemoModal = dynamic(() => import("./components/DemoModal"), { ssr: false });
 const LightningJourney = dynamic(() => import("./components/LightningJourney"), { ssr: false });
 const NeuralProof = dynamic(() => import("./components/NeuralProof"), { ssr: false });
+const LossSimulation = dynamic(() => import("./components/LossSimulation"), { ssr: false });
 
 /* ── SVG Icon Components ───────────────────────── */
 
@@ -656,6 +657,11 @@ export default function LandingPage() {
 
       {/* ── How It Works: Lightning Journey ──────────── */}
       <LightningJourney />
+
+      <div className="glass-divider" />
+
+      {/* ── Loss Simulation ───────────────────────────── */}
+      <LossSimulation />
 
       <div className="glass-divider" />
 
