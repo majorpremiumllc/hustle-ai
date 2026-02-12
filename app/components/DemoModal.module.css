@@ -145,6 +145,33 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Voice toggle button */
+.voiceToggle {
+    margin-left: auto;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.voiceToggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 210, 255, 0.3);
+}
+
+.voiceOn {
+    border-color: rgba(0, 210, 255, 0.4);
+    background: rgba(0, 210, 255, 0.1);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.15);
+}
+
 .demoDot {
     width: 6px;
     height: 6px;

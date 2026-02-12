@@ -1,24 +1,104 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./VoiceDemo.module.css";
 
+/* ═══════════════════════════════════════════════
+   Voice Demo (In-Page) — With Audio Playback
+   ─────────────────────────────────────────────
+   Uses Web Speech API for voice synthesis.
+   AI bot → lower pitch, faster rate
+   Customer → natural pitch, conversational rate
+   Voice auto-plays when section is visible.
+   ═══════════════════════════════════════════════ */
+
 const DEMO_STEPS = [
-    { type: "incoming", text: "📞 Incoming Call — Mike Rodriguez", delay: 0 },
-    { type: "status", text: "AI Answering...", delay: 1500 },
-    { type: "ai", text: "Thanks for calling Rodriguez Plumbing! How can I help you today?", delay: 3000 },
-    { type: "caller", text: "Hi, I have a leaking pipe in my kitchen...", delay: 5000 },
-    { type: "ai", text: "I can get a technician to you today. How does 2:30 PM work?", delay: 6500 },
-    { type: "notification", text: "✅ Appointment Confirmed — 2:30 PM", delay: 8000 },
+    { type: "incoming", text: "📞 Incoming Call — Mike Rodriguez", delay: 0, voice: null },
+    { type: "status", text: "AI Answering...", delay: 1500, voice: null },
+    { type: "ai", text: "Thanks for calling Rodriguez Plumbing! How can I help you today?", delay: 3000, voice: "ai" },
+    { type: "caller", text: "Hi, I have a leaking pipe in my kitchen...", delay: 6500, voice: "caller" },
+    { type: "ai", text: "I can get a technician to you today. How does 2:30 PM work?", delay: 9500, voice: "ai" },
+    { type: "caller", text: "Yes, that works perfectly!", delay: 13000, voice: "caller" },
+    { type: "notification", text: "✅ Appointment Confirmed — 2:30 PM", delay: 15000, voice: null },
 ];
 
-const LOOP_DURATION = 10000;
+const LOOP_DURATION = 18000;
+
+/* ── Voice Engine Hook ────────────────── */
+function useVoiceEngine() {
+    const synthRef = useRef(null);
+    const voicesRef = useRef({ ai: null, caller: null });
+
+    useEffect(() => {
+        if (typeof window === "undefined" || !window.speechSynthesis) return;
+        synthRef.current = window.speechSynthesis;
+
+        const loadVoices = () => {
+            const voices = synthRef.current.getVoices();
+            if (!voices.length) return;
+
+            const enVoices = voices.filter(v => v.lang.startsWith("en"));
+            const pool = enVoices.length > 1 ? enVoices : voices;
+
+            if (pool.length >= 2) {
+                const femaleKeywords = ["female", "samantha", "karen", "victoria", "moira", "fiona"];
+                const maleKeywords = ["male", "daniel", "alex", "thomas", "james", "fred"];
+
+                const femaleVoice = pool.find(v => femaleKeywords.some(k => v.name.toLowerCase().includes(k)));
+                const maleVoice = pool.find(v => maleKeywords.some(k => v.name.toLowerCase().includes(k)));
+
+                voicesRef.current.caller = femaleVoice || pool[0];
+                voicesRef.current.ai = maleVoice || pool[1] || pool[0];
+            } else if (pool.length === 1) {
+                voicesRef.current.ai = pool[0];
+                voicesRef.current.caller = pool[0];
+            }
+        };
+
+        loadVoices();
+        synthRef.current.addEventListener("voiceschanged", loadVoices);
+        return () => {
+            synthRef.current?.removeEventListener("voiceschanged", loadVoices);
+            synthRef.current?.cancel();
+        };
+    }, []);
+
+    const speak = useCallback((text, role) => {
+        if (!synthRef.current || !text) return;
+        const cleanText = text.replace(/[📞📱✅🔧💬]/g, "").trim();
+        if (!cleanText) return;
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        if (role === "ai") {
+            utterance.voice = voicesRef.current.ai;
+            utterance.pitch = 0.85;
+            utterance.rate = 1.05;
+            utterance.volume = 0.8;
+        } else if (role === "caller") {
+            utterance.voice = voicesRef.current.caller;
+            utterance.pitch = 1.1;
+            utterance.rate = 0.95;
+            utterance.volume = 0.75;
+        }
+
+        synthRef.current.cancel();
+        synthRef.current.speak(utterance);
+    }, []);
+
+    const stop = useCallback(() => {
+        synthRef.current?.cancel();
+    }, []);
+
+    return { speak, stop };
+}
 
 export default function VoiceDemo() {
     const [activeSteps, setActiveSteps] = useState([]);
     const [wavePhase, setWavePhase] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
+    const [voiceEnabled, setVoiceEnabled] = useState(false);
     const containerRef = useRef(null);
     const cycleRef = useRef(0);
+    const { speak, stop } = useVoiceEngine();
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -28,6 +108,11 @@ export default function VoiceDemo() {
         if (containerRef.current) observer.observe(containerRef.current);
         return () => observer.disconnect();
     }, []);
+
+    // Stop voice when not visible
+    useEffect(() => {
+        if (!isVisible) stop();
+    }, [isVisible, stop]);
 
     // Wave animation
     useEffect(() => {
@@ -54,6 +139,11 @@ export default function VoiceDemo() {
                 const t = setTimeout(() => {
                     if (cycleRef.current !== cycle) return;
                     setActiveSteps((prev) => [...prev, i]);
+
+                    /* Speak the line if voice is on */
+                    if (voiceEnabled && step.voice) {
+                        speak(step.text, step.voice);
+                    }
                 }, step.delay);
                 timers.push(t);
             });
@@ -69,8 +159,9 @@ export default function VoiceDemo() {
         return () => {
             cycleRef.current++;
             timers.forEach(clearTimeout);
+            stop();
         };
-    }, [isVisible]);
+    }, [isVisible, voiceEnabled, speak, stop]);
 
     const waveHeights = Array.from({ length: 32 }, (_, i) =>
         Math.abs(Math.sin(wavePhase + i * 0.3)) * 20 + 3
@@ -86,6 +177,19 @@ export default function VoiceDemo() {
                 </div>
 
                 <div className={`${styles.demoCard} reveal-scale`}>
+                    {/* Voice toggle */}
+                    <button
+                        className={`${styles.voiceToggle} ${voiceEnabled ? styles.voiceOn : ""}`}
+                        onClick={() => setVoiceEnabled(v => !v)}
+                        aria-label={voiceEnabled ? "Mute voice demo" : "Enable voice demo"}
+                        title={voiceEnabled ? "🔊 Voice On" : "🔇 Voice Off — Click to hear the conversation"}
+                    >
+                        {voiceEnabled ? "🔊" : "🔇"}
+                        <span className={styles.voiceLabel}>
+                            {voiceEnabled ? "Voice On" : "Listen"}
+                        </span>
+                    </button>
+
                     {/* Voice waveform */}
                     <div className={styles.waveform}>
                         {waveHeights.map((h, i) => (

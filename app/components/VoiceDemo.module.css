@@ -36,6 +36,46 @@
     overflow: hidden;
 }
 
+/* Voice toggle button */
+.voiceToggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: inherit;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.voiceToggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 210, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.voiceOn {
+    border-color: rgba(0, 210, 255, 0.4);
+    background: rgba(0, 210, 255, 0.08);
+    color: var(--accent);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.12);
+}
+
+.voiceLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 .demoCard::before {
     content: '';
     position: absolute;
