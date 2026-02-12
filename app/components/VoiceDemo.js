@@ -36,18 +36,34 @@ function useVoiceEngine() {
             const voices = synthRef.current.getVoices();
             if (!voices.length) return;
 
-            const enVoices = voices.filter(v => v.lang.startsWith("en"));
-            const pool = enVoices.length > 1 ? enVoices : voices;
+            /* PRIORITY: en-US voices for natural American English */
+            const usVoices = voices.filter(v => v.lang === "en-US");
+            const googleUS = usVoices.filter(v => v.name.includes("Google"));
+            const naturalUS = usVoices.filter(v =>
+                !v.name.includes("Google") && !v.name.includes("Compact")
+            );
+
+            const pool = googleUS.length > 1 ? googleUS
+                : naturalUS.length > 1 ? naturalUS
+                    : usVoices.length > 1 ? usVoices
+                        : voices.filter(v => v.lang.startsWith("en"));
 
             if (pool.length >= 2) {
-                const femaleKeywords = ["female", "samantha", "karen", "victoria", "moira", "fiona"];
-                const maleKeywords = ["male", "daniel", "alex", "thomas", "james", "fred"];
+                const callerNames = ["samantha", "google us english 2",
+                    "google us english female", "microsoft zira", "female"];
+                const aiNames = ["alex", "google us english",
+                    "microsoft david", "google us english male", "male"];
 
-                const femaleVoice = pool.find(v => femaleKeywords.some(k => v.name.toLowerCase().includes(k)));
-                const maleVoice = pool.find(v => maleKeywords.some(k => v.name.toLowerCase().includes(k)));
+                const callerVoice = pool.find(v =>
+                    callerNames.some(k => v.name.toLowerCase().includes(k))
+                );
+                const aiVoice = pool.find(v =>
+                    aiNames.some(k => v.name.toLowerCase().includes(k)) &&
+                    v !== callerVoice
+                );
 
-                voicesRef.current.caller = femaleVoice || pool[0];
-                voicesRef.current.ai = maleVoice || pool[1] || pool[0];
+                voicesRef.current.caller = callerVoice || pool[0];
+                voicesRef.current.ai = aiVoice || pool[1] || pool[0];
             } else if (pool.length === 1) {
                 voicesRef.current.ai = pool[0];
                 voicesRef.current.caller = pool[0];
@@ -70,14 +86,14 @@ function useVoiceEngine() {
         const utterance = new SpeechSynthesisUtterance(cleanText);
         if (role === "ai") {
             utterance.voice = voicesRef.current.ai;
-            utterance.pitch = 0.85;
-            utterance.rate = 1.05;
-            utterance.volume = 0.8;
+            utterance.pitch = 1.0;     /* Natural pitch */
+            utterance.rate = 1.0;      /* Normal speed */
+            utterance.volume = 0.85;
         } else if (role === "caller") {
             utterance.voice = voicesRef.current.caller;
-            utterance.pitch = 1.1;
-            utterance.rate = 0.95;
-            utterance.volume = 0.75;
+            utterance.pitch = 1.05;    /* Slightly warmer */
+            utterance.rate = 0.92;     /* Casual, relaxed */
+            utterance.volume = 0.8;
         }
 
         synthRef.current.cancel();

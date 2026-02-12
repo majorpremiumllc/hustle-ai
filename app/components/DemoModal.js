@@ -48,27 +48,40 @@ function useVoiceEngine() {
             const voices = synthRef.current.getVoices();
             if (!voices.length) return;
 
-            /* Try to pick distinct voices:
-               AI → a male-sounding voice if available
-               Caller → a female-sounding voice */
-            const enVoices = voices.filter(v =>
-                v.lang.startsWith("en") && !v.name.includes("Google")
+            /* PRIORITY: en-US voices for natural American English
+               1st pick: Google US voices (most natural in Chrome)
+               2nd pick: macOS US voices (Samantha, Alex)
+               3rd pick: any en-US voice */
+            const usVoices = voices.filter(v => v.lang === "en-US");
+            const googleUS = usVoices.filter(v => v.name.includes("Google"));
+            const naturalUS = usVoices.filter(v =>
+                !v.name.includes("Google") && !v.name.includes("Compact")
             );
-            const googleVoices = voices.filter(v =>
-                v.lang.startsWith("en") && v.name.includes("Google")
-            );
-            const pool = googleVoices.length > 1 ? googleVoices : enVoices.length > 1 ? enVoices : voices.filter(v => v.lang.startsWith("en"));
+
+            /* Best pool: Google US > Natural US > any US > any en */
+            const pool = googleUS.length > 1 ? googleUS
+                : naturalUS.length > 1 ? naturalUS
+                    : usVoices.length > 1 ? usVoices
+                        : voices.filter(v => v.lang.startsWith("en"));
 
             if (pool.length >= 2) {
-                /* Pick two different voices */
-                const femaleKeywords = ["female", "woman", "samantha", "karen", "victoria", "moira", "fiona", "tessa"];
-                const maleKeywords = ["male", "daniel", "alex", "thomas", "oliver", "james", "aaron", "fred"];
+                /* AI → calmer, professional voice
+                   Caller → warmer, conversational voice */
+                const callerNames = ["samantha", "google us english 2", "karen",
+                    "google us english female", "microsoft zira", "female"];
+                const aiNames = ["alex", "google us english", "daniel",
+                    "microsoft david", "google us english male", "male", "aaron"];
 
-                const femaleVoice = pool.find(v => femaleKeywords.some(k => v.name.toLowerCase().includes(k)));
-                const maleVoice = pool.find(v => maleKeywords.some(k => v.name.toLowerCase().includes(k)));
+                const callerVoice = pool.find(v =>
+                    callerNames.some(k => v.name.toLowerCase().includes(k))
+                );
+                const aiVoice = pool.find(v =>
+                    aiNames.some(k => v.name.toLowerCase().includes(k)) &&
+                    v !== callerVoice
+                );
 
-                voicesRef.current.caller = femaleVoice || pool[0];
-                voicesRef.current.ai = maleVoice || pool[1] || pool[0];
+                voicesRef.current.caller = callerVoice || pool[0];
+                voicesRef.current.ai = aiVoice || pool[1] || pool[0];
             } else if (pool.length === 1) {
                 voicesRef.current.ai = pool[0];
                 voicesRef.current.caller = pool[0];
@@ -94,14 +107,14 @@ function useVoiceEngine() {
 
         if (role === "ai") {
             utterance.voice = voicesRef.current.ai;
-            utterance.pitch = 0.85;   /* Slightly lower, AI-like */
-            utterance.rate = 1.05;    /* Slightly faster, efficient */
-            utterance.volume = 0.8;
+            utterance.pitch = 1.0;    /* Natural pitch — no robot effect */
+            utterance.rate = 1.0;     /* Normal speed — professional */
+            utterance.volume = 0.85;
         } else if (role === "caller") {
             utterance.voice = voicesRef.current.caller;
-            utterance.pitch = 1.1;    /* Natural, slightly higher */
-            utterance.rate = 0.95;    /* Slightly slower, conversational */
-            utterance.volume = 0.75;
+            utterance.pitch = 1.05;   /* Slightly warmer */
+            utterance.rate = 0.92;    /* Slightly slower — casual, real person */
+            utterance.volume = 0.8;
         }
 
         utterance.onstart = () => { isSpeakingRef.current = true; };
