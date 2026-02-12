@@ -1,12 +1,17 @@
 "use client";
-import { useRef, useState, useEffect, createContext, useContext } from "react";
+import { useRef, useState, useEffect, useCallback, createContext, useContext } from "react";
 import styles from "./UnlockSection.module.css";
 
 /* ── Unlock Context ──────────────────── */
-const UnlockCtx = createContext({ unlocked: new Set(), progress: 0 });
+const UnlockCtx = createContext({
+    unlocked: new Set(),
+    progress: 0,
+    unlock: () => { },
+    total: 0,
+});
 export const useUnlockState = () => useContext(UnlockCtx);
 
-/* ── Provider: tracks scroll progress + unlocked sections ── */
+/* ── Provider ────────────────────────── */
 export function NeuralRevealProvider({ children, sectionIds = [] }) {
     const [unlocked, setUnlocked] = useState(new Set());
     const [progress, setProgress] = useState(0);
@@ -14,17 +19,20 @@ export function NeuralRevealProvider({ children, sectionIds = [] }) {
     useEffect(() => {
         const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
         if (mq.matches) {
-            // Unlock everything immediately for reduced motion
             setUnlocked(new Set(sectionIds));
             setProgress(1);
             return;
         }
 
+        let ticking = false;
         const onScroll = () => {
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const p = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
-            setProgress(p);
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+                const docH = document.documentElement.scrollHeight - window.innerHeight;
+                setProgress(docH > 0 ? Math.min(window.scrollY / docH, 1) : 0);
+                ticking = false;
+            });
         };
 
         window.addEventListener("scroll", onScroll, { passive: true });
@@ -32,14 +40,14 @@ export function NeuralRevealProvider({ children, sectionIds = [] }) {
         return () => window.removeEventListener("scroll", onScroll);
     }, [sectionIds]);
 
-    const unlock = (id) => {
+    const unlock = useCallback((id) => {
         setUnlocked((prev) => {
             if (prev.has(id)) return prev;
             const next = new Set(prev);
             next.add(id);
             return next;
         });
-    };
+    }, []);
 
     return (
         <UnlockCtx.Provider value={{ unlocked, progress, unlock, total: sectionIds.length }}>
@@ -48,71 +56,61 @@ export function NeuralRevealProvider({ children, sectionIds = [] }) {
     );
 }
 
-/* ── UnlockSection: wraps a section with lock/unlock behavior ── */
-export default function UnlockSection({ id, children, threshold = 0.15 }) {
+/* ── UnlockSection ───────────────────── */
+export default function UnlockSection({ id, children, threshold = 0.12 }) {
     const ref = useRef(null);
     const { unlocked, unlock } = useContext(UnlockCtx);
     const isUnlocked = unlocked.has(id);
-    const [phase, setPhase] = useState("locked"); // locked → wireframe → revealed → settled
+    // phases: locked → building → revealed → settled
+    const [phase, setPhase] = useState("locked");
 
-    // Observe when section enters viewport
+    /* Observe viewport entry → unlock */
     useEffect(() => {
         const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-        if (mq.matches) {
-            setPhase("settled");
-            return;
-        }
+        if (mq.matches) { setPhase("settled"); return; }
+
+        const el = ref.current;
+        if (!el) return;
 
         const obs = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting && !isUnlocked) {
-                    unlock(id);
-                }
+                if (entry.isIntersecting && !isUnlocked) unlock(id);
             },
-            { threshold }
+            { threshold, rootMargin: "0px 0px -30px 0px" }
         );
-        if (ref.current) obs.observe(ref.current);
+        obs.observe(el);
         return () => obs.disconnect();
     }, [id, isUnlocked, threshold, unlock]);
 
-    // Phased reveal animation
+    /* Phase progression: locked → building → revealed → settled */
     useEffect(() => {
         if (!isUnlocked || phase !== "locked") return;
-
-        // Phase 1: wireframe
-        setPhase("wireframe");
-
-        // Phase 2: revealed (content fades in)
-        const t1 = setTimeout(() => setPhase("revealed"), 200);
-
-        // Phase 3: settled (glow fades)
-        const t2 = setTimeout(() => setPhase("settled"), 700);
-
+        setPhase("building");
+        const t1 = setTimeout(() => setPhase("revealed"), 180);
+        const t2 = setTimeout(() => setPhase("settled"), 650);
         return () => { clearTimeout(t1); clearTimeout(t2); };
     }, [isUnlocked, phase]);
 
     return (
         <div
             ref={ref}
-            className={`${styles.section} ${styles[phase]}`}
+            className={`${styles.wrap} ${styles["phase_" + phase]}`}
             data-unlock-id={id}
         >
-            {/* Wireframe overlay */}
-            <div className={styles.wireframe} aria-hidden="true">
-                <div className={styles.wireLine} style={{ top: "20%" }} />
-                <div className={styles.wireLine} style={{ top: "40%" }} />
-                <div className={styles.wireLine} style={{ top: "60%" }} />
-                <div className={styles.wireLine} style={{ top: "80%" }} />
-                <div className={styles.wireLineV} style={{ left: "25%" }} />
-                <div className={styles.wireLineV} style={{ left: "50%" }} />
-                <div className={styles.wireLineV} style={{ left: "75%" }} />
+            {/* Wireframe grid (only visible during building phase) */}
+            <div className={styles.gridOverlay} aria-hidden="true">
+                <div className={styles.hLine} style={{ top: "20%" }} />
+                <div className={styles.hLine} style={{ top: "45%" }} />
+                <div className={styles.hLine} style={{ top: "70%" }} />
+                <div className={styles.vLine} style={{ left: "30%" }} />
+                <div className={styles.vLine} style={{ left: "60%" }} />
             </div>
 
-            {/* Unlock glow ring */}
-            <div className={styles.glowRing} />
+            {/* Unlock ring (only during revealed phase) */}
+            <div className={styles.unlockRing} />
 
-            {/* Content */}
-            <div className={styles.content}>
+            {/* Actual content — always rendered, visibility controlled by CSS */}
+            <div className={styles.inner}>
                 {children}
             </div>
         </div>

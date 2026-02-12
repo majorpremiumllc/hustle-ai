@@ -75,6 +75,15 @@
   --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-spring: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 
+  /* ── Motion System (unified) ────────── */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-micro: 0.2s var(--ease-out);
+  /* Tier 1: hovers, toggles, chips (150–250ms) */
+  --motion-section: 0.45s var(--ease-out);
+  /* Tier 2: section reveals, card entrances (350–600ms) */
+  --motion-hero: 0.85s var(--ease-out);
+  /* Tier 3: hero/scene transitions (700–1100ms) */
+
   /* Layout */
   --max-width: 1200px;
   --sidebar-width: 260px;

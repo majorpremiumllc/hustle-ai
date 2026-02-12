@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import ChatWidget from "./components/ChatWidget";
 import AIActivityFeed from "./components/AIActivityFeed";
 import MagneticButton from "./components/MagneticButton";
@@ -10,6 +9,7 @@ import HustleLogo from "./components/HustleLogo";
 import AIModeSwitch from "./components/AIModeSwitch";
 import UnlockSection, { NeuralRevealProvider } from "./components/UnlockSection";
 import NeuralGuideSpine from "./components/NeuralGuideSpine";
+import { CallPanel, RevenueDashPanel, FeaturePanel, IndustryPanel } from "./components/AIPanels";
 import styles from "./page.module.css";
 
 /* ── Lazy-loaded heavy components (performance) ── */
@@ -211,7 +211,7 @@ const VALUE_PROPS = [
       { value: "85%", label: "Of callers won't call back" },
       { value: "<3s", label: "Our AI response time" },
     ],
-    image: "/images/hero-ai.png",
+    panel: "call",
     reverse: false,
   },
   {
@@ -223,7 +223,7 @@ const VALUE_PROPS = [
       { value: "98%", label: "Lead capture rate" },
       { value: "24/7", label: "Always on, never sick" },
     ],
-    image: "/images/value-boost-sales.png",
+    panel: "revenue",
     reverse: true,
   },
 ];
@@ -232,27 +232,22 @@ const INDUSTRY_SHOWCASES = [
   {
     name: "Plumbers",
     desc: "AI dispatches emergency calls, schedules inspections, and gives accurate pricing estimates.",
-    image: "/images/industry-plumber.png",
   },
   {
     name: "Hair Salons",
     desc: "Automated appointment booking, service recommendations, and waitlist management.",
-    image: "/images/industry-salon.png",
   },
   {
     name: "Electricians",
     desc: "AI handles electrical service requests, safety questions, and schedules diagnostic visits.",
-    image: "/images/industry-electrician.png",
   },
   {
     name: "Landscaping",
     desc: "Seasonal scheduling, lawn care quotes, and project consultation booking — all automated.",
-    image: "/images/industry-landscaping.png",
   },
   {
     name: "Restaurants",
     desc: "Reservation booking, catering inquiries, and menu questions handled by AI instantly.",
-    image: "/images/industry-restaurant.png",
   },
 ];
 
@@ -264,12 +259,12 @@ const ALL_INDUSTRIES = [
 ];
 
 const FEATURES = [
-  { image: "/images/feature-phone.png", title: "AI Phone Answering", desc: "AI answers calls in human-like voice, qualifies leads, and schedules appointments — instantly." },
-  { image: "/images/feature-sms.png", title: "SMS Auto-Responder", desc: "Missed call? AI texts back within 5 seconds with a personalized message to keep the lead warm." },
-  { image: "/images/feature-yelp.png", title: "Yelp & Thumbtack", desc: "Auto-respond to Yelp messages and Thumbtack leads before your competitors even see them." },
-  { image: "/images/feature-google.png", title: "Google Integration", desc: "Capture leads from Google Business Profile and Local Services Ads directly into your pipeline." },
-  { image: "/images/feature-dashboard.png", title: "Smart Dashboard", desc: "See all calls, messages, leads, and revenue in real-time. Know exactly what's working." },
-  { image: "/images/feature-setup.png", title: "5-Minute Setup", desc: "Choose your number, customize AI, go live. No IT skills needed. No contracts." },
+  { type: "phone", title: "AI Phone Answering", desc: "AI answers calls in human-like voice, qualifies leads, and schedules appointments — instantly." },
+  { type: "sms", title: "SMS Auto-Responder", desc: "Missed call? AI texts back within 5 seconds with a personalized message to keep the lead warm." },
+  { type: "yelp", title: "Yelp & Thumbtack", desc: "Auto-respond to Yelp messages and Thumbtack leads before your competitors even see them." },
+  { type: "google", title: "Google Integration", desc: "Capture leads from Google Business Profile and Local Services Ads directly into your pipeline." },
+  { type: "dashboard", title: "Smart Dashboard", desc: "See all calls, messages, leads, and revenue in real-time. Know exactly what's working." },
+  { type: "setup", title: "5-Minute Setup", desc: "Choose your number, customize AI, go live. No IT skills needed. No contracts." },
 ];
 
 const STEPS = [
@@ -568,7 +563,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className={`${vp.reverse ? "reveal-left" : "reveal-right"} ${styles.valueImage}`}>
-                <Image src={vp.image} alt={vp.title} width={500} height={500} className={styles.valueImg} />
+                {vp.panel === "call" ? <CallPanel /> : <RevenueDashPanel />}
               </div>
             </div>
           </section>
@@ -593,7 +588,7 @@ export default function LandingPage() {
                   onMouseLeave={handleTiltReset}
                 >
                   <div className={`${styles.featureImageWrap} float-icon`}>
-                    <Image src={f.image} alt={f.title} width={200} height={200} className={styles.featureImage} />
+                    <FeaturePanel type={f.type} />
                   </div>
                   <h4>{f.title}</h4>
                   <p>{f.desc}</p>
@@ -625,7 +620,7 @@ export default function LandingPage() {
                 {INDUSTRY_SHOWCASES.map((ind, i) => (
                   <div key={i} className={`${styles.industryCard} ${i % 2 === 1 ? "reveal-right" : "reveal-left"}`}>
                     <div className={styles.industryCardImage}>
-                      <Image src={ind.image} alt={ind.name} width={400} height={300} className={styles.industryImg} />
+                      <IndustryPanel name={ind.name} desc={ind.desc} />
                     </div>
                     <div className={styles.industryCardContent}>
                       <h3>{ind.name}</h3>
@@ -730,6 +725,7 @@ export default function LandingPage() {
                     {checkoutLoading === plan.name ? "Redirecting..." : plan.popular ? "Start Free Trial" : "Get Started"}
                   </button>
                   <div className={styles.cancelNote}>Cancel anytime · No contracts</div>
+                  {plan.popular && <div className={styles.roiHint}>Typical payback: 3–7 days</div>}
                 </div>
               ))}
             </div>

@@ -1161,6 +1161,17 @@
   letter-spacing: 0.02em;
 }
 
+/* ── ROI Hint (pricing card) ─────────────── */
+.roiHint {
+  font-size: 0.7rem;
+  color: var(--accent);
+  text-align: center;
+  margin-top: 8px;
+  opacity: 0.65;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
 /* ── Mid-Section CTA ─────────────────────── */
 .midCta {
   margin-top: 48px;

@@ -1,101 +1,115 @@
-/* ── Lock States ─────────────────────── */
-.section {
+/* ═══════════════════════════════════════
+   UnlockSection — Progressive Disclosure
+   ═══════════════════════════════════════ */
+
+/* ── Container ───────────────────────── */
+.wrap {
     position: relative;
-    transition: filter 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity;
+    contain: layout style;
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ── Phase: Locked ───────────────────── */
-.locked {
-    filter: blur(10px);
-    opacity: 0.3;
+.phase_locked {
+    opacity: 0.25;
     pointer-events: none;
     user-select: none;
 }
 
-.locked .content {
-    transform: translateY(12px);
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+.phase_locked .inner {
+    filter: blur(10px);
+    transform: translateY(10px);
+    transition: filter 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ── Phase: Wireframe ────────────────── */
-.wireframe {
+/* ── Phase: Building ─────────────────── */
+.phase_building {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.phase_building .inner {
+    filter: blur(5px);
+    transform: translateY(6px);
+}
+
+.phase_building .gridOverlay {
+    opacity: 1;
+}
+
+/* ── Phase: Revealed ─────────────────── */
+.phase_revealed {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.phase_revealed .inner {
+    filter: blur(0);
+    transform: translateY(0);
+}
+
+.phase_revealed .gridOverlay {
+    opacity: 0;
+}
+
+.phase_revealed .unlockRing {
+    animation: ringBurst 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Phase: Settled ──────────────────── */
+.phase_settled {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.phase_settled .inner {
+    filter: none;
+    transform: none;
+}
+
+.phase_settled .gridOverlay,
+.phase_settled .unlockRing {
+    display: none;
+}
+
+/* ── Inner Content ───────────────────── */
+.inner {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Grid Overlay (wireframe) ────────── */
+.gridOverlay {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 2;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.18s ease;
 }
 
-.wireframe .locked {
-    opacity: 0;
-}
-
-.section.wireframe .wireframe {
-    opacity: 1;
-}
-
-.section.wireframe {
-    filter: blur(4px);
-    opacity: 0.6;
-}
-
-.wireLine {
+.hLine {
     position: absolute;
-    left: 5%;
-    right: 5%;
+    left: 8%;
+    right: 8%;
     height: 1px;
     background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(0, 210, 255, 0.15) 20%,
-            rgba(0, 210, 255, 0.15) 80%,
-            transparent 100%);
-    animation: wireAppear 0.2s ease forwards;
+            transparent, rgba(0, 210, 255, 0.12) 25%, rgba(0, 210, 255, 0.12) 75%, transparent);
 }
 
-.wireLineV {
+.vLine {
     position: absolute;
-    top: 5%;
-    bottom: 5%;
+    top: 8%;
+    bottom: 8%;
     width: 1px;
     background: linear-gradient(180deg,
-            transparent 0%,
-            rgba(0, 210, 255, 0.1) 20%,
-            rgba(0, 210, 255, 0.1) 80%,
-            transparent 100%);
-    animation: wireAppear 0.2s ease forwards;
+            transparent, rgba(0, 210, 255, 0.08) 25%, rgba(0, 210, 255, 0.08) 75%, transparent);
 }
 
-@keyframes wireAppear {
-    from {
-        opacity: 0;
-        transform: scaleX(0.3);
-    }
-
-    to {
-        opacity: 1;
-        transform: scaleX(1);
-    }
-}
-
-/* ── Phase: Revealed ─────────────────── */
-.revealed {
-    filter: blur(0);
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.revealed .content {
-    transform: translateY(0);
-}
-
-.revealed .wireframe {
-    opacity: 0;
-}
-
-/* Glow ring on reveal */
-.glowRing {
+/* ── Unlock Ring ─────────────────────── */
+.unlockRing {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -109,70 +123,36 @@
     opacity: 0;
 }
 
-.revealed .glowRing {
-    animation: ringExpand 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes ringExpand {
+@keyframes ringBurst {
     0% {
-        width: 40px;
-        height: 40px;
-        opacity: 0.8;
-        border-color: rgba(0, 210, 255, 0.4);
+        width: 30px;
+        height: 30px;
+        opacity: 0.7;
     }
 
     100% {
-        width: 200%;
-        height: 200%;
+        width: 180vw;
+        height: 180vw;
         opacity: 0;
-        border-color: rgba(0, 210, 255, 0);
     }
-}
-
-/* ── Phase: Settled ──────────────────── */
-.settled {
-    filter: none;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.settled .content {
-    transform: none;
-}
-
-.settled .wireframe {
-    display: none;
-}
-
-.settled .glowRing {
-    display: none;
-}
-
-/* ── Content ─────────────────────────── */
-.content {
-    position: relative;
-    z-index: 1;
 }
 
 /* ── Reduced Motion ──────────────────── */
 @media (prefers-reduced-motion: reduce) {
-    .section {
-        filter: none !important;
+    .wrap {
         opacity: 1 !important;
         pointer-events: auto !important;
         transition: none !important;
     }
 
-    .content {
+    .inner {
+        filter: none !important;
         transform: none !important;
         transition: none !important;
     }
 
-    .wireframe {
-        display: none !important;
-    }
-
-    .glowRing {
+    .gridOverlay,
+    .unlockRing {
         display: none !important;
     }
 }
