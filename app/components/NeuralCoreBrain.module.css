@@ -1,0 +1,131 @@
+.brainContainer {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    margin: 0 auto 40px;
+    animation: brainBreathe 10s ease-in-out infinite;
+}
+
+@keyframes brainBreathe {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 20px rgba(0, 210, 255, 0.15));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 40px rgba(108, 92, 231, 0.3));
+    }
+}
+
+.brainLabel {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(0, 210, 255, 0.5);
+    white-space: nowrap;
+}
+
+.brainGlow {
+    position: absolute;
+    inset: -30%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(108, 92, 231, 0.08) 0%, transparent 65%);
+    pointer-events: none;
+}
+
+.brainSvg {
+    width: 100%;
+    height: 100%;
+}
+
+.node {
+    animation: nodeBlink 4s ease-in-out infinite;
+}
+
+@keyframes nodeBlink {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    60% {
+        opacity: 0.9;
+    }
+}
+
+.nodeHalo {
+    animation: haloPulse 5s ease-in-out infinite;
+}
+
+@keyframes haloPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.connectionLine {
+    animation: linePulse 6s ease-in-out infinite;
+}
+
+@keyframes linePulse {
+
+    0%,
+    100% {
+        stroke-opacity: 0.1;
+    }
+
+    50% {
+        stroke-opacity: 0.35;
+    }
+}
+
+.brainOutline {
+    animation: outlineRotate 30s linear infinite;
+    transform-origin: center;
+}
+
+@keyframes outlineRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .brainContainer {
+        width: 180px;
+        height: 180px;
+        margin-bottom: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .brainContainer,
+    .node,
+    .nodeHalo,
+    .connectionLine,
+    .brainOutline {
+        animation: none !important;
+    }
+}

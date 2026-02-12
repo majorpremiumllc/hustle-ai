@@ -1,0 +1,41 @@
+.spineContainer {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.spineCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Fallback for reduced motion */
+.spineFallback {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    transform: translateX(-50%);
+    background: linear-gradient(to bottom, rgba(0, 210, 255, 0.3), rgba(108, 92, 231, 0.15));
+    border-radius: 2px;
+    transition: height 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spineCanvas {
+        display: none;
+    }
+
+    .spineFallback {
+        display: block;
+    }
+}

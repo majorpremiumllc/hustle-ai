@@ -1,0 +1,347 @@
+.station {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 40px 0;
+    min-height: 200px;
+    z-index: 1;
+}
+
+/* ── Node on the spine ─────────────── */
+.node {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(15, 15, 30, 0.9);
+    border: 2px solid rgba(108, 92, 231, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nodeNum {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.5s ease;
+}
+
+.nodeRing {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transition: all 0.6s ease;
+}
+
+.nodeActive {
+    border-color: rgba(0, 210, 255, 0.6);
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.3), 0 0 40px rgba(108, 92, 231, 0.15);
+}
+
+.nodeActive .nodeNum {
+    color: #00D2FF;
+}
+
+.nodeActive .nodeRing {
+    border-color: rgba(0, 210, 255, 0.2);
+    animation: ringExpand 1s ease-out forwards;
+}
+
+@keyframes ringExpand {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* ── Card ──────────────────────────── */
+.card {
+    width: calc(50% - 50px);
+    background: rgba(15, 15, 30, 0.7);
+    border: 1px solid rgba(108, 92, 231, 0.12);
+    border-radius: 16px;
+    padding: 24px 28px;
+    backdrop-filter: blur(16px);
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.1), transparent 50%, rgba(108, 92, 231, 0.1));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.cardRight {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.cardLeft {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.cardTitle {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.cardDesc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+/* ── Mini Mock ─────────────────────── */
+.miniMock {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.mockField {
+    margin-bottom: 10px;
+}
+
+.mockLabel {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.mockInput {
+    height: 28px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+}
+
+.mockCaret {
+    width: 1.5px;
+    height: 14px;
+    background: #00D2FF;
+    animation: caretBlink 1s step-end infinite;
+}
+
+@keyframes caretBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.mockBtn {
+    height: 30px;
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.2), rgba(108, 92, 231, 0.2));
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 6px;
+}
+
+/* Phone mock */
+.mockPhoneList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mockPhone {
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    font-variant-numeric: tabular-nums;
+}
+
+.mockPhoneActive {
+    border-color: rgba(0, 210, 255, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 210, 255, 0.05);
+}
+
+.pulseChip {
+    color: #00B894;
+    font-size: 0.75rem;
+    float: right;
+    animation: chipPulse 2s ease infinite;
+}
+
+@keyframes chipPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* Settings mock */
+.mockToggleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.mockToggleRow:last-child {
+    border-bottom: none;
+}
+
+.mockToggle {
+    width: 32px;
+    height: 18px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    transition: background 0.3s;
+}
+
+.mockToggle.on {
+    background: rgba(0, 210, 255, 0.3);
+}
+
+.mockToggleKnob {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+}
+
+.mockToggle.on .mockToggleKnob {
+    transform: translateX(14px);
+}
+
+/* Live mock */
+.mockLiveCall {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.mockWaveRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 24px;
+    margin-bottom: 8px;
+}
+
+.mockWaveBar {
+    width: 3px;
+    background: linear-gradient(to top, #00D2FF, #6C5CE7);
+    border-radius: 3px;
+    animation: waveAnim 1.2s ease-in-out infinite alternate;
+    min-height: 4px;
+}
+
+@keyframes waveAnim {
+    0% {
+        transform: scaleY(0.5);
+    }
+
+    100% {
+        transform: scaleY(1.2);
+    }
+}
+
+.mockCallLabel {
+    font-size: 0.7rem;
+    color: rgba(0, 210, 255, 0.7);
+    font-weight: 600;
+}
+
+.mockConfirm {
+    text-align: center;
+    font-size: 0.72rem;
+    color: #55efc4;
+    font-weight: 700;
+    padding: 6px;
+    background: rgba(0, 184, 148, 0.08);
+    border-radius: 6px;
+}
+
+/* ── Mobile: stack vertically ──────── */
+@media (max-width: 768px) {
+    .station {
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 0;
+    }
+
+    .node {
+        position: relative;
+        left: auto;
+        transform: none;
+        margin-bottom: 16px;
+    }
+
+    .card {
+        width: 100%;
+    }
+
+    .cardRight,
+    .cardLeft {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .mockCaret,
+    .mockWaveBar,
+    .pulseChip,
+    .nodeRing {
+        animation: none !important;
+    }
+}

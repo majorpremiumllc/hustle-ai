@@ -1,0 +1,72 @@
+.journey {
+    padding: 100px 0 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.header {
+    margin-bottom: 24px;
+}
+
+.sectionTag {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(108, 92, 231, 0.1);
+    border: 1px solid rgba(108, 92, 231, 0.15);
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--primary-light);
+    margin-bottom: 16px;
+}
+
+.sectionSub {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 8px auto 0;
+}
+
+.stepsContainer {
+    position: relative;
+    padding: 40px 0 60px;
+}
+
+.stepsInner {
+    position: relative;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+/* Completion burst */
+.completionBurst {
+    width: 200px;
+    height: 200px;
+    margin: -40px auto 0;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(0, 210, 255, 0.08) 0%,
+            rgba(108, 92, 231, 0.04) 40%,
+            transparent 70%);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+}
+
+.burstActive {
+    opacity: 1;
+    transform: scale(1);
+}
+
+@media (max-width: 768px) {
+    .journey {
+        padding: 60px 0 40px;
+    }
+
+    .stepsInner {
+        max-width: 100%;
+    }
+}

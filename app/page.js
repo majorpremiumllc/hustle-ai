@@ -17,6 +17,7 @@ const HolographicOrb = dynamic(() => import("./components/HolographicOrb"), { ss
 const VoiceDemo = dynamic(() => import("./components/VoiceDemo"), { ssr: false });
 const RevenueCounter = dynamic(() => import("./components/RevenueCounter"), { ssr: false });
 const DemoModal = dynamic(() => import("./components/DemoModal"), { ssr: false });
+const LightningJourney = dynamic(() => import("./components/LightningJourney"), { ssr: false });
 
 /* ── SVG Icon Components ───────────────────────── */
 
@@ -626,7 +627,7 @@ export default function LandingPage() {
           <div className="text-center reveal" style={{ marginTop: "48px" }}>
             <h3 style={{ fontSize: "1.3rem", marginBottom: "24px" }}>...and <span className="text-gradient">15+ more</span></h3>
           </div>
-          <div className={`${styles.allIndustriesGrid} stagger-children`}>
+          <div className={`${styles.allIndustriesGrid} ${styles.scanGrid} stagger-children`}>
             {ALL_INDUSTRIES.map((name, i) => (
               <div key={i} className={`${styles.miniIndustryCard} reveal`}>
                 <IndustryIcon type={name} />
@@ -644,24 +645,8 @@ export default function LandingPage() {
 
       <div className="glass-divider" />
 
-      {/* ── How It Works ────────────────────────────── */}
-      <section id="how-it-works" className={styles.howItWorks}>
-        <div className="container">
-          <div className="text-center reveal">
-            <span className={styles.sectionTag}>Dead Simple</span>
-            <h2>Up and Running in <span className="text-gradient">4 Steps</span></h2>
-          </div>
-          <div className={styles.stepsGrid}>
-            {STEPS.map((s, i) => (
-              <div key={i} className={`${styles.step} reveal`} style={{ transitionDelay: `${i * 0.12}s` }}>
-                <div className={styles.stepNum}>{s.num}</div>
-                <h4>{s.title}</h4>
-                <p>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ── How It Works: Lightning Journey ──────────── */}
+      <LightningJourney />
 
       <div className="glass-divider" />
 

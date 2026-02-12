@@ -1171,3 +1171,43 @@
     animation: none !important;
   }
 }
+
+/* ── Industries Scanning Grid ──────────── */
+.scanGrid {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanGrid::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.04), transparent);
+  animation: scanSweep 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes scanSweep {
+  0% {
+    left: -30%;
+  }
+
+  100% {
+    left: 130%;
+  }
+}
+
+.miniIndustryCard {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+
+.miniIndustryCard:hover {
+  border-color: rgba(0, 210, 255, 0.3) !important;
+  box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
