@@ -62,6 +62,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    z-index: 2;
 }
 
 .closeBtn:hover {
@@ -69,7 +70,7 @@
     color: white;
 }
 
-/* Chooser */
+/* ═══ Chooser ══════════════════════════ */
 .chooser {
     text-align: center;
 }
@@ -125,7 +126,163 @@
     font-weight: 400;
 }
 
-/* Demo View */
+/* ═══ Call Header ══════════════════════ */
+.callHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Caller Avatar */
+.callerAvatar {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.3), rgba(0, 210, 255, 0.3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    animation: avatarPulse 1s ease-in-out infinite;
+}
+
+.avatarLetter {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+}
+
+/* Ring pulse animations */
+.ringPulse,
+.ringPulse2 {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 210, 255, 0.3);
+    animation: ringExpand 1.5s ease-out infinite;
+}
+
+.ringPulse2 {
+    animation-delay: 0.5s;
+}
+
+@keyframes ringExpand {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+@keyframes avatarPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px 4px rgba(0, 210, 255, 0.2);
+    }
+}
+
+.callerInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.callerName {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+}
+
+.callerNumber {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.ringLabel {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(0, 210, 255, 0.8);
+    animation: ringLabelPulse 1s ease-in-out infinite;
+}
+
+@keyframes ringLabelPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* Active call header */
+.liveDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    margin-bottom: 8px;
+}
+
+.liveDotActive {
+    background: #00d2ff;
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.5);
+    animation: demoPulse 2s ease infinite;
+}
+
+.headerTitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.headerSub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.callTimer {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+}
+
+@keyframes demoPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* ═══ Demo View ═══════════════════════ */
 .demoView {
     display: flex;
     flex-direction: column;
@@ -145,33 +302,6 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Voice toggle button */
-.voiceToggle {
-    margin-left: auto;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.voiceToggle:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(0, 210, 255, 0.3);
-}
-
-.voiceOn {
-    border-color: rgba(0, 210, 255, 0.4);
-    background: rgba(0, 210, 255, 0.1);
-    box-shadow: 0 0 8px rgba(0, 210, 255, 0.15);
-}
-
 .demoDot {
     width: 6px;
     height: 6px;
@@ -181,19 +311,7 @@
     box-shadow: 0 0 6px rgba(0, 184, 148, 0.5);
 }
 
-@keyframes demoPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.4;
-    }
-}
-
-/* Waveform */
+/* ═══ Waveform ════════════════════════ */
 .waveform {
     display: flex;
     align-items: center;
@@ -207,17 +325,20 @@
     width: 3px;
     background: linear-gradient(to top, var(--primary), var(--accent));
     border-radius: 3px;
-    transition: height 0.1s ease;
+    transition: height 0.08s ease;
     min-height: 3px;
 }
 
-/* Chat */
+/* ═══ Chat Area ═══════════════════════ */
 .chatArea {
     display: flex;
     flex-direction: column;
     gap: 10px;
     min-height: 240px;
+    max-height: 350px;
+    overflow-y: auto;
     margin-bottom: 20px;
+    scroll-behavior: smooth;
 }
 
 .bubble {
@@ -229,11 +350,24 @@
     opacity: 0;
     transform: translateY(10px) scale(0.97);
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
 .bubble.visible {
     opacity: 1;
     transform: translateY(0) scale(1);
+}
+
+/* Bubble label (sender name) */
+.bubbleLabel {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.6;
+    margin-bottom: 1px;
 }
 
 .ring,
@@ -289,6 +423,45 @@
     padding: 4px 0;
 }
 
+/* ═══ Typing Indicator ════════════════ */
+.typingDots {
+    display: flex;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.typingDots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    animation: dotBounce 1.4s ease-in-out infinite;
+}
+
+.typingDots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typingDots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+
+    40% {
+        transform: scale(1.3);
+        opacity: 1;
+    }
+}
+
+/* ═══ Back Button ═════════════════════ */
 .backBtn {
     background: none;
     border: none;
@@ -305,6 +478,34 @@
     color: var(--text-primary);
 }
 
+/* ═══ Voice Toggle ════════════════════ */
+.voiceToggle {
+    margin-left: auto;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.voiceToggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 210, 255, 0.3);
+}
+
+.voiceOn {
+    border-color: rgba(0, 210, 255, 0.4);
+    background: rgba(0, 210, 255, 0.1);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.15);
+}
+
+/* ═══ Responsive ══════════════════════ */
 @media (max-width: 480px) {
     .modal {
         padding: 24px 20px;
@@ -313,5 +514,19 @@
 
     .chooserBtns {
         grid-template-columns: 1fr;
+    }
+
+    .callerAvatar {
+        width: 56px;
+        height: 56px;
+    }
+
+    .avatarLetter {
+        font-size: 1.4rem;
+    }
+
+    .chatArea {
+        min-height: 200px;
+        max-height: 280px;
     }
 }
