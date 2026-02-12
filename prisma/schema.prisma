@@ -1,0 +1,190 @@
+// ─────────────────────────────────────────────
+// ServiceBot AI — Multi-tenant Database Schema
+// ─────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ── Authentication ─────────────────────────────
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  hashedPassword String?
+  image          String?
+  role           String    @default("owner") // owner | admin | member
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+
+  sessions Session[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ── Company / Tenant ───────────────────────────
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String?
+  email       String?
+  address     String?
+  serviceArea String?
+  industry    String   @default("Handyman & Home Improvement")
+  logo        String?
+  website     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // AI Configuration
+  aiGreeting      String?
+  aiTone          String?  @default("friendly, professional, confident")
+  aiServices      String?  // JSON array of services offered
+  aiEscalationMsg String?  @default("I'll forward this to our project manager so we can assist you properly.")
+  aiPricingMsg    String?  @default("Pricing depends on scope and photos. Once we review details, we can provide an estimate.")
+
+  // Onboarding state
+  onboardingStep Int @default(0)
+  onboardingDone Boolean @default(false)
+
+  users         User[]
+  subscription  Subscription?
+  leads         Lead[]
+  conversations Conversation[]
+  callLogs      CallLog[]
+  integrations  Integration[]
+  phoneNumbers  PhoneNumber[]
+}
+
+// ── Subscription / Billing ─────────────────────
+
+model Subscription {
+  id                   String   @id @default(cuid())
+  companyId            String   @unique
+  company              Company  @relation(fields: [companyId], references: [id])
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  stripePriceId        String?
+  plan                 String   @default("starter") // starter | pro | business
+  interval             String   @default("month")   // month | year
+  status               String   @default("active")  // active | canceled | past_due | trialing
+  leadsUsed            Int      @default(0)
+  leadsLimit           Int      @default(50)
+  currentPeriodStart   DateTime @default(now())
+  currentPeriodEnd     DateTime @default(now())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+// ── Leads ──────────────────────────────────────
+
+model Lead {
+  id            String   @id @default(cuid())
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id])
+  customerName  String?
+  customerPhone String?
+  customerEmail String?
+  jobType       String?
+  address       String?
+  urgency       String?  // ASAP | Flexible | Specific date
+  preferredDate String?
+  notes         String?
+  hasPhotos     Boolean  @default(false)
+  source        String?  // Yelp | Thumbtack | Google | Phone | SMS
+  status        String   @default("new") // new | contacted | estimate_scheduled | escalated | completed | closed
+  estimatedValue Float?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  conversation Conversation?
+}
+
+// ── Conversations ──────────────────────────────
+
+model Conversation {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  leadId    String?  @unique
+  lead      Lead?    @relation(fields: [leadId], references: [id])
+  phone     String
+  channel   String   // sms | phone | yelp | thumbtack | google
+  status    String   @default("active") // active | closed | escalated
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // user | assistant | system
+  content        String
+  createdAt      DateTime     @default(now())
+}
+
+// ── Call Logs ──────────────────────────────────
+
+model CallLog {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  callSid     String?
+  callerPhone String
+  direction   String   @default("inbound") // inbound | outbound
+  duration    Int?     // seconds
+  status      String?  // completed | no-answer | busy | failed
+  transcript  String?
+  summary     String?
+  escalated   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+// ── Integrations ───────────────────────────────
+
+model Integration {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  type      String   // yelp | thumbtack | google_business | google_ads
+  enabled   Boolean  @default(false)
+  config    String?  // JSON config (email addresses, API keys, etc.)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, type])
+}
+
+// ── Phone Numbers ──────────────────────────────
+
+model PhoneNumber {
+  id          String  @id @default(cuid())
+  companyId   String
+  company     Company @relation(fields: [companyId], references: [id])
+  number      String  @unique
+  twilioSid   String?
+  label       String? // "Main", "Sales", etc.
+  active      Boolean @default(true)
+  voiceEnabled Boolean @default(true)
+  smsEnabled   Boolean @default(true)
+  createdAt   DateTime @default(now())
+}

@@ -1,0 +1,93 @@
+/* ─────────────────────────────────────────────
+   Auth Page Styles (Login / Signup)
+   ───────────────────────────────────────────── */
+
+.authPage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.authGlow {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse,
+            rgba(108, 92, 231, 0.12) 0%,
+            rgba(0, 210, 255, 0.06) 50%,
+            transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+}
+
+.authCard {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-2xl);
+    backdrop-filter: blur(var(--glass-blur));
+    animation: fadeInUp 0.5s ease;
+}
+
+.authLogo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-white);
+    margin-bottom: var(--space-xl);
+}
+
+.authCard h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-xs);
+}
+
+.authSub {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-xl);
+}
+
+.authForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.authError {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: var(--error);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    margin-bottom: var(--space-md);
+}
+
+.authSwitch {
+    text-align: center;
+    margin-top: var(--space-lg);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.authSwitch a {
+    color: var(--primary-light);
+    font-weight: 600;
+}
+
+.authSwitch a:hover {
+    text-decoration: underline;
+}
