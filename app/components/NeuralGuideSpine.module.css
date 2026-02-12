@@ -1,0 +1,204 @@
+/* ── Spine Container ─────────────────── */
+.spine {
+    position: fixed;
+    left: 20px;
+    top: 15%;
+    bottom: 15%;
+    width: 24px;
+    z-index: 50;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ── Track (glass tube) ──────────────── */
+.track {
+    position: relative;
+    width: 2px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 2px;
+    overflow: visible;
+}
+
+/* ── Fill (progress) ─────────────────── */
+.fill {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    border-radius: 2px;
+    background: linear-gradient(180deg,
+            rgba(0, 210, 255, 0.3) 0%,
+            rgba(108, 92, 231, 0.2) 100%);
+    transition: height 0.15s ease-out;
+}
+
+/* ── Traveling Pulse ─────────────────── */
+.pulse {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    transition: top 0.15s ease-out;
+}
+
+.pulseCore {
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: #00D2FF;
+    box-shadow:
+        0 0 6px rgba(0, 210, 255, 0.6),
+        0 0 14px rgba(0, 210, 255, 0.2);
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* ── Sparks (branching) ──────────────── */
+.pulseSpark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 1px;
+    background: linear-gradient(90deg,
+            rgba(0, 210, 255, 0.4) 0%,
+            transparent 100%);
+    transform-origin: left center;
+    animation: sparkBranch 3s ease-in-out infinite;
+}
+
+.pulseSpark:nth-child(3) {
+    animation-delay: 1.5s;
+    transform: rotate(-30deg);
+}
+
+@keyframes sparkBranch {
+
+    0%,
+    80%,
+    100% {
+        opacity: 0;
+        transform: rotate(25deg) scaleX(0);
+    }
+
+    85% {
+        opacity: 0.8;
+        transform: rotate(25deg) scaleX(1);
+    }
+
+    95% {
+        opacity: 0;
+        transform: rotate(25deg) scaleX(1.2);
+    }
+}
+
+/* ── Anchor Nodes ────────────────────── */
+.node {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nodeActive {
+    background: rgba(0, 210, 255, 0.3);
+    border-color: rgba(0, 210, 255, 0.4);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.2);
+}
+
+.nodeRing {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transition: all 0.5s ease;
+}
+
+.nodeActive .nodeRing {
+    border-color: rgba(0, 210, 255, 0.15);
+    animation: nodeRingPulse 0.6s ease forwards;
+}
+
+@keyframes nodeRingPulse {
+    from {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* ── Progress Label ──────────────────── */
+.label {
+    position: absolute;
+    left: 18px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: top 0.15s ease-out;
+    white-space: nowrap;
+}
+
+.labelText {
+    font-size: 0.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(0, 210, 255, 0.35);
+}
+
+.labelPct {
+    font-size: 0.5rem;
+    font-weight: 700;
+    color: rgba(0, 210, 255, 0.25);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Responsive ──────────────────────── */
+@media (max-width: 1100px) {
+    .spine {
+        left: 8px;
+    }
+
+    .label {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .spine {
+        display: none;
+    }
+}
+
+/* ── Reduced Motion ──────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .spine {
+        display: none;
+    }
+}

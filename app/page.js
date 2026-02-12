@@ -8,6 +8,8 @@ import AIActivityFeed from "./components/AIActivityFeed";
 import MagneticButton from "./components/MagneticButton";
 import HustleLogo from "./components/HustleLogo";
 import AIModeSwitch from "./components/AIModeSwitch";
+import UnlockSection, { NeuralRevealProvider } from "./components/UnlockSection";
+import NeuralGuideSpine from "./components/NeuralGuideSpine";
 import styles from "./page.module.css";
 
 /* ── Lazy-loaded heavy components (performance) ── */
@@ -429,389 +431,400 @@ export default function LandingPage() {
   };
 
   return (
-    <div className={styles.landing}>
-      <ParticleNetwork />
-      <CustomCursor />
+    <NeuralRevealProvider sectionIds={["industries", "loss", "calculator", "cta"]}>
+      <div className={styles.landing}>
+        <ParticleNetwork />
+        <CustomCursor />
+        <NeuralGuideSpine />
 
-      {/* ── Scroll Progress Bar ──────────────────────── */}
-      <div className={styles.scrollProgress} style={{ width: `${scrollProgress}%` }} />
+        {/* ── Scroll Progress Bar ──────────────────────── */}
+        <div className={styles.scrollProgress} style={{ width: `${scrollProgress}%` }} />
 
-      {/* ── Navigation ──────────────────────────────── */}
-      <nav className={styles.nav}>
-        <div className={`container ${styles.navInner}`}>
-          <a href="/" className={styles.logo}>
-            <HustleLogo variant="full" size={30} />
-          </a>
-          <div className={styles.navLinks}>
-            <a href="#features">Features</a>
-            <a href="#industries">Industries</a>
-            <a href="#pricing">Pricing</a>
-          </div>
-          <div className={styles.navActions}>
-            <AIModeSwitch />
-            <a href="/login" className="btn btn-ghost">Log In</a>
-            <a href="/signup" className="btn btn-primary">Start Free Trial</a>
-          </div>
-          {/* ── Hamburger ─────────────────────────────── */}
-          <button
-            className={`${styles.hamburger} ${mobileMenuOpen ? styles.hamburgerActive : ""}`}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <span /><span /><span />
-          </button>
-        </div>
-      </nav>
-
-      {/* ── Mobile Menu Overlay ──────────────────────── */}
-      <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ""}`}>
-        <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
-        <a href="#industries" onClick={() => setMobileMenuOpen(false)}>Industries</a>
-        <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
-        <div className={styles.mobileMenuActions}>
-          <a href="/login" className="btn btn-ghost" onClick={() => setMobileMenuOpen(false)}>Log In</a>
-          <a href="/signup" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)}>Start Free Trial</a>
-        </div>
-      </div>
-
-      {/* ── Hero ────────────────────────────────────── */}
-      <section className={styles.hero}>
-        <div className={styles.heroGlow} />
-        <div className="grid-bg" />
-        <div className={`orb orb-primary ${styles.heroOrb1}`} />
-        <div className={`orb orb-accent ${styles.heroOrb2}`} />
-
-        <div className={`container ${styles.heroInner}`}>
-          <div className="animate-fadeInUp">
-            <div className={styles.heroBadge}>
-              <span className={styles.heroBadgeDot} />
-              Your Calls Answered. Your Revenue Protected.
+        {/* ── Navigation ──────────────────────────────── */}
+        <nav className={styles.nav}>
+          <div className={`container ${styles.navInner}`}>
+            <a href="/" className={styles.logo}>
+              <HustleLogo variant="full" size={30} />
+            </a>
+            <div className={styles.navLinks}>
+              <a href="#features">Features</a>
+              <a href="#industries">Industries</a>
+              <a href="#pricing">Pricing</a>
             </div>
-          </div>
-
-          {/* AI Status Chip */}
-          <div className={`animate-fadeInUp ${styles.statusChip}`}>
-            <span className={styles.statusDot} />
-            <span>AI Active</span>
-            <span className={styles.statusSep}>•</span>
-            <span>Answering Calls</span>
-          </div>
-          <h1 className="animate-fadeInUp delay-1">
-            Your AI Employee That<br />
-            <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
-          </h1>
-          <p className={`animate-fadeInUp delay-2 ${styles.heroSub}`}>
-            <strong style={{ color: "var(--text-white)" }}>85% of callers who reach voicemail never call back.</strong>{" "}
-            HustleAI answers every call in under 3 seconds, qualifies leads, and books jobs — 24/7, on autopilot.
-          </p>
-          <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
-            <MagneticButton href="/signup" className="btn btn-accent btn-lg">
-              Start Free 7-Day Trial <IconArrowRight className={styles.btnIconInline} />
-            </MagneticButton>
-            <MagneticButton href="#how-it-works" className="btn btn-secondary btn-lg">
-              Watch How It Works
-            </MagneticButton>
-            <button onClick={() => setDemoOpen(true)} className={`btn btn-ghost btn-lg ${styles.demoBtn}`}>
-              ▶ Try a 10-sec Demo
+            <div className={styles.navActions}>
+              <AIModeSwitch />
+              <a href="/login" className="btn btn-ghost">Log In</a>
+              <a href="/signup" className="btn btn-primary">Start Free Trial</a>
+            </div>
+            {/* ── Hamburger ─────────────────────────────── */}
+            <button
+              className={`${styles.hamburger} ${mobileMenuOpen ? styles.hamburgerActive : ""}`}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              <span /><span /><span />
             </button>
           </div>
+        </nav>
 
-          {/* AI Activity Feed */}
-          <div className="animate-fadeInUp delay-5">
-            <AIActivityFeed />
+        {/* ── Mobile Menu Overlay ──────────────────────── */}
+        <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ""}`}>
+          <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+          <a href="#industries" onClick={() => setMobileMenuOpen(false)}>Industries</a>
+          <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+          <div className={styles.mobileMenuActions}>
+            <a href="/login" className="btn btn-ghost" onClick={() => setMobileMenuOpen(false)}>Log In</a>
+            <a href="/signup" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)}>Start Free Trial</a>
           </div>
+        </div>
 
-          <div className={`animate-fadeInUp delay-4 ${styles.socialProof}`}>
-            <div className={styles.avatarStack}>
-              <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #6C5CE7, #A29BFE)" }}>M</span>
-              <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00B894, #55efc4)" }}>S</span>
-              <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00D2FF, #0984e3)" }}>J</span>
-              <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FDCB6E, #e17055)" }}>A</span>
-              <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FF6B6B, #e74c3c)" }}>R</span>
+        {/* ── Hero ────────────────────────────────────── */}
+        <section className={styles.hero}>
+          <div className={styles.heroGlow} />
+          <div className="grid-bg" />
+          <div className={`orb orb-primary ${styles.heroOrb1}`} />
+          <div className={`orb orb-accent ${styles.heroOrb2}`} />
+
+          <div className={`container ${styles.heroInner}`}>
+            <div className="animate-fadeInUp">
+              <div className={styles.heroBadge}>
+                <span className={styles.heroBadgeDot} />
+                Your Calls Answered. Your Revenue Protected.
+              </div>
             </div>
-            <span className={styles.socialProofText}>
-              <strong>2,500+</strong> businesses recovered revenue with HustleAI
-            </span>
-            <span className={styles.starsRow}>
-              {[...Array(5)].map((_, i) => <IconStar key={i} className={styles.starIcon} />)}
-            </span>
+
+            {/* AI Status Chip */}
+            <div className={`animate-fadeInUp ${styles.statusChip}`}>
+              <span className={styles.statusDot} />
+              <span>AI Active</span>
+              <span className={styles.statusSep}>•</span>
+              <span>Answering Calls</span>
+            </div>
+            <h1 className="animate-fadeInUp delay-1">
+              Your AI Employee That<br />
+              <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
+            </h1>
+            <p className={`animate-fadeInUp delay-2 ${styles.heroSub}`}>
+              <strong style={{ color: "var(--text-white)" }}>85% of callers who reach voicemail never call back.</strong>{" "}
+              HustleAI answers every call in under 3 seconds, qualifies leads, and books jobs — 24/7, on autopilot.
+            </p>
+            <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
+              <MagneticButton href="/signup" className="btn btn-accent btn-lg">
+                Start Free 7-Day Trial <IconArrowRight className={styles.btnIconInline} />
+              </MagneticButton>
+              <MagneticButton href="#how-it-works" className="btn btn-secondary btn-lg">
+                Watch How It Works
+              </MagneticButton>
+              <button onClick={() => setDemoOpen(true)} className={`btn btn-ghost btn-lg ${styles.demoBtn}`}>
+                ▶ Try a 10-sec Demo
+              </button>
+            </div>
+
+            {/* AI Activity Feed */}
+            <div className="animate-fadeInUp delay-5">
+              <AIActivityFeed />
+            </div>
+
+            <div className={`animate-fadeInUp delay-4 ${styles.socialProof}`}>
+              <div className={styles.avatarStack}>
+                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #6C5CE7, #A29BFE)" }}>M</span>
+                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00B894, #55efc4)" }}>S</span>
+                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00D2FF, #0984e3)" }}>J</span>
+                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FDCB6E, #e17055)" }}>A</span>
+                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FF6B6B, #e74c3c)" }}>R</span>
+              </div>
+              <span className={styles.socialProofText}>
+                <strong>2,500+</strong> businesses recovered revenue with HustleAI
+              </span>
+              <span className={styles.starsRow}>
+                {[...Array(5)].map((_, i) => <IconStar key={i} className={styles.starIcon} />)}
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div className={`animate-fadeInUp delay-5 ${styles.heroImage}`}>
-          <HolographicOrb />
-        </div>
-      </section>
+          <div className={`animate-fadeInUp delay-5 ${styles.heroImage}`}>
+            <HolographicOrb />
+          </div>
+        </section>
 
-      {/* ── Revenue Counter ──────────────────────────── */}
-      <RevenueCounter />
+        {/* ── Revenue Counter ──────────────────────────── */}
+        <RevenueCounter />
 
-      {/* ── Value Propositions ──────────────────────── */}
-      {VALUE_PROPS.map((vp, i) => (
-        <section key={i} className={styles.valueSection}>
-          <div className={`container ${styles.valueInner} ${vp.reverse ? styles.valueReverse : ""}`}>
-            <div className={`${vp.reverse ? "reveal-right" : "reveal-left"} ${styles.valueContent}`}>
-              <span className={styles.valueTag}>{vp.tag}</span>
-              <h2>{vp.title}</h2>
-              <p className={styles.valueDesc}>{vp.desc}</p>
-              <div className={styles.valueStats}>
-                {vp.stats.map((s, j) => (
-                  <div key={j} className={styles.valueStat}>
-                    <Counter value={s.value} />
-                    <span>{s.label}</span>
+        {/* ── Value Propositions ──────────────────────── */}
+        {VALUE_PROPS.map((vp, i) => (
+          <section key={i} className={styles.valueSection}>
+            <div className={`container ${styles.valueInner} ${vp.reverse ? styles.valueReverse : ""}`}>
+              <div className={`${vp.reverse ? "reveal-right" : "reveal-left"} ${styles.valueContent}`}>
+                <span className={styles.valueTag}>{vp.tag}</span>
+                <h2>{vp.title}</h2>
+                <p className={styles.valueDesc}>{vp.desc}</p>
+                <div className={styles.valueStats}>
+                  {vp.stats.map((s, j) => (
+                    <div key={j} className={styles.valueStat}>
+                      <Counter value={s.value} />
+                      <span>{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className={`${vp.reverse ? "reveal-left" : "reveal-right"} ${styles.valueImage}`}>
+                <Image src={vp.image} alt={vp.title} width={500} height={500} className={styles.valueImg} />
+              </div>
+            </div>
+          </section>
+        ))}
+
+        <div className="glass-divider" />
+
+        {/* ── Features ────────────────────────────────── */}
+        <section id="features" className={styles.features}>
+          <div className="container">
+            <div className="text-center reveal">
+              <span className={styles.sectionTag}>The Platform</span>
+              <h2>One System. <span className="text-gradient">Every Channel Covered.</span></h2>
+              <p className={styles.sectionSub}>
+                Phone calls, SMS, Yelp, Thumbtack, Google — every lead captured and converted.
+              </p>
+            </div>
+            <div className={`${styles.featuresGrid} stagger-children`}>
+              {FEATURES.map((f, i) => (
+                <div key={i} className={`card ${styles.featureCard} reveal`}
+                  onMouseMove={handleTilt}
+                  onMouseLeave={handleTiltReset}
+                >
+                  <div className={`${styles.featureImageWrap} float-icon`}>
+                    <Image src={f.image} alt={f.title} width={200} height={200} className={styles.featureImage} />
+                  </div>
+                  <h4>{f.title}</h4>
+                  <p>{f.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div className={`text-center reveal ${styles.midCta}`}>
+              <p className={styles.midCtaText}>See it in action — go live in 5 minutes.</p>
+              <a href="/signup" className="btn btn-accent">Start Free Trial <IconArrowRight className={styles.btnIconInline} /></a>
+            </div>
+          </div>
+        </section>
+
+        <div className="glass-divider" />
+
+        {/* ── Industry Showcases (with images) ─────── */}
+        <UnlockSection id="industries">
+          <section id="industries" className={styles.industriesSection}>
+            <div className="container">
+              <div className="text-center reveal">
+                <span className={styles.sectionTag}>25+ Industries</span>
+                <h2>Built for <span className="text-gradient">Every Industry</span></h2>
+                <p className={styles.sectionSub}>
+                  From plumbers to salons, our AI adapts to your business type automatically.
+                </p>
+              </div>
+
+              <div className={styles.industryShowcases}>
+                {INDUSTRY_SHOWCASES.map((ind, i) => (
+                  <div key={i} className={`${styles.industryCard} ${i % 2 === 1 ? "reveal-right" : "reveal-left"}`}>
+                    <div className={styles.industryCardImage}>
+                      <Image src={ind.image} alt={ind.name} width={400} height={300} className={styles.industryImg} />
+                    </div>
+                    <div className={styles.industryCardContent}>
+                      <h3>{ind.name}</h3>
+                      <p>{ind.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center reveal" style={{ marginTop: "48px" }}>
+                <h3 style={{ fontSize: "1.3rem", marginBottom: "24px" }}>...and <span className="text-gradient">15+ more</span></h3>
+              </div>
+              <div className={`${styles.allIndustriesGrid} ${styles.scanGrid} stagger-children`}>
+                {ALL_INDUSTRIES.map((name, i) => (
+                  <div key={i} className={`${styles.miniIndustryCard} reveal`}>
+                    <IndustryIcon type={name} />
+                    <span>{name}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className={`${vp.reverse ? "reveal-left" : "reveal-right"} ${styles.valueImage}`}>
-              <Image src={vp.image} alt={vp.title} width={500} height={500} className={styles.valueImg} />
+          </section>
+        </UnlockSection>
+
+        <div className="glass-divider" />
+
+        {/* ── Neural Proof ──────────────────────────────── */}
+        <NeuralProof />
+
+        <div className="glass-divider" />
+
+        {/* ── AI Voice Demo ────────────────────────────── */}
+        <VoiceDemo />
+
+        <div className="glass-divider" />
+
+        {/* ── How It Works: Lightning Journey ──────────── */}
+        <LightningJourney />
+
+        <div className="glass-divider" />
+
+        {/* ── Loss Simulation ───────────────────────────── */}
+        <UnlockSection id="loss">
+          <LossSimulation />
+        </UnlockSection>
+
+        <div className="glass-divider" />
+
+        {/* ── Revenue Leakage Simulator ─────────────────── */}
+        <UnlockSection id="calculator">
+          <RevenueSimulator />
+        </UnlockSection>
+
+        <div className="glass-divider" />
+
+        {/* ── Pricing ─────────────────────────────────── */}
+        <section id="pricing" className={styles.pricing}>
+          <div className="container">
+            <div className="text-center reveal">
+              <span className={styles.sectionTag}>Transparent Pricing</span>
+              <h2>Plans That <span className="text-gradient">Pay For Themselves</span></h2>
+              <p className={styles.sectionSub}>
+                One missed call costs your business $100-$1,200. HustleAI pays for itself with the first answered call.
+              </p>
+              <div className={styles.billingToggle}>
+                <div className="pricing-toggle">
+                  <button className={billing === "month" ? "active" : ""} onClick={() => setBilling("month")}>Monthly</button>
+                  <button className={billing === "year" ? "active" : ""} onClick={() => setBilling("year")}>
+                    Annual <span className={styles.saveBadge}>Save 20%</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className={`${styles.pricingGrid} stagger-children`}>
+              {plans.map((plan, i) => (
+                <div key={i} className={`pricing-card ${plan.popular ? "featured" : ""} reveal`}
+                  onMouseMove={handleTilt}
+                  onMouseLeave={handleTiltReset}
+                >
+                  {plan.popular && <div className="popular-badge">Most Popular</div>}
+                  <div className="plan-name">{plan.name}</div>
+                  <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{plan.desc}</p>
+                  <div className="price">${plan.price}<span>/mo</span></div>
+                  {billing === "year" && plan.annual && <div className="price-annual">Billed ${plan.annual}/year</div>}
+                  <div className="features-list">
+                    {plan.features.map((f, j) => (
+                      <div key={j} className="feature-item">
+                        {f.included
+                          ? <IconCheck className={styles.checkIcon} />
+                          : <IconMinus className={styles.minusIcon} />
+                        }
+                        <span style={{ color: f.included ? "var(--text-primary)" : "var(--text-muted)" }}>{f.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => handleCheckout(plan.name)}
+                    disabled={checkoutLoading !== null}
+                    className={`btn ${plan.popular ? "btn-accent" : "btn-secondary"} btn-lg`}
+                    style={{ width: "100%", marginTop: "24px" }}
+                  >
+                    {checkoutLoading === plan.name ? "Redirecting..." : plan.popular ? "Start Free Trial" : "Get Started"}
+                  </button>
+                  <div className={styles.cancelNote}>Cancel anytime · No contracts</div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
-      ))}
 
-      <div className="glass-divider" />
-
-      {/* ── Features ────────────────────────────────── */}
-      <section id="features" className={styles.features}>
-        <div className="container">
-          <div className="text-center reveal">
-            <span className={styles.sectionTag}>The Platform</span>
-            <h2>One System. <span className="text-gradient">Every Channel Covered.</span></h2>
-            <p className={styles.sectionSub}>
-              Phone calls, SMS, Yelp, Thumbtack, Google — every lead captured and converted.
-            </p>
-          </div>
-          <div className={`${styles.featuresGrid} stagger-children`}>
-            {FEATURES.map((f, i) => (
-              <div key={i} className={`card ${styles.featureCard} reveal`}
-                onMouseMove={handleTilt}
-                onMouseLeave={handleTiltReset}
-              >
-                <div className={`${styles.featureImageWrap} float-icon`}>
-                  <Image src={f.image} alt={f.title} width={200} height={200} className={styles.featureImage} />
+        {/* ── Testimonials ────────────────────────────── */}
+        <section className={styles.testimonials}>
+          <div className="container">
+            <div className="text-center reveal">
+              <span className={styles.sectionTag}>Real Results</span>
+              <h2>They Tried It. <span className="text-gradient">Revenue Went Up.</span></h2>
+            </div>
+            <div className={`${styles.testimonialGrid} stagger-children`}>
+              {TESTIMONIALS.map((t, i) => (
+                <div key={i} className={`card ${styles.testimonialCard} reveal`}>
+                  <div className={styles.starsRow}>
+                    {[...Array(t.rating)].map((_, j) => <IconStar key={j} className={styles.starIcon} />)}
+                  </div>
+                  <p className={styles.quote}>&ldquo;{t.quote}&rdquo;</p>
+                  <div className={styles.testimonialRevenue}>{t.revenue}</div>
+                  <div className={styles.author}>
+                    <strong>{t.name}</strong>
+                    <span>{t.role}</span>
+                  </div>
                 </div>
-                <h4>{f.title}</h4>
-                <p>{f.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className={`text-center reveal ${styles.midCta}`}>
-            <p className={styles.midCtaText}>See it in action — go live in 5 minutes.</p>
-            <a href="/signup" className="btn btn-accent">Start Free Trial <IconArrowRight className={styles.btnIconInline} /></a>
-          </div>
-        </div>
-      </section>
-
-      <div className="glass-divider" />
-
-      {/* ── Industry Showcases (with images) ─────── */}
-      <section id="industries" className={styles.industriesSection}>
-        <div className="container">
-          <div className="text-center reveal">
-            <span className={styles.sectionTag}>25+ Industries</span>
-            <h2>Built for <span className="text-gradient">Every Industry</span></h2>
-            <p className={styles.sectionSub}>
-              From plumbers to salons, our AI adapts to your business type automatically.
-            </p>
-          </div>
-
-          <div className={styles.industryShowcases}>
-            {INDUSTRY_SHOWCASES.map((ind, i) => (
-              <div key={i} className={`${styles.industryCard} ${i % 2 === 1 ? "reveal-right" : "reveal-left"}`}>
-                <div className={styles.industryCardImage}>
-                  <Image src={ind.image} alt={ind.name} width={400} height={300} className={styles.industryImg} />
-                </div>
-                <div className={styles.industryCardContent}>
-                  <h3>{ind.name}</h3>
-                  <p>{ind.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center reveal" style={{ marginTop: "48px" }}>
-            <h3 style={{ fontSize: "1.3rem", marginBottom: "24px" }}>...and <span className="text-gradient">15+ more</span></h3>
-          </div>
-          <div className={`${styles.allIndustriesGrid} ${styles.scanGrid} stagger-children`}>
-            {ALL_INDUSTRIES.map((name, i) => (
-              <div key={i} className={`${styles.miniIndustryCard} reveal`}>
-                <IndustryIcon type={name} />
-                <span>{name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <div className="glass-divider" />
-
-      {/* ── Neural Proof ──────────────────────────────── */}
-      <NeuralProof />
-
-      <div className="glass-divider" />
-
-      {/* ── AI Voice Demo ────────────────────────────── */}
-      <VoiceDemo />
-
-      <div className="glass-divider" />
-
-      {/* ── How It Works: Lightning Journey ──────────── */}
-      <LightningJourney />
-
-      <div className="glass-divider" />
-
-      {/* ── Loss Simulation ───────────────────────────── */}
-      <LossSimulation />
-
-      <div className="glass-divider" />
-
-      {/* ── Revenue Leakage Simulator ─────────────────── */}
-      <RevenueSimulator />
-
-      <div className="glass-divider" />
-
-      {/* ── Pricing ─────────────────────────────────── */}
-      <section id="pricing" className={styles.pricing}>
-        <div className="container">
-          <div className="text-center reveal">
-            <span className={styles.sectionTag}>Transparent Pricing</span>
-            <h2>Plans That <span className="text-gradient">Pay For Themselves</span></h2>
-            <p className={styles.sectionSub}>
-              One missed call costs your business $100-$1,200. HustleAI pays for itself with the first answered call.
-            </p>
-            <div className={styles.billingToggle}>
-              <div className="pricing-toggle">
-                <button className={billing === "month" ? "active" : ""} onClick={() => setBilling("month")}>Monthly</button>
-                <button className={billing === "year" ? "active" : ""} onClick={() => setBilling("year")}>
-                  Annual <span className={styles.saveBadge}>Save 20%</span>
-                </button>
-              </div>
+              ))}
             </div>
           </div>
-          <div className={`${styles.pricingGrid} stagger-children`}>
-            {plans.map((plan, i) => (
-              <div key={i} className={`pricing-card ${plan.popular ? "featured" : ""} reveal`}
-                onMouseMove={handleTilt}
-                onMouseLeave={handleTiltReset}
-              >
-                {plan.popular && <div className="popular-badge">Most Popular</div>}
-                <div className="plan-name">{plan.name}</div>
-                <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{plan.desc}</p>
-                <div className="price">${plan.price}<span>/mo</span></div>
-                {billing === "year" && plan.annual && <div className="price-annual">Billed ${plan.annual}/year</div>}
-                <div className="features-list">
-                  {plan.features.map((f, j) => (
-                    <div key={j} className="feature-item">
-                      {f.included
-                        ? <IconCheck className={styles.checkIcon} />
-                        : <IconMinus className={styles.minusIcon} />
-                      }
-                      <span style={{ color: f.included ? "var(--text-primary)" : "var(--text-muted)" }}>{f.text}</span>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={() => handleCheckout(plan.name)}
-                  disabled={checkoutLoading !== null}
-                  className={`btn ${plan.popular ? "btn-accent" : "btn-secondary"} btn-lg`}
-                  style={{ width: "100%", marginTop: "24px" }}
-                >
-                  {checkoutLoading === plan.name ? "Redirecting..." : plan.popular ? "Start Free Trial" : "Get Started"}
-                </button>
-                <div className={styles.cancelNote}>Cancel anytime · No contracts</div>
+        </section>
+
+        {/* ── CTA ─────────────────────────────────────── */}
+        <UnlockSection id="cta">
+          <section className={styles.cta}>
+            <div className={styles.ctaGlow} />
+            <div className="grid-bg" />
+            <div className="container text-center reveal-scale">
+              <h2 style={{ fontSize: "2.5rem" }}>
+                Stop Missing Calls.<br />
+                <span className="text-gradient">Start Growing Revenue.</span>
+              </h2>
+              <p className={styles.sectionSub} style={{ maxWidth: "500px", margin: "16px auto 0" }}>
+                Join 2,500+ business owners who automated their dispatch with AI. 7-day free trial. No credit card required.
+              </p>
+              <a href="/signup" className="btn btn-accent btn-lg" style={{ marginTop: "32px" }}>
+                Start Your Free Trial <IconArrowRight className={styles.btnIconInline} />
+              </a>
+              <div className={styles.ctaTrust}>
+                <span><IconShield className={styles.trustIcon} /> No credit card required</span>
+                <span><IconShield className={styles.trustIcon} /> Cancel anytime</span>
+                <span><IconShield className={styles.trustIcon} /> Setup in 5 minutes</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+          </section>
+        </UnlockSection>
 
-      {/* ── Testimonials ────────────────────────────── */}
-      <section className={styles.testimonials}>
-        <div className="container">
-          <div className="text-center reveal">
-            <span className={styles.sectionTag}>Real Results</span>
-            <h2>They Tried It. <span className="text-gradient">Revenue Went Up.</span></h2>
-          </div>
-          <div className={`${styles.testimonialGrid} stagger-children`}>
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className={`card ${styles.testimonialCard} reveal`}>
-                <div className={styles.starsRow}>
-                  {[...Array(t.rating)].map((_, j) => <IconStar key={j} className={styles.starIcon} />)}
-                </div>
-                <p className={styles.quote}>&ldquo;{t.quote}&rdquo;</p>
-                <div className={styles.testimonialRevenue}>{t.revenue}</div>
-                <div className={styles.author}>
-                  <strong>{t.name}</strong>
-                  <span>{t.role}</span>
-                </div>
+        {/* ── Footer ──────────────────────────────────── */}
+        <footer className={styles.footer}>
+          <div className={`container ${styles.footerInner}`}>
+            <div className={styles.footerBrand}>
+              <div className={styles.footerLogo}>
+                <HustleLogo variant="full" size={26} />
               </div>
-            ))}
+              <p style={{ marginTop: "8px", fontSize: "0.85rem" }}>AI-powered business growth platform.</p>
+            </div>
+            <div className={styles.footerLinks}>
+              <div>
+                <h5>Product</h5>
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#how-it-works">How It Works</a>
+              </div>
+              <div>
+                <h5>Company</h5>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+              </div>
+              <div>
+                <h5>Support</h5>
+                <a href="#">Help Center</a>
+                <a href="#">Status</a>
+                <a href="#">API Docs</a>
+              </div>
+            </div>
+            <div className={styles.footerBottom}>
+              <p>&copy; 2026 HustleAI. All rights reserved.</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </footer>
 
-      {/* ── CTA ─────────────────────────────────────── */}
-      <section className={styles.cta}>
-        <div className={styles.ctaGlow} />
-        <div className="grid-bg" />
-        <div className="container text-center reveal-scale">
-          <h2 style={{ fontSize: "2.5rem" }}>
-            Stop Missing Calls.<br />
-            <span className="text-gradient">Start Growing Revenue.</span>
-          </h2>
-          <p className={styles.sectionSub} style={{ maxWidth: "500px", margin: "16px auto 0" }}>
-            Join 2,500+ business owners who automated their dispatch with AI. 7-day free trial. No credit card required.
-          </p>
-          <a href="/signup" className="btn btn-accent btn-lg" style={{ marginTop: "32px" }}>
-            Start Your Free Trial <IconArrowRight className={styles.btnIconInline} />
-          </a>
-          <div className={styles.ctaTrust}>
-            <span><IconShield className={styles.trustIcon} /> No credit card required</span>
-            <span><IconShield className={styles.trustIcon} /> Cancel anytime</span>
-            <span><IconShield className={styles.trustIcon} /> Setup in 5 minutes</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Footer ──────────────────────────────────── */}
-      <footer className={styles.footer}>
-        <div className={`container ${styles.footerInner}`}>
-          <div className={styles.footerBrand}>
-            <div className={styles.footerLogo}>
-              <HustleLogo variant="full" size={26} />
-            </div>
-            <p style={{ marginTop: "8px", fontSize: "0.85rem" }}>AI-powered business growth platform.</p>
-          </div>
-          <div className={styles.footerLinks}>
-            <div>
-              <h5>Product</h5>
-              <a href="#features">Features</a>
-              <a href="#pricing">Pricing</a>
-              <a href="#how-it-works">How It Works</a>
-            </div>
-            <div>
-              <h5>Company</h5>
-              <a href="#">About</a>
-              <a href="#">Contact</a>
-              <a href="/privacy">Privacy Policy</a>
-              <a href="/terms">Terms of Service</a>
-            </div>
-            <div>
-              <h5>Support</h5>
-              <a href="#">Help Center</a>
-              <a href="#">Status</a>
-              <a href="#">API Docs</a>
-            </div>
-          </div>
-          <div className={styles.footerBottom}>
-            <p>&copy; 2026 HustleAI. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-
-      <ChatWidget />
-      <DemoModal isOpen={demoOpen} onClose={() => setDemoOpen(false)} />
-    </div>
+        <ChatWidget />
+        <DemoModal isOpen={demoOpen} onClose={() => setDemoOpen(false)} />
+      </div>
+    </NeuralRevealProvider>
   );
 }
