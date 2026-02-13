@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import styles from "./dashboard.module.css";
@@ -33,8 +34,33 @@ const NAV_ITEMS = [
     { href: "/dashboard/settings", icon: <IconSettings />, label: "Settings" },
 ];
 
+/* Bottom tab – show only the 5 most important items */
+const BOTTOM_TABS = [
+    { href: "/dashboard", icon: <IconOverview />, label: "Home" },
+    { href: "/dashboard/leads", icon: <IconLeads />, label: "Leads" },
+    { href: "/dashboard/messages", icon: <IconMessages />, label: "Messages" },
+    { href: "/dashboard/calls", icon: <IconCalls />, label: "Calls" },
+    { href: "/dashboard/settings", icon: <IconSettings />, label: "Settings" },
+];
+
 function DashboardLayoutInner({ children }) {
     const pathname = usePathname();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    // Close sidebar on route change
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [pathname]);
+
+    // Prevent body scroll when sidebar is open
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => { document.body.style.overflow = ""; };
+    }, [sidebarOpen]);
 
     // Skip sidebar for onboarding
     if (pathname?.startsWith("/dashboard/onboarding")) {
@@ -43,7 +69,14 @@ function DashboardLayoutInner({ children }) {
 
     return (
         <div className={styles.dashboardLayout}>
-            <aside className={styles.sidebar}>
+            {/* ── Sidebar Overlay ─────────── */}
+            <div
+                className={`${styles.sidebarOverlay} ${sidebarOpen ? styles.sidebarOverlayVisible : ""}`}
+                onClick={() => setSidebarOpen(false)}
+            />
+
+            {/* ── Sidebar ────────────────── */}
+            <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
                 <a href="/" className={styles.sidebarLogo}>
                     <IconBolt />
                     <span>Hustle<span className="text-gradient">AI</span></span>
@@ -74,16 +107,47 @@ function DashboardLayoutInner({ children }) {
                 </div>
             </aside>
 
+            {/* ── Main Content ─────────── */}
             <main className={styles.mainContent}>
+                {/* Mobile header bar */}
+                <div className={styles.mobileHeader}>
+                    <button
+                        className={`${styles.hamburger} ${sidebarOpen ? styles.hamburgerActive : ""}`}
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                        aria-label="Toggle sidebar"
+                    >
+                        <span /><span /><span />
+                    </button>
+                    <a href="/" className={styles.mobileHeaderLogo}>
+                        <IconBolt />
+                        <span>Hustle<span className="text-gradient">AI</span></span>
+                    </a>
+                    <div style={{ width: 40 }} /> {/* Spacer for centering */}
+                </div>
+
                 {children}
             </main>
+
+            {/* ── Bottom Tab Bar (mobile) ── */}
+            <nav className={styles.bottomTabs}>
+                {BOTTOM_TABS.map((tab) => (
+                    <a
+                        key={tab.href}
+                        href={tab.href}
+                        className={`${styles.bottomTab} ${pathname === tab.href ? styles.bottomTabActive : ""}`}
+                    >
+                        <span className={styles.bottomTabIcon}>{tab.icon}</span>
+                        <span className={styles.bottomTabLabel}>{tab.label}</span>
+                    </a>
+                ))}
+            </nav>
         </div>
     );
 }
 
 export default function DashboardLayout({ children }) {
     return (
-        <SessionProvider basePath="/api/auth" refetchOnWindowFocus={false} refetchInterval={0}>
+        <SessionProvider basePath="/api/auth" refetchOnWindowFocus={false} refetchInterval={0} refetchWhenOffline={false}>
             <DashboardLayoutInner>{children}</DashboardLayoutInner>
         </SessionProvider>
     );

@@ -1,0 +1,80 @@
+/* ═══  Neural Pulse Projectile  ═══════════════ */
+
+.pulse {
+    position: fixed;
+    z-index: 10010;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    will-change: transform, opacity;
+    /* Center the orb on the animated position */
+    margin-left: -10px;
+    margin-top: -10px;
+}
+
+/* ── Core dot ── */
+.core {
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: #00D2FF;
+    box-shadow:
+        0 0 6px rgba(0, 210, 255, 0.9),
+        0 0 12px rgba(0, 210, 255, 0.6),
+        0 0 24px rgba(0, 210, 255, 0.3);
+    z-index: 3;
+}
+
+/* ── Glow halo ── */
+.glow {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(0, 210, 255, 0.35) 0%,
+            rgba(108, 92, 231, 0.15) 50%,
+            transparent 100%);
+    z-index: 2;
+    animation: pulseGlow 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+    from {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    to {
+        transform: scale(1.4);
+        opacity: 1;
+    }
+}
+
+/* ── Expanding ring ── */
+.ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0, 210, 255, 0.3);
+    animation: ringExpand 0.8s ease-out infinite;
+    z-index: 1;
+}
+
+@keyframes ringExpand {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+    .pulse {
+        display: none;
+    }
+}

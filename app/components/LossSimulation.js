@@ -229,7 +229,7 @@ export default function LossSimulation() {
     }, [metricStep]);
 
     return (
-        <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.visible : ""} ${phase >= 1 ? styles.recovering : ""} ${phase >= 2 ? styles.recovered : ""}`}>
+        <section id="loss" ref={sectionRef} className={`${styles.section} ${isVisible ? styles.visible : ""} ${phase >= 1 ? styles.recovering : ""} ${phase >= 2 ? styles.recovered : ""}`}>
             <div className={`container ${styles.inner}`}>
 
                 {/* Left: Neural Visualization */}

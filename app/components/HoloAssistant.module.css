@@ -1,0 +1,569 @@
+/* ═══════════════════════════════════════════════
+   Holographic AI Assistant — Human → Neural
+   ═══════════════════════════════════════════════ */
+
+.section {
+    position: relative;
+    padding: 100px 0 120px;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 50%, rgba(0, 20, 50, 0.4) 0%, transparent 70%);
+}
+
+.inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 64px;
+    position: relative;
+    z-index: 2;
+}
+
+.tag {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--primary-light);
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 800;
+    color: var(--text-white);
+    margin-bottom: 16px;
+    line-height: 1.15;
+}
+
+.subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ═══ Stage ═══════════════════════ */
+.stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    min-height: 560px;
+}
+
+/* ═══ Figure Container ════════════ */
+.figureContainer {
+    position: relative;
+    flex-shrink: 0;
+    width: 420px;
+    height: 520px;
+    z-index: 2;
+}
+
+.realPerson,
+.neuralPerson {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1.3s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.8s ease,
+        transform 0.8s ease;
+}
+
+.personImage,
+.neuralImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* ── Phase: real ─────────────── */
+.real .realPerson {
+    opacity: 1;
+    filter: drop-shadow(0 0 20px rgba(0, 210, 255, 0.15));
+    transform: scale(1);
+}
+
+.real .neuralPerson {
+    opacity: 0;
+    filter: blur(8px);
+    transform: scale(1.05);
+}
+
+/* ── Phase: transforming ─────── */
+.transforming .realPerson {
+    opacity: 0.3;
+    filter: brightness(2) saturate(0) blur(2px);
+    transform: scale(1.02);
+}
+
+.transforming .neuralPerson {
+    opacity: 0.6;
+    filter: brightness(1.5) blur(1px);
+    transform: scale(1.02);
+}
+
+.transforming .glitchOverlay {
+    opacity: 1;
+}
+
+/* ── Phase: neural ───────────── */
+.neural .realPerson {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(0.95);
+}
+
+.neural .neuralPerson {
+    opacity: 1;
+    filter: drop-shadow(0 0 30px rgba(0, 210, 255, 0.25)) drop-shadow(0 0 60px rgba(108, 92, 231, 0.15));
+    transform: scale(1);
+    animation: neuralFloat 6s ease-in-out infinite;
+}
+
+@keyframes neuralFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ═══ Glitch Overlay ══════════════ */
+.glitchOverlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity 0.3s ease;
+    mix-blend-mode: screen;
+    background:
+        repeating-linear-gradient(0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 210, 255, 0.03) 2px,
+            rgba(0, 210, 255, 0.03) 4px);
+    animation: glitchFlicker 0.15s steps(2) infinite;
+}
+
+@keyframes glitchFlicker {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-2px) skewX(0.5deg);
+    }
+
+    50% {
+        transform: translateX(1px);
+    }
+
+    75% {
+        transform: translateX(-1px) skewX(-0.3deg);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* ═══ Scan Line ═══════════════════ */
+.holoScan {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 6;
+}
+
+.holoScan::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(0, 210, 255, 0.4),
+            rgba(0, 210, 255, 0.7),
+            rgba(0, 210, 255, 0.4),
+            transparent);
+    animation: scanDown 4s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+}
+
+@keyframes scanDown {
+    0% {
+        top: -5%;
+    }
+
+    100% {
+        top: 105%;
+    }
+}
+
+/* ═══ Base Glow ═══════════════════ */
+.holoBase {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0, 210, 255, 0.15) 0%, transparent 70%);
+    filter: blur(8px);
+    animation: basePulse 3s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes basePulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: translateX(-50%) scale(1.05);
+    }
+}
+
+/* ═══ Panels ══════════════════════ */
+.panelsLeft,
+.panelsRight {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 2;
+    max-width: 360px;
+}
+
+.panel {
+    background: rgba(10, 10, 30, 0.75);
+    border: 1px solid rgba(0, 210, 255, 0.12);
+    border-radius: 16px;
+    padding: 20px 24px;
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.panelsRight .panel {
+    transform: translateX(30px);
+}
+
+.panel.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, #00D2FF, #6C5CE7);
+    border-radius: 4px 0 0 4px;
+}
+
+.panelHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.panelIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.15), rgba(108, 92, 231, 0.15));
+    border: 1px solid rgba(0, 210, 255, 0.1);
+}
+
+.panelTitle {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.panelValue {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-white);
+    line-height: 1.4;
+    min-height: 1.5em;
+}
+
+.highlight {
+    background: linear-gradient(135deg, #00D2FF, #6C5CE7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+.scanning {
+    color: rgba(255, 255, 255, 0.3);
+    font-style: italic;
+    animation: scanPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes scanPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.progressTrack {
+    margin-top: 10px;
+    height: 4px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #00D2FF, #6C5CE7);
+    transition: width 1.5s cubic-bezier(0.34, 1, 0.64, 1);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
+}
+
+.liveTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #55efc4;
+    margin-top: 8px;
+}
+
+.liveDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #55efc4;
+    animation: liveBlink 1.5s ease-in-out infinite;
+}
+
+@keyframes liveBlink {
+
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ═══ Neural Lines ════════════════ */
+.neuralLines {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.neuralLines.linesActive {
+    opacity: 1;
+}
+
+.neuralLine {
+    fill: none;
+    stroke: rgba(0, 210, 255, 0.1);
+    stroke-width: 1.5;
+    stroke-dasharray: 8 5;
+}
+
+.neuralDot {
+    fill: #00D2FF;
+    filter: drop-shadow(0 0 4px rgba(0, 210, 255, 0.8));
+}
+
+/* ═══ Particles ═══════════════════ */
+.particleAura {
+    position: absolute;
+    inset: -60px;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.particleAura.particlesActive {
+    opacity: 1;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    animation: particleRise linear infinite;
+}
+
+@keyframes particleRise {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.7;
+    }
+
+    80% {
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: translateY(-300px) scale(0.3);
+        opacity: 0;
+    }
+}
+
+/* ═══ Summary ═════════════════════ */
+.summaryBar {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 64px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+}
+
+.summaryItem {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.summaryItem.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.summaryNumber {
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #00D2FF 0%, #A29BFE 50%, #6C5CE7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+}
+
+.summaryLabel {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* ═══ Responsive ══════════════════ */
+@media (max-width: 1024px) {
+    .stage {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .panelsLeft,
+    .panelsRight {
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-width: 100%;
+        gap: 12px;
+    }
+
+    .panel {
+        flex: 1;
+        min-width: 160px;
+        transform: translateY(20px);
+    }
+
+    .panelsRight .panel {
+        transform: translateY(20px);
+    }
+
+    .figureContainer {
+        width: 300px;
+        height: 380px;
+    }
+
+    .neuralLines {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .section {
+        padding: 60px 0 80px;
+    }
+
+    .figureContainer {
+        width: 260px;
+        height: 320px;
+    }
+
+    .panelsLeft,
+    .panelsRight {
+        flex-direction: column;
+    }
+
+    .panel {
+        min-width: auto;
+    }
+
+    .summaryBar {
+        gap: 24px;
+    }
+
+    .summaryNumber {
+        font-size: 1.8rem;
+    }
+}

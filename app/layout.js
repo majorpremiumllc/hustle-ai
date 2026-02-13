@@ -1,6 +1,6 @@
 import "./globals.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://hustleai.co";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tryhustleai.com";
 
 export const metadata = {
   /* ── Core SEO ── */
@@ -106,11 +106,100 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hustleai.co";
+
+  const organizationLD = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Hustle AI",
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    description: "AI-powered business automation for service companies. Automate calls, texts, and lead capture.",
+    sameAs: [],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      availableLanguage: ["English"],
+    },
+  };
+
+  const softwareLD = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Hustle AI",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "USD",
+      lowPrice: "0",
+      highPrice: "199",
+      offerCount: "4",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "200",
+    },
+    description: "AI receptionist, SMS auto-responder, and sales pipeline for service businesses.",
+  };
+
+  const faqLD = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is Hustle AI?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Hustle AI is an AI-powered platform that automates calls, texts, lead capture, and customer follow-ups for service businesses like plumbers, HVAC, electricians, and contractors.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How much does Hustle AI cost?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Hustle AI starts free with our Starter plan. Paid plans start at $49/month for Growth, $99/month for Pro, and $199/month for Enterprise with unlimited leads and custom AI voice.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Does Hustle AI answer phone calls automatically?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes! Hustle AI provides a 24/7 AI voice receptionist that answers calls, captures lead information, schedules appointments, and sends follow-up texts — all automatically.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can I use Hustle AI for my service business?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Absolutely. Hustle AI is built specifically for service businesses: plumbing, HVAC, electrical, landscaping, cleaning, auto repair, roofing, pest control, and more.",
+        },
+      },
+    ],
+  };
+
   return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLD) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareLD) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLD) }}
+        />
       </head>
       <body>{children}</body>
     </html>

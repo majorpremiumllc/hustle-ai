@@ -15,7 +15,7 @@ HustleAI Platform Info:
 - AI Outreach: finds businesses that need help, analyzes their weaknesses, and reaches out automatically.
 - Market Analysis: scans Google, Yelp, Thumbtack for businesses with gaps (bad reviews, no website, slow response times).
 
-Pricing: Starter $19.99/mo (100 calls), Professional $29.99/mo (500 calls, most popular), Business $49.99/mo (unlimited). All have 7-day free trial.
+Pricing: Starter $49/mo (100 leads), Professional $99/mo (500 leads, most popular), Business $199/mo (unlimited). All have 7-day free trial.
 
 Keep responses concise (2-4 sentences). Always steer toward how HustleAI grows revenue. Never discuss topics unrelated to HustleAI.`,
 
@@ -66,7 +66,7 @@ Keep responses focused and technical but accessible. Stay focused on HustleAI. N
 // ─── Fallback (no API key) ──────────────────────────────────
 
 const FALLBACK_RESPONSES = {
-    william: "I'm William, your Sales Director. I'd love to help you grow your revenue with HustleAI! Our platform handles calls, texts, and leads automatically — starting at just $19.99/month. What kind of business do you run?",
+    william: "I'm William, your Sales Director. I'd love to help you grow your revenue with HustleAI! Our platform handles calls, texts, and leads automatically — starting at just $49/month. What kind of business do you run?",
     sophia: "I'm Sophia, your Market Analyst. I can help you find untapped opportunities in your market. HustleAI scans Google, Yelp, and Thumbtack to find businesses that need your services. What industry are you in?",
     jack: "Hey! I'm Jack, your Outreach Specialist. HustleAI's outreach engine finds potential customers and reaches out automatically. Want to know how we can fill your pipeline?",
     emma: "Hi there! I'm Emma, your Customer Success Manager. I'm here to help you get set up with HustleAI. The whole process takes about 5 minutes. Would you like me to walk you through it?",

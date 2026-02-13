@@ -120,13 +120,13 @@ export default function VoiceDemo() {
     return (
         <section ref={containerRef} className={styles.demoSection}>
             <div className="container">
-                <div className="text-center reveal">
+                <div className="text-center">
                     <span className={styles.sectionTag}>See AI in Action</span>
                     <h2>Watch Your AI <span className="text-gradient">Handle a Real Call</span></h2>
                     <p className={styles.sectionSub}>Every call is answered, every lead is captured — automatically.</p>
                 </div>
 
-                <div className={`${styles.demoCard} reveal-scale`}>
+                <div className={styles.demoCard}>
                     <button
                         className={`${styles.voiceToggle} ${voiceEnabled ? styles.voiceOn : ""}`}
                         onClick={() => setVoiceEnabled(v => !v)}

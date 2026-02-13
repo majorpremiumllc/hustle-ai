@@ -1,0 +1,555 @@
+/* ═══════════════════════════════════════════════
+   Neural Empathy Engine — Pointing Figure
+   ═══════════════════════════════════════════════ */
+
+.section {
+    position: relative;
+    padding: 100px 0 80px;
+    overflow: hidden;
+}
+
+.inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 2;
+}
+
+.tag {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--primary-light);
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 800;
+    color: var(--text-white);
+    margin-bottom: 16px;
+    line-height: 1.15;
+}
+
+.subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ── Scenario ────────────────── */
+.scenario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 48px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-white);
+    animation: fadeSlideUp 0.6s ease-out;
+}
+
+.scenarioDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff4757;
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.6);
+    animation: dotPulse 1s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.3);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ═══ Arena — grid layout ═════════ */
+.arena {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 360px 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 24px;
+    min-height: 480px;
+    align-items: center;
+}
+
+/* ── Neural Figure ─────────────── */
+.figure {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.figure.figureActive {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Pointing directions & figure styling handled by NeuralFigure.module.css */
+
+/* Energy pulse from hands */
+.energyPulse {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 210, 255, 0.6) 0%, transparent 70%);
+    filter: blur(6px);
+    animation: energyBurst 0.8s ease-out forwards;
+    pointer-events: none;
+}
+
+.energy_topLeft {
+    top: 30%;
+    left: -10%;
+}
+
+.energy_topRight {
+    top: 30%;
+    right: -10%;
+}
+
+.energy_bottomLeft {
+    bottom: 30%;
+    left: -10%;
+}
+
+.energy_bottomRight {
+    bottom: 30%;
+    right: -10%;
+}
+
+@keyframes energyBurst {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* ═══ Cards ═══════════════════════ */
+.card {
+    position: relative;
+    background: rgba(10, 10, 30, 0.8);
+    border: 1px solid rgba(0, 210, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+        border-color 0.4s ease,
+        box-shadow 0.4s ease;
+    overflow: hidden;
+}
+
+.card_topLeft {
+    grid-column: 1;
+    grid-row: 1;
+    transform: translateX(-30px);
+}
+
+.card_topRight {
+    grid-column: 3;
+    grid-row: 1;
+    transform: translateX(30px);
+}
+
+.card_bottomLeft {
+    grid-column: 1;
+    grid-row: 2;
+    transform: translateX(-30px);
+}
+
+.card_bottomRight {
+    grid-column: 3;
+    grid-row: 2;
+    transform: translateX(30px);
+}
+
+.card.cardVisible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Glowing state when figure points at it */
+.card.cardGlowing {
+    border-color: rgba(0, 210, 255, 0.4);
+    box-shadow:
+        0 0 30px rgba(0, 210, 255, 0.15),
+        0 0 60px rgba(108, 92, 231, 0.08),
+        inset 0 0 20px rgba(0, 210, 255, 0.05);
+}
+
+.card.cardGlowing::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.4), rgba(108, 92, 231, 0.4));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: borderGlow 1s ease-in-out infinite;
+}
+
+@keyframes borderGlow {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Neural glow behind the card */
+.cardNeuralGlow {
+    position: absolute;
+    inset: -30%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(0, 210, 255, 0.12) 0%,
+            rgba(108, 92, 231, 0.06) 40%,
+            transparent 70%);
+    animation: neuralGlowPulse 1.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes neuralGlowPulse {
+
+    0%,
+    100% {
+        transform: scale(0.9);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+.cardIcon {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+}
+
+.cardTitle {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 10px;
+}
+
+.cardValue {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.arrow {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.cardHighlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #00D2FF, #6C5CE7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #55efc4;
+    flex-shrink: 0;
+}
+
+/* Connection beam from figure to card */
+.connectionBeam {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg,
+            rgba(0, 210, 255, 0.5),
+            rgba(108, 92, 231, 0.3),
+            transparent);
+    animation: beamShoot 0.5s ease-out forwards;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.beam_topLeft,
+.beam_bottomLeft {
+    right: -60px;
+    width: 60px;
+}
+
+.beam_topRight,
+.beam_bottomRight {
+    left: -60px;
+    width: 60px;
+    background: linear-gradient(270deg,
+            rgba(0, 210, 255, 0.5),
+            rgba(108, 92, 231, 0.3),
+            transparent);
+}
+
+.beam_topLeft,
+.beam_topRight {
+    top: 50%;
+}
+
+.beam_bottomLeft,
+.beam_bottomRight {
+    bottom: 50%;
+}
+
+@keyframes beamShoot {
+    from {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+}
+
+/* ═══ Energy Beams ════════════════ */
+.energyBeams {
+    position: absolute;
+    inset: -20%;
+    width: 140%;
+    height: 140%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;
+}
+
+.energyLine {
+    fill: none;
+    stroke: url(#armGrad);
+    stroke-width: 2;
+    stroke-dasharray: 8 6;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgba(0, 210, 255, 0.4));
+    animation: energyFlow 1s linear infinite, energyAppear 0.4s ease-out;
+    stroke: rgba(0, 210, 255, 0.5);
+}
+
+@keyframes energyFlow {
+    from {
+        stroke-dashoffset: 0;
+    }
+
+    to {
+        stroke-dashoffset: -28;
+    }
+}
+
+@keyframes energyAppear {
+    from {
+        opacity: 0;
+        stroke-width: 0;
+    }
+
+    to {
+        opacity: 1;
+        stroke-width: 2;
+    }
+}
+
+/* ═══ Response Card ═══════════════ */
+.response {
+    max-width: 700px;
+    margin: 48px auto 0;
+    background: rgba(10, 10, 30, 0.8);
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    border-radius: 20px;
+    padding: 28px 32px;
+    backdrop-filter: blur(16px);
+    animation: fadeSlideUp 0.6s ease-out;
+    position: relative;
+    z-index: 2;
+}
+
+.responseHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.responseIcon {
+    font-size: 1.3rem;
+}
+
+.responseLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.responseText {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-white);
+}
+
+.cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    background: var(--primary-light);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: cursorBlink 0.7s step-end infinite;
+}
+
+@keyframes cursorBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* ═══ Responsive ══════════════════ */
+@media (max-width: 1024px) {
+    .arena {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 16px;
+    }
+
+    .figure {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    .card_topLeft {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .card_topRight {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .card_bottomLeft {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .card_bottomRight {
+        grid-column: 2;
+        grid-row: 3;
+    }
+
+    .card {
+        transform: translateY(20px);
+    }
+
+    .connectionBeam {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .section {
+        padding: 60px 0 60px;
+    }
+
+    .arena {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .card_topLeft,
+    .card_topRight,
+    .card_bottomLeft,
+    .card_bottomRight {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .figure {
+        max-width: 220px;
+    }
+}

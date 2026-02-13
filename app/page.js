@@ -24,6 +24,11 @@ const NeuralProof = dynamic(() => import("./components/NeuralProof"), { ssr: fal
 const LossSimulation = dynamic(() => import("./components/LossSimulation"), { ssr: false });
 const RevenueSimulator = dynamic(() => import("./components/RevenueSimulator"), { ssr: false });
 const AIGreeter = dynamic(() => import("./components/AIGreeter"), { ssr: false });
+const TourOverlay = dynamic(() => import("./components/TourOverlay"), { ssr: false });
+const NeuralPulse = dynamic(() => import("./components/NeuralPulse"), { ssr: false });
+const NeuralEmpathy = dynamic(() => import("./components/NeuralEmpathy"), { ssr: false });
+const HoloAssistant = dynamic(() => import("./components/HoloAssistant"), { ssr: false });
+import TourProvider from "./components/TourManager";
 
 /* ── SVG Icon Components ───────────────────────── */
 
@@ -98,15 +103,15 @@ const PLANS = {
   month: [
     {
       name: "Starter",
-      price: 19.99,
-      desc: "For solo businesses getting started",
+      price: 49,
+      desc: "For solo operators & small teams",
       features: [
-        { text: "SMS auto-responder", included: true },
-        { text: "Up to 50 leads/month", included: true },
+        { text: "SMS + Voice AI auto-responder", included: true },
+        { text: "Up to 100 leads/month", included: true },
         { text: "1 AI phone number", included: true },
-        { text: "1 integration source", included: true },
-        { text: "Basic lead dashboard", included: true },
-        { text: "Voice AI (phone calls)", included: false },
+        { text: "2 integration sources", included: true },
+        { text: "Lead dashboard + basic analytics", included: true },
+        { text: "24/7 AI answering", included: true },
         { text: "Custom AI scripts", included: false },
         { text: "Team members", included: false },
         { text: "CRM export & API", included: false },
@@ -114,51 +119,51 @@ const PLANS = {
     },
     {
       name: "Professional",
-      price: 29.99,
-      desc: "For growing businesses",
+      price: 99,
+      desc: "For growing service businesses",
       popular: true,
       features: [
         { text: "SMS + Voice AI calls", included: true },
-        { text: "Up to 300 leads/month", included: true },
-        { text: "1 AI phone number", included: true },
+        { text: "Up to 500 leads/month", included: true },
+        { text: "2 AI phone numbers", included: true },
         { text: "All integrations (Yelp, Thumbtack, Google)", included: true },
-        { text: "Full dashboard + analytics", included: true },
-        { text: "Custom AI scripts", included: true },
-        { text: "Up to 3 team members", included: true },
-        { text: "CRM export", included: true },
-        { text: "API access", included: false },
+        { text: "Full dashboard + advanced analytics", included: true },
+        { text: "Custom AI scripts & tone", included: true },
+        { text: "Up to 5 team members", included: true },
+        { text: "CRM export + Zapier", included: true },
+        { text: "Priority email support", included: true },
       ],
     },
     {
       name: "Business",
-      price: 49.99,
-      desc: "For teams and agencies",
+      price: 199,
+      desc: "For teams, multi-location & agencies",
       features: [
         { text: "SMS + Voice AI calls", included: true },
         { text: "Unlimited leads", included: true },
-        { text: "Up to 3 phone numbers", included: true },
+        { text: "Up to 5 phone numbers", included: true },
         { text: "All integrations (Yelp, Thumbtack, Google)", included: true },
-        { text: "Full dashboard + analytics", included: true },
-        { text: "Custom AI scripts", included: true },
+        { text: "Full dashboard + custom reports", included: true },
+        { text: "Custom AI scripts & voice cloning", included: true },
         { text: "Unlimited team members", included: true },
-        { text: "CRM export + API access", included: true },
-        { text: "White-label & priority support", included: true },
+        { text: "CRM export + API access + Zapier", included: true },
+        { text: "White-label & dedicated support", included: true },
       ],
     },
   ],
   year: [
     {
       name: "Starter",
-      price: 15.92,
-      desc: "For solo businesses getting started",
-      annual: 191,
+      price: 39,
+      desc: "For solo operators & small teams",
+      annual: 468,
       features: [
-        { text: "SMS auto-responder", included: true },
-        { text: "Up to 50 leads/month", included: true },
+        { text: "SMS + Voice AI auto-responder", included: true },
+        { text: "Up to 100 leads/month", included: true },
         { text: "1 AI phone number", included: true },
-        { text: "1 integration source", included: true },
-        { text: "Basic lead dashboard", included: true },
-        { text: "Voice AI (phone calls)", included: false },
+        { text: "2 integration sources", included: true },
+        { text: "Lead dashboard + basic analytics", included: true },
+        { text: "24/7 AI answering", included: true },
         { text: "Custom AI scripts", included: false },
         { text: "Team members", included: false },
         { text: "CRM export & API", included: false },
@@ -166,37 +171,37 @@ const PLANS = {
     },
     {
       name: "Professional",
-      price: 24,
-      desc: "For growing businesses",
+      price: 79,
+      desc: "For growing service businesses",
       popular: true,
-      annual: 288,
+      annual: 948,
       features: [
         { text: "SMS + Voice AI calls", included: true },
-        { text: "Up to 300 leads/month", included: true },
-        { text: "1 AI phone number", included: true },
+        { text: "Up to 500 leads/month", included: true },
+        { text: "2 AI phone numbers", included: true },
         { text: "All integrations (Yelp, Thumbtack, Google)", included: true },
-        { text: "Full dashboard + analytics", included: true },
-        { text: "Custom AI scripts", included: true },
-        { text: "Up to 3 team members", included: true },
-        { text: "CRM export", included: true },
-        { text: "API access", included: false },
+        { text: "Full dashboard + advanced analytics", included: true },
+        { text: "Custom AI scripts & tone", included: true },
+        { text: "Up to 5 team members", included: true },
+        { text: "CRM export + Zapier", included: true },
+        { text: "Priority email support", included: true },
       ],
     },
     {
       name: "Business",
-      price: 40,
-      desc: "For teams and agencies",
-      annual: 480,
+      price: 159,
+      desc: "For teams, multi-location & agencies",
+      annual: 1908,
       features: [
         { text: "SMS + Voice AI calls", included: true },
         { text: "Unlimited leads", included: true },
-        { text: "Up to 3 phone numbers", included: true },
+        { text: "Up to 5 phone numbers", included: true },
         { text: "All integrations (Yelp, Thumbtack, Google)", included: true },
-        { text: "Full dashboard + analytics", included: true },
-        { text: "Custom AI scripts", included: true },
+        { text: "Full dashboard + custom reports", included: true },
+        { text: "Custom AI scripts & voice cloning", included: true },
         { text: "Unlimited team members", included: true },
-        { text: "CRM export + API access", included: true },
-        { text: "White-label & priority support", included: true },
+        { text: "CRM export + API access + Zapier", included: true },
+        { text: "White-label & dedicated support", included: true },
       ],
     },
   ],
@@ -299,6 +304,17 @@ const TESTIMONIALS = [
   },
 ];
 
+const FAQ_DATA = [
+  { q: "How does the AI actually answer my calls?", a: "When a call comes in, our AI answers instantly in a natural, human-like voice powered by advanced language models. It greets the caller, understands their request, qualifies the lead, provides basic info about your services, and can schedule appointments — all without you lifting a finger." },
+  { q: "Will callers know they're talking to AI?", a: "Our AI sounds remarkably natural and conversational. Most callers won't notice the difference. If the AI encounters something complex, it smoothly offers to have you call back — just like a real receptionist would." },
+  { q: "How long does setup take?", a: "About 5 minutes. Sign up, choose a local phone number, customize your greeting and services, and you're live. No technical skills needed. No contracts. You can forward your existing business number to the AI number instantly." },
+  { q: "What happens to the leads the AI captures?", a: "Every call and message is logged in your dashboard in real-time. You'll see the caller's name, phone number, what they need, and the AI's transcript. You can also export leads to your CRM or get instant notifications via SMS/email." },
+  { q: "Can I customize what the AI says?", a: "Absolutely. You control the greeting, tone, services list, pricing guidance, business hours, and booking rules. The AI adapts to your specific business type automatically — whether you're a plumber, salon, electrician, or any of 25+ industries." },
+  { q: "Does it work with Yelp, Thumbtack, and Google?", a: "Yes! HustleAI auto-responds to Yelp messages and Thumbtack leads within seconds — before your competitors even see them. Google Business Profile leads are captured directly into your pipeline too." },
+  { q: "What if I want to cancel?", a: "Cancel anytime with one click from your dashboard — no contracts, no cancellation fees, no questions asked. We also offer a free 7-day trial so you can test everything risk-free before committing." },
+  { q: "How much does it cost compared to a receptionist?", a: "A full-time receptionist costs $2,500–$4,000/month. HustleAI starts at $49/month — that's less than $2/day — and works 24/7/365, weekends, holidays, and 3 AM emergency calls included. Most businesses see ROI within the first week from just one extra booked job." },
+];
+
 /* ── Component ─────────────────────────────────── */
 
 export default function LandingPage() {
@@ -309,6 +325,7 @@ export default function LandingPage() {
   const [heroText, setHeroText] = useState("");
   const [heroTypingDone, setHeroTypingDone] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState(null);
   const plans = PLANS[billing];
   const heroFullText = "AI Answers Every Call & Message.";
 
@@ -334,12 +351,18 @@ export default function LandingPage() {
     }
   };
 
-  /* ── Scroll progress bar ─────────────────────── */
+  /* ── Scroll progress bar (throttled via rAF) ──── */
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (window.scrollY / totalHeight) * 100;
+        setScrollProgress(progress);
+        ticking = false;
+      });
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -427,402 +450,509 @@ export default function LandingPage() {
   };
 
   return (
-    <NeuralRevealProvider sectionIds={["industries", "loss", "calculator", "cta"]}>
-      <div className={styles.landing}>
-        <ParticleNetwork />
-        <CustomCursor />
-        <AIGreeter />
-        <NeuralGuideSpine />
+    <NeuralRevealProvider sectionIds={["features", "industries", "loss", "calculator", "pricing", "cta"]}>
+      <TourProvider>
+        <div className={styles.landing}>
+          <ParticleNetwork />
+          <CustomCursor />
+          <AIGreeter />
+          <NeuralGuideSpine />
+          <TourOverlay />
+          <NeuralPulse />
 
-        {/* ── Scroll Progress Bar ──────────────────────── */}
-        <div className={styles.scrollProgress} style={{ width: `${scrollProgress}%` }} />
+          {/* ── Scroll Progress Bar ──────────────────────── */}
+          <div className={styles.scrollProgress} style={{ width: `${scrollProgress}%` }} />
 
-        {/* ── Navigation ──────────────────────────────── */}
-        <nav className={styles.nav}>
-          <div className={`container ${styles.navInner}`}>
-            <a href="/" className={styles.logo}>
-              <HustleLogo variant="full" size={30} />
-            </a>
-            <div className={styles.navLinks}>
-              <a href="#features">Features</a>
-              <a href="#industries">Industries</a>
-              <a href="#pricing">Pricing</a>
-            </div>
-            <div className={styles.navActions}>
-              <AIModeSwitch />
-              <a href="/login" className="btn btn-ghost">Log In</a>
-              <a href="/signup" className="btn btn-primary">Start Free Trial</a>
-            </div>
-            {/* ── Hamburger ─────────────────────────────── */}
-            <button
-              className={`${styles.hamburger} ${mobileMenuOpen ? styles.hamburgerActive : ""}`}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <span /><span /><span />
-            </button>
-          </div>
-        </nav>
-
-        {/* ── Mobile Menu Overlay ──────────────────────── */}
-        <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ""}`}>
-          <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
-          <a href="#industries" onClick={() => setMobileMenuOpen(false)}>Industries</a>
-          <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
-          <div className={styles.mobileMenuActions}>
-            <a href="/login" className="btn btn-ghost" onClick={() => setMobileMenuOpen(false)}>Log In</a>
-            <a href="/signup" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)}>Start Free Trial</a>
-          </div>
-        </div>
-
-        {/* ── Hero ────────────────────────────────────── */}
-        <section className={styles.hero}>
-          <div className={styles.heroGlow} />
-          <div className="grid-bg" />
-          <div className={`orb orb-primary ${styles.heroOrb1}`} />
-          <div className={`orb orb-accent ${styles.heroOrb2}`} />
-
-          <div className={`container ${styles.heroInner}`}>
-            <div className="animate-fadeInUp">
-              <div className={styles.heroBadge}>
-                <span className={styles.heroBadgeDot} />
-                Your Calls Answered. Your Revenue Protected.
+          {/* ── Navigation ──────────────────────────────── */}
+          <nav className={styles.nav}>
+            <div className={`container ${styles.navInner}`}>
+              <a href="/" className={styles.logo}>
+                <HustleLogo variant="full" size={30} />
+              </a>
+              <div className={styles.navLinks}>
+                <a href="#features">Features</a>
+                <a href="#industries">Industries</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
               </div>
-            </div>
-
-            {/* AI Status Chip */}
-            <div className={`animate-fadeInUp ${styles.statusChip}`}>
-              <span className={styles.statusDot} />
-              <span>AI Active</span>
-              <span className={styles.statusSep}>•</span>
-              <span>Answering Calls</span>
-            </div>
-            <h1 className="animate-fadeInUp delay-1">
-              Your AI Employee That<br />
-              <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
-            </h1>
-            <p className={`animate-fadeInUp delay-2 ${styles.heroSub}`}>
-              <strong style={{ color: "var(--text-white)" }}>85% of callers who reach voicemail never call back.</strong>{" "}
-              HustleAI answers every call in under 3 seconds, qualifies leads, and books jobs — 24/7, on autopilot.
-            </p>
-            <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
-              <MagneticButton href="/signup" className="btn btn-accent btn-lg">
-                Start Free 7-Day Trial <IconArrowRight className={styles.btnIconInline} />
-              </MagneticButton>
-              <MagneticButton href="#how-it-works" className="btn btn-secondary btn-lg">
-                Watch How It Works
-              </MagneticButton>
-              <button onClick={() => setDemoOpen(true)} className={`btn btn-ghost btn-lg ${styles.demoBtn}`}>
-                ▶ Try a 10-sec Demo
+              <div className={styles.navActions}>
+                <AIModeSwitch />
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => { if (window.__hustleStartTour) window.__hustleStartTour(); }}
+                  style={{ fontSize: '0.85rem', gap: '4px' }}
+                >
+                  ▶ Tour
+                </button>
+                <a href="/login" className="btn btn-ghost">Log In</a>
+                <a href="/signup" className="btn btn-primary">Start Free Trial</a>
+              </div>
+              {/* ── Hamburger ─────────────────────────────── */}
+              <button
+                className={`${styles.hamburger} ${mobileMenuOpen ? styles.hamburgerActive : ""}`}
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <span /><span /><span />
               </button>
             </div>
+          </nav>
 
-            {/* AI Activity Feed */}
-            <div className="animate-fadeInUp delay-5">
-              <AIActivityFeed />
+          {/* ── Mobile Menu Overlay ──────────────────────── */}
+          <div className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.mobileMenuOpen : ""}`}>
+            <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+            <a href="#industries" onClick={() => setMobileMenuOpen(false)}>Industries</a>
+            <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+            <a href="#faq" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
+            <button
+              className={styles.mobileTourBtn}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setTimeout(() => { if (window.__hustleStartTour) window.__hustleStartTour(); }, 350);
+              }}
+            >
+              ▶ Tour
+            </button>
+            <div className={styles.mobileMenuActions}>
+              <a href="/login" className="btn btn-ghost" onClick={() => setMobileMenuOpen(false)}>Log In</a>
+              <a href="/signup" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)}>Start Free Trial</a>
             </div>
+          </div>
 
-            <div className={`animate-fadeInUp delay-4 ${styles.socialProof}`}>
-              <div className={styles.avatarStack}>
-                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #6C5CE7, #A29BFE)" }}>M</span>
-                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00B894, #55efc4)" }}>S</span>
-                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00D2FF, #0984e3)" }}>J</span>
-                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FDCB6E, #e17055)" }}>A</span>
-                <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FF6B6B, #e74c3c)" }}>R</span>
+          {/* ── Hero ────────────────────────────────────── */}
+          <section className={styles.hero}>
+            <div className={styles.heroGlow} />
+            <div className="grid-bg" />
+            <div className={`orb orb-primary ${styles.heroOrb1}`} />
+            <div className={`orb orb-accent ${styles.heroOrb2}`} />
+
+            <div className={`container ${styles.heroInner}`}>
+              <div className="animate-fadeInUp">
+                <div className={styles.heroBadge}>
+                  <span className={styles.heroBadgeDot} />
+                  Your Calls Answered. Your Revenue Protected.
+                </div>
               </div>
-              <span className={styles.socialProofText}>
-                <strong>2,500+</strong> businesses recovered revenue with HustleAI
-              </span>
-              <span className={styles.starsRow}>
-                {[...Array(5)].map((_, i) => <IconStar key={i} className={styles.starIcon} />)}
-              </span>
+
+              {/* AI Status Chip */}
+              <div className={`animate-fadeInUp ${styles.statusChip}`}>
+                <span className={styles.statusDot} />
+                <span>AI Active</span>
+                <span className={styles.statusSep}>•</span>
+                <span>Answering Calls</span>
+              </div>
+              <h1 className="animate-fadeInUp delay-1">
+                Your AI Employee That<br />
+                <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
+              </h1>
+              <p className={`animate-fadeInUp delay-2 ${styles.heroSub}`}>
+                <strong style={{ color: "var(--text-white)" }}>85% of callers who reach voicemail never call back.</strong>{" "}
+                HustleAI answers every call in under 3 seconds, qualifies leads, and books jobs — 24/7, on autopilot.
+              </p>
+              <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
+                <MagneticButton href="/signup" className="btn btn-accent btn-lg">
+                  Start Free 7-Day Trial <IconArrowRight className={styles.btnIconInline} />
+                </MagneticButton>
+                <MagneticButton href="#how-it-works" className="btn btn-secondary btn-lg">
+                  Watch How It Works
+                </MagneticButton>
+                <button onClick={() => setDemoOpen(true)} className={`btn btn-ghost btn-lg ${styles.demoBtn}`}>
+                  ▶ Try a 10-sec Demo
+                </button>
+              </div>
+
+              {/* AI Activity Feed */}
+              <div className="animate-fadeInUp delay-5">
+                <AIActivityFeed />
+              </div>
+
+              <div className={`animate-fadeInUp delay-4 ${styles.socialProof}`}>
+                <div className={styles.avatarStack}>
+                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #6C5CE7, #A29BFE)" }}>M</span>
+                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00B894, #55efc4)" }}>S</span>
+                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00D2FF, #0984e3)" }}>J</span>
+                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FDCB6E, #e17055)" }}>A</span>
+                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FF6B6B, #e74c3c)" }}>R</span>
+                </div>
+                <span className={styles.socialProofText}>
+                  <strong>2,500+</strong> businesses recovered revenue with HustleAI
+                </span>
+                <span className={styles.starsRow}>
+                  {[...Array(5)].map((_, i) => <IconStar key={i} className={styles.starIcon} />)}
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className={`animate-fadeInUp delay-5 ${styles.heroImage}`}>
-            <HolographicOrb />
-          </div>
-        </section>
+            <div className={`animate-fadeInUp delay-5 ${styles.heroImage}`}>
+              <HolographicOrb />
+            </div>
+          </section>
 
-        {/* ── Revenue Counter ──────────────────────────── */}
-        <RevenueCounter />
+          {/* ── Revenue Counter ──────────────────────────── */}
+          <RevenueCounter />
 
-        {/* ── Value Propositions ──────────────────────── */}
-        {VALUE_PROPS.map((vp, i) => (
-          <section key={i} className={styles.valueSection}>
-            <div className={`container ${styles.valueInner} ${vp.reverse ? styles.valueReverse : ""}`}>
-              <div className={`${vp.reverse ? "reveal-right" : "reveal-left"} ${styles.valueContent}`}>
-                <span className={styles.valueTag}>{vp.tag}</span>
-                <h2>{vp.title}</h2>
-                <p className={styles.valueDesc}>{vp.desc}</p>
-                <div className={styles.valueStats}>
-                  {vp.stats.map((s, j) => (
-                    <div key={j} className={styles.valueStat}>
-                      <Counter value={s.value} />
-                      <span>{s.label}</span>
+          {/* ── Value Propositions ──────────────────────── */}
+          {VALUE_PROPS.map((vp, i) => (
+            <section key={i} className={styles.valueSection}>
+              <div className={`container ${styles.valueInner} ${vp.reverse ? styles.valueReverse : ""}`}>
+                <div className={`${vp.reverse ? "reveal-right" : "reveal-left"} ${styles.valueContent}`}>
+                  <span className={styles.valueTag}>{vp.tag}</span>
+                  <h2>{vp.title}</h2>
+                  <p className={styles.valueDesc}>{vp.desc}</p>
+                  <div className={styles.valueStats}>
+                    {vp.stats.map((s, j) => (
+                      <div key={j} className={styles.valueStat}>
+                        <Counter value={s.value} />
+                        <span>{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className={`${vp.reverse ? "reveal-left" : "reveal-right"} ${styles.valueImage}`}>
+                  {vp.panel === "call" ? <CallPanel /> : <RevenueDashPanel />}
+                </div>
+              </div>
+            </section>
+          ))}
+
+          <div className="glass-divider" />
+
+          {/* ── Features ────────────────────────────────── */}
+          <UnlockSection id="features">
+            <section id="features" className={styles.features}>
+              <div className="container">
+                <div className="text-center reveal">
+                  <span className={styles.sectionTag}>The Platform</span>
+                  <h2>One System. <span className="text-gradient">Every Channel Covered.</span></h2>
+                  <p className={styles.sectionSub}>
+                    Phone calls, SMS, Yelp, Thumbtack, Google — every lead captured and converted.
+                  </p>
+                </div>
+                <div className={`${styles.featuresGrid} stagger-children`}>
+                  {FEATURES.map((f, i) => (
+                    <div key={i} className={`card ${styles.featureCard} reveal`}
+                      onMouseMove={handleTilt}
+                      onMouseLeave={handleTiltReset}
+                    >
+                      <div className={`${styles.featureImageWrap} float-icon`}>
+                        <FeaturePanel type={f.type} />
+                      </div>
+                      <h4>{f.title}</h4>
+                      <p>{f.desc}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className={`text-center reveal ${styles.midCta}`}>
+                  <p className={styles.midCtaText}>See it in action — go live in 5 minutes.</p>
+                  <a href="/signup" className="btn btn-accent">Start Free Trial <IconArrowRight className={styles.btnIconInline} /></a>
+                </div>
+              </div>
+            </section>
+          </UnlockSection>
+
+          <div className="glass-divider" />
+
+          {/* ── Industry Showcases (with images) ─────── */}
+          <UnlockSection id="industries">
+            <section id="industries" className={styles.industriesSection}>
+              <div className="container">
+                <div className="text-center reveal">
+                  <span className={styles.sectionTag}>25+ Industries</span>
+                  <h2>Built for <span className="text-gradient">Every Industry</span></h2>
+                  <p className={styles.sectionSub}>
+                    From plumbers to salons, our AI adapts to your business type automatically.
+                  </p>
+                </div>
+
+                <div className={styles.industryShowcases}>
+                  {INDUSTRY_SHOWCASES.map((ind, i) => (
+                    <div key={i} className={`${styles.industryCard} ${i % 2 === 1 ? "reveal-right" : "reveal-left"}`}>
+                      <div className={styles.industryCardImage}>
+                        <IndustryPanel name={ind.name} desc={ind.desc} />
+                      </div>
+                      <div className={styles.industryCardContent}>
+                        <h3>{ind.name}</h3>
+                        <p>{ind.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-center reveal" style={{ marginTop: "48px" }}>
+                  <h3 style={{ fontSize: "1.3rem", marginBottom: "24px" }}>...and <span className="text-gradient">15+ more</span></h3>
+                </div>
+                <div className={`${styles.allIndustriesGrid} ${styles.scanGrid} stagger-children`}>
+                  {ALL_INDUSTRIES.map((name, i) => (
+                    <div key={i} className={`${styles.miniIndustryCard} reveal`}>
+                      <IndustryIcon type={name} />
+                      <span>{name}</span>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className={`${vp.reverse ? "reveal-left" : "reveal-right"} ${styles.valueImage}`}>
-                {vp.panel === "call" ? <CallPanel /> : <RevenueDashPanel />}
-              </div>
-            </div>
-          </section>
-        ))}
+            </section>
+          </UnlockSection>
 
-        <div className="glass-divider" />
+          <div className="glass-divider" />
 
-        {/* ── Features ────────────────────────────────── */}
-        <section id="features" className={styles.features}>
-          <div className="container">
-            <div className="text-center reveal">
-              <span className={styles.sectionTag}>The Platform</span>
-              <h2>One System. <span className="text-gradient">Every Channel Covered.</span></h2>
-              <p className={styles.sectionSub}>
-                Phone calls, SMS, Yelp, Thumbtack, Google — every lead captured and converted.
-              </p>
-            </div>
-            <div className={`${styles.featuresGrid} stagger-children`}>
-              {FEATURES.map((f, i) => (
-                <div key={i} className={`card ${styles.featureCard} reveal`}
-                  onMouseMove={handleTilt}
-                  onMouseLeave={handleTiltReset}
-                >
-                  <div className={`${styles.featureImageWrap} float-icon`}>
-                    <FeaturePanel type={f.type} />
-                  </div>
-                  <h4>{f.title}</h4>
-                  <p>{f.desc}</p>
-                </div>
-              ))}
-            </div>
-            <div className={`text-center reveal ${styles.midCta}`}>
-              <p className={styles.midCtaText}>See it in action — go live in 5 minutes.</p>
-              <a href="/signup" className="btn btn-accent">Start Free Trial <IconArrowRight className={styles.btnIconInline} /></a>
-            </div>
-          </div>
-        </section>
+          {/* ── Holographic AI Assistant ──────────────────── */}
+          <HoloAssistant />
 
-        <div className="glass-divider" />
+          <div className="glass-divider" />
 
-        {/* ── Industry Showcases (with images) ─────── */}
-        <UnlockSection id="industries">
-          <section id="industries" className={styles.industriesSection}>
+          {/* ── Neural Empathy Engine ──────────────────────── */}
+          <NeuralEmpathy />
+
+          <div className="glass-divider" />
+
+          {/* ── Neural Proof ──────────────────────────────── */}
+          <NeuralProof />
+
+          <div className="glass-divider" />
+
+          {/* ── AI Voice Demo ────────────────────────────── */}
+          <VoiceDemo />
+
+
+          {/* ── Social Proof Counters ──────────────────────── */}
+          <section className={styles.socialProof}>
             <div className="container">
-              <div className="text-center reveal">
-                <span className={styles.sectionTag}>25+ Industries</span>
-                <h2>Built for <span className="text-gradient">Every Industry</span></h2>
+              <div className={`text-center reveal ${styles.socialProofHeader}`}>
+                <span className={styles.sectionTag}>Proven Results</span>
+                <h2>Numbers That <span className="text-gradient">Speak For Themselves</span></h2>
                 <p className={styles.sectionSub}>
-                  From plumbers to salons, our AI adapts to your business type automatically.
+                  Real businesses. Real results. Join the thousands already growing with AI.
                 </p>
               </div>
-
-              <div className={styles.industryShowcases}>
-                {INDUSTRY_SHOWCASES.map((ind, i) => (
-                  <div key={i} className={`${styles.industryCard} ${i % 2 === 1 ? "reveal-right" : "reveal-left"}`}>
-                    <div className={styles.industryCardImage}>
-                      <IndustryPanel name={ind.name} desc={ind.desc} />
-                    </div>
-                    <div className={styles.industryCardContent}>
-                      <h3>{ind.name}</h3>
-                      <p>{ind.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="text-center reveal" style={{ marginTop: "48px" }}>
-                <h3 style={{ fontSize: "1.3rem", marginBottom: "24px" }}>...and <span className="text-gradient">15+ more</span></h3>
-              </div>
-              <div className={`${styles.allIndustriesGrid} ${styles.scanGrid} stagger-children`}>
-                {ALL_INDUSTRIES.map((name, i) => (
-                  <div key={i} className={`${styles.miniIndustryCard} reveal`}>
-                    <IndustryIcon type={name} />
-                    <span>{name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </UnlockSection>
-
-        <div className="glass-divider" />
-
-        {/* ── Neural Proof ──────────────────────────────── */}
-        <NeuralProof />
-
-        <div className="glass-divider" />
-
-        {/* ── AI Voice Demo ────────────────────────────── */}
-        <VoiceDemo />
-
-        <div className="glass-divider" />
-
-        {/* ── How It Works: Lightning Journey ──────────── */}
-        <LightningJourney />
-
-        <div className="glass-divider" />
-
-        {/* ── Loss Simulation ───────────────────────────── */}
-        <UnlockSection id="loss">
-          <LossSimulation />
-        </UnlockSection>
-
-        <div className="glass-divider" />
-
-        {/* ── Revenue Leakage Simulator ─────────────────── */}
-        <UnlockSection id="calculator">
-          <RevenueSimulator />
-        </UnlockSection>
-
-        <div className="glass-divider" />
-
-        {/* ── Pricing ─────────────────────────────────── */}
-        <section id="pricing" className={styles.pricing}>
-          <div className="container">
-            <div className="text-center reveal">
-              <span className={styles.sectionTag}>Transparent Pricing</span>
-              <h2>Plans That <span className="text-gradient">Pay For Themselves</span></h2>
-              <p className={styles.sectionSub}>
-                One missed call costs your business $100-$1,200. HustleAI pays for itself with the first answered call.
-              </p>
-              <div className={styles.billingToggle}>
-                <div className="pricing-toggle">
-                  <button className={billing === "month" ? "active" : ""} onClick={() => setBilling("month")}>Monthly</button>
-                  <button className={billing === "year" ? "active" : ""} onClick={() => setBilling("year")}>
-                    Annual <span className={styles.saveBadge}>Save 20%</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className={`${styles.pricingGrid} stagger-children`}>
-              {plans.map((plan, i) => (
-                <div key={i} className={`pricing-card ${plan.popular ? "featured" : ""} reveal`}
-                  onMouseMove={handleTilt}
-                  onMouseLeave={handleTiltReset}
-                >
-                  {plan.popular && <div className="popular-badge">Most Popular</div>}
-                  <div className="plan-name">{plan.name}</div>
-                  <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{plan.desc}</p>
-                  <div className="price">${plan.price}<span>/mo</span></div>
-                  {billing === "year" && plan.annual && <div className="price-annual">Billed ${plan.annual}/year</div>}
-                  <div className="features-list">
-                    {plan.features.map((f, j) => (
-                      <div key={j} className="feature-item">
-                        {f.included
-                          ? <IconCheck className={styles.checkIcon} />
-                          : <IconMinus className={styles.minusIcon} />
-                        }
-                        <span style={{ color: f.included ? "var(--text-primary)" : "var(--text-muted)" }}>{f.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => handleCheckout(plan.name)}
-                    disabled={checkoutLoading !== null}
-                    className={`btn ${plan.popular ? "btn-accent" : "btn-secondary"} btn-lg`}
-                    style={{ width: "100%", marginTop: "24px" }}
+              <div className={`${styles.proofCounters} stagger-children`}>
+                {[
+                  { value: "2,500+", label: "Businesses Automated", sub: "Across 25+ industries" },
+                  { value: "$12M+", label: "Revenue Recovered", sub: "From missed calls alone" },
+                  { value: "99.7%", label: "Uptime Guaranteed", sub: "Enterprise-grade reliability" },
+                  { value: "<3 sec", label: "Average Response Time", sub: "Faster than any human" },
+                ].map((stat, i) => (
+                  <div key={i} className={`card ${styles.proofCounterCard} reveal`}
+                    onMouseMove={handleTilt}
+                    onMouseLeave={handleTiltReset}
                   >
-                    {checkoutLoading === plan.name ? "Redirecting..." : plan.popular ? "Start Free Trial" : "Get Started"}
-                  </button>
-                  <div className={styles.cancelNote}>Cancel anytime · No contracts</div>
-                  {plan.popular && <div className={styles.roiHint}>Typical payback: 3–7 days</div>}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Testimonials ────────────────────────────── */}
-        <section className={styles.testimonials}>
-          <div className="container">
-            <div className="text-center reveal">
-              <span className={styles.sectionTag}>Real Results</span>
-              <h2>They Tried It. <span className="text-gradient">Revenue Went Up.</span></h2>
-            </div>
-            <div className={`${styles.testimonialGrid} stagger-children`}>
-              {TESTIMONIALS.map((t, i) => (
-                <div key={i} className={`card ${styles.testimonialCard} reveal`}>
-                  <div className={styles.starsRow}>
-                    {[...Array(t.rating)].map((_, j) => <IconStar key={j} className={styles.starIcon} />)}
+                    <div className={styles.proofCounterValue}>{stat.value}</div>
+                    <div className={styles.proofCounterLabel}>{stat.label}</div>
+                    <div className={styles.proofCounterSub}>{stat.sub}</div>
                   </div>
-                  <p className={styles.quote}>&ldquo;{t.quote}&rdquo;</p>
-                  <div className={styles.testimonialRevenue}>{t.revenue}</div>
-                  <div className={styles.author}>
-                    <strong>{t.name}</strong>
-                    <span>{t.role}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── CTA ─────────────────────────────────────── */}
-        <UnlockSection id="cta">
-          <section className={styles.cta}>
-            <div className={styles.ctaGlow} />
-            <div className="grid-bg" />
-            <div className="container text-center reveal-scale">
-              <h2 style={{ fontSize: "2.5rem" }}>
-                Stop Missing Calls.<br />
-                <span className="text-gradient">Start Growing Revenue.</span>
-              </h2>
-              <p className={styles.sectionSub} style={{ maxWidth: "500px", margin: "16px auto 0" }}>
-                Join 2,500+ business owners who automated their dispatch with AI. 7-day free trial. No credit card required.
-              </p>
-              <a href="/signup" className="btn btn-accent btn-lg" style={{ marginTop: "32px" }}>
-                Start Your Free Trial <IconArrowRight className={styles.btnIconInline} />
-              </a>
-              <div className={styles.ctaTrust}>
-                <span><IconShield className={styles.trustIcon} /> No credit card required</span>
-                <span><IconShield className={styles.trustIcon} /> Cancel anytime</span>
-                <span><IconShield className={styles.trustIcon} /> Setup in 5 minutes</span>
+                ))}
               </div>
             </div>
           </section>
-        </UnlockSection>
 
-        {/* ── Footer ──────────────────────────────────── */}
-        <footer className={styles.footer}>
-          <div className={`container ${styles.footerInner}`}>
-            <div className={styles.footerBrand}>
-              <div className={styles.footerLogo}>
-                <HustleLogo variant="full" size={26} />
-              </div>
-              <p style={{ marginTop: "8px", fontSize: "0.85rem" }}>AI-powered business growth platform.</p>
-            </div>
-            <div className={styles.footerLinks}>
-              <div>
-                <h5>Product</h5>
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#how-it-works">How It Works</a>
-              </div>
-              <div>
-                <h5>Company</h5>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
-                <a href="/privacy">Privacy Policy</a>
-                <a href="/terms">Terms of Service</a>
-              </div>
-              <div>
-                <h5>Support</h5>
-                <a href="#">Help Center</a>
-                <a href="#">Status</a>
-                <a href="#">API Docs</a>
-              </div>
-            </div>
-            <div className={styles.footerBottom}>
-              <p>&copy; 2026 HustleAI. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
+          <div className="glass-divider" />
 
-        <ChatWidget />
-        <DemoModal isOpen={demoOpen} onClose={() => setDemoOpen(false)} />
-      </div>
+          {/* ── How It Works: Lightning Journey ──────────── */}
+          <LightningJourney />
+
+          <div className="glass-divider" />
+
+          {/* ── Loss Simulation ───────────────────────────── */}
+          <UnlockSection id="loss">
+            <LossSimulation />
+          </UnlockSection>
+
+          <div className="glass-divider" />
+
+          {/* ── Revenue Leakage Simulator ─────────────────── */}
+          <UnlockSection id="calculator">
+            <RevenueSimulator />
+          </UnlockSection>
+
+          <div className="glass-divider" />
+
+          {/* ── Pricing ─────────────────────────────────── */}
+          <UnlockSection id="pricing">
+            <section id="pricing" className={styles.pricing}>
+              <div className="container">
+                <div className="text-center reveal">
+                  <span className={styles.sectionTag}>Transparent Pricing</span>
+                  <h2>Plans That <span className="text-gradient">Pay For Themselves</span></h2>
+                  <p className={styles.sectionSub}>
+                    One missed call costs your business $100-$1,200. HustleAI pays for itself with the first answered call.
+                  </p>
+                  <div className={styles.billingToggle}>
+                    <div className="pricing-toggle">
+                      <button className={billing === "month" ? "active" : ""} onClick={() => setBilling("month")}>Monthly</button>
+                      <button className={billing === "year" ? "active" : ""} onClick={() => setBilling("year")}>
+                        Annual <span className={styles.saveBadge}>Save 20%</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className={`${styles.pricingGrid} stagger-children`}>
+                  {plans.map((plan, i) => (
+                    <div key={i} className={`pricing-card ${plan.popular ? "featured" : ""} reveal`}
+                      onMouseMove={handleTilt}
+                      onMouseLeave={handleTiltReset}
+                    >
+                      {plan.popular && <div className="popular-badge">Most Popular</div>}
+                      <div className="plan-name">{plan.name}</div>
+                      <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{plan.desc}</p>
+                      <div className="price">${plan.price}<span>/mo</span></div>
+                      {billing === "year" && plan.annual && <div className="price-annual">Billed ${plan.annual}/year</div>}
+                      <div className="features-list">
+                        {plan.features.map((f, j) => (
+                          <div key={j} className="feature-item">
+                            {f.included
+                              ? <IconCheck className={styles.checkIcon} />
+                              : <IconMinus className={styles.minusIcon} />
+                            }
+                            <span style={{ color: f.included ? "var(--text-primary)" : "var(--text-muted)" }}>{f.text}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => handleCheckout(plan.name)}
+                        disabled={checkoutLoading !== null}
+                        className={`btn ${plan.popular ? "btn-accent" : "btn-secondary"} btn-lg`}
+                        style={{ width: "100%", marginTop: "24px" }}
+                      >
+                        {checkoutLoading === plan.name ? "Redirecting..." : plan.popular ? "Start Free Trial" : "Get Started"}
+                      </button>
+                      <div className={styles.cancelNote}>Cancel anytime · No contracts</div>
+                      {plan.popular && <div className={styles.roiHint}>Typical payback: 3–7 days</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </UnlockSection>
+
+          {/* ── Testimonials ────────────────────────────── */}
+          <section className={styles.testimonials}>
+            <div className="container">
+              <div className="text-center reveal">
+                <span className={styles.sectionTag}>Real Results</span>
+                <h2>They Tried It. <span className="text-gradient">Revenue Went Up.</span></h2>
+              </div>
+              <div className={`${styles.testimonialGrid} stagger-children`}>
+                {TESTIMONIALS.map((t, i) => (
+                  <div key={i} className={`card ${styles.testimonialCard} reveal`}>
+                    <div className={styles.starsRow}>
+                      {[...Array(t.rating)].map((_, j) => <IconStar key={j} className={styles.starIcon} />)}
+                    </div>
+                    <p className={styles.quote}>&ldquo;{t.quote}&rdquo;</p>
+                    <div className={styles.testimonialRevenue}>{t.revenue}</div>
+                    <div className={styles.author}>
+                      <strong>{t.name}</strong>
+                      <span>{t.role}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <div className="glass-divider" />
+
+          {/* ── FAQ ──────────────────────────────────────── */}
+          <section id="faq" className={styles.faqSection}>
+            <div className="container">
+              <div className="text-center reveal">
+                <span className={styles.sectionTag}>Common Questions</span>
+                <h2>Got Questions? <span className="text-gradient">We've Got Answers.</span></h2>
+                <p className={styles.sectionSub}>
+                  Everything you need to know about HustleAI before you get started.
+                </p>
+              </div>
+              <div className={styles.faqGrid}>
+                {FAQ_DATA.map((item, i) => (
+                  <div
+                    key={i}
+                    className={`${styles.faqItem} ${openFaq === i ? styles.faqItemOpen : ""}`}
+                    style={{ animationDelay: `${i * 0.06}s` }}
+                  >
+                    <button
+                      className={styles.faqQuestion}
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                      aria-expanded={openFaq === i}
+                    >
+                      <span>{item.q}</span>
+                      <svg className={styles.faqChevron} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+                    <div className={styles.faqAnswer}>
+                      <div className={styles.faqAnswerInner}>
+                        <p>{item.a}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── CTA ─────────────────────────────────────── */}
+          <UnlockSection id="cta">
+            <section className={styles.cta}>
+              <div className={styles.ctaGlow} />
+              <div className="grid-bg" />
+              <div className="container text-center reveal-scale">
+                <h2 style={{ fontSize: "2.5rem" }}>
+                  Stop Missing Calls.<br />
+                  <span className="text-gradient">Start Growing Revenue.</span>
+                </h2>
+                <p className={styles.sectionSub} style={{ maxWidth: "500px", margin: "16px auto 0" }}>
+                  Join 2,500+ business owners who automated their dispatch with AI. 7-day free trial. No credit card required.
+                </p>
+                <a href="/signup" className="btn btn-accent btn-lg" style={{ marginTop: "32px" }}>
+                  Start Your Free Trial <IconArrowRight className={styles.btnIconInline} />
+                </a>
+                <div className={styles.ctaTrust}>
+                  <span><IconShield className={styles.trustIcon} /> No credit card required</span>
+                  <span><IconShield className={styles.trustIcon} /> Cancel anytime</span>
+                  <span><IconShield className={styles.trustIcon} /> Setup in 5 minutes</span>
+                </div>
+              </div>
+            </section>
+          </UnlockSection>
+
+          {/* ── Footer ──────────────────────────────────── */}
+          <footer className={styles.footer}>
+            <div className={`container ${styles.footerInner}`}>
+              <div className={styles.footerBrand}>
+                <div className={styles.footerLogo}>
+                  <HustleLogo variant="full" size={26} />
+                </div>
+                <p style={{ marginTop: "8px", fontSize: "0.85rem" }}>AI-powered business growth platform.</p>
+              </div>
+              <div className={styles.footerLinks}>
+                <div>
+                  <h5>Product</h5>
+                  <a href="#features">Features</a>
+                  <a href="#pricing">Pricing</a>
+                  <a href="#how-it-works">How It Works</a>
+                </div>
+                <div>
+                  <h5>Company</h5>
+                  <a href="#">About</a>
+                  <a href="#">Contact</a>
+                  <a href="/privacy">Privacy Policy</a>
+                  <a href="/terms">Terms of Service</a>
+                </div>
+                <div>
+                  <h5>Support</h5>
+                  <a href="#">Help Center</a>
+                  <a href="#">Status</a>
+                  <a href="#">API Docs</a>
+                </div>
+              </div>
+              <div className={styles.footerBottom}>
+                <p>&copy; 2026 HustleAI. All rights reserved.</p>
+              </div>
+            </div>
+          </footer>
+
+          <ChatWidget />
+          <DemoModal isOpen={demoOpen} onClose={() => setDemoOpen(false)} />
+        </div>
+      </TourProvider>
     </NeuralRevealProvider>
   );
 }

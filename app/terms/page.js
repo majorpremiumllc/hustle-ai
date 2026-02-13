@@ -17,7 +17,7 @@ export default function TermsPage() {
                 <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
                     <Link href="/" style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--text-white)", textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22" style={{ color: "var(--primary-light)" }}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
-                        Grow<span style={{ background: "linear-gradient(135deg,#6C5CE7,#a855f7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI</span>
+                        Hustle<span style={{ background: "linear-gradient(135deg,#6C5CE7,#a855f7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI</span>
                     </Link>
                     <Link href="/" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.9rem" }}>← Back to Home</Link>
                 </div>
@@ -50,7 +50,7 @@ export default function TermsPage() {
                     </Section>
 
                     <Section title="4. Subscription & Billing">
-                        <p><strong style={{ color: "var(--text-white)" }}>Plans:</strong> We offer Starter ($19.99/mo), Professional ($29.99/mo), and Business ($49.99/mo) plans. Annual billing is available at a 20% discount.</p>
+                        <p><strong style={{ color: "var(--text-white)" }}>Plans:</strong> We offer Starter ($49/mo), Professional ($99/mo), and Business ($199/mo) plans. Annual billing is available at a 20% discount.</p>
                         <p style={{ marginTop: 8 }}><strong style={{ color: "var(--text-white)" }}>Free Trial:</strong> New accounts receive a 7-day free trial. No credit card is required to start.</p>
                         <p style={{ marginTop: 8 }}><strong style={{ color: "var(--text-white)" }}>Billing:</strong> After the trial period, you will be charged automatically based on your selected plan. Payments are processed securely via Stripe.</p>
                         <p style={{ marginTop: 8 }}><strong style={{ color: "var(--text-white)" }}>Cancellation:</strong> You may cancel your subscription at any time. Your account will remain active until the end of the current billing period.</p>

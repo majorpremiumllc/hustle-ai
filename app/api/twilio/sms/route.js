@@ -1,60 +1,44 @@
 /**
  * HustleAI — Twilio SMS Auto-Responder
  * Receives incoming SMS via Twilio webhook, generates AI reply via Gemini,
- * and sends it back automatically. Tracks all conversations.
+ * and sends it back automatically. Uses Prisma for persistence.
  */
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import twilio from "twilio";
+import prisma from "@/lib/prisma";
+import { getCompanyByPhone } from "@/lib/plan-limits";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-/* ── In‑memory conversation store ──────────────── */
-if (!global.__hustleai_sms) {
-    global.__hustleai_sms = [
-        // Demo conversation
-        {
-            id: "sms_demo_1",
-            customerPhone: "+17025550177",
-            customerName: "Mike R.",
-            messages: [
-                { role: "customer", text: "Hey, I've got a leaky kitchen faucet and a door that won't close properly. Can you come take a look?", ts: new Date(Date.now() - 3600000).toISOString() },
-                { role: "ai", text: "Hi Mike! Thanks for reaching out. I can definitely help with both the faucet and the door. I have availability tomorrow afternoon — would 2 PM work for you? I'll take a look and give you a free estimate on the spot. You can also call me at (725) 259-3047 if you'd like to discuss details.", ts: new Date(Date.now() - 3500000).toISOString() },
-                { role: "customer", text: "2 PM works! What's your address so I can send you the location?", ts: new Date(Date.now() - 3000000).toISOString() },
-                { role: "ai", text: "Perfect! Just send me your address and I'll be there at 2 PM tomorrow. I'll bring everything I need for both the faucet and door. See you then! 🔧", ts: new Date(Date.now() - 2900000).toISOString() },
-            ],
-            status: "active",
-            lastActivity: new Date(Date.now() - 2900000).toISOString(),
-        },
-        {
-            id: "sms_demo_2",
-            customerPhone: "+17255550301",
-            customerName: "Lisa T.",
-            messages: [
-                { role: "customer", text: "Hi, I need about 10 pictures hung and 3 floating shelves installed. Are you available this week?", ts: new Date(Date.now() - 7200000).toISOString() },
-                { role: "ai", text: "Hi Lisa! Absolutely, I'd love to help with that. For 10 pictures and 3 floating shelves, I can usually get that done in one visit (2-3 hours). I have openings on Wednesday and Thursday this week. Which day works better for you?", ts: new Date(Date.now() - 7100000).toISOString() },
-            ],
-            status: "active",
-            lastActivity: new Date(Date.now() - 7100000).toISOString(),
-        },
-    ];
-}
+/**
+ * Build the system prompt using the company's AI configuration.
+ */
+function buildSmsPrompt(company) {
+    const name = company.name || "our service";
+    const phone = company.phone || "";
+    const tone = company.aiTone || "friendly, professional, confident";
 
-const SMS_SYSTEM_PROMPT = `You are an AI SMS auto-responder for a professional Handyman service in Las Vegas, NV.
-Business phone: (725) 259-3047
-Owner name: Artem
+    let services = "general home services";
+    try {
+        const parsed = JSON.parse(company.aiServices || "[]");
+        if (parsed.length > 0) services = parsed.join(", ");
+    } catch (e) { /* use default */ }
+
+    return `You are an AI SMS auto-responder for ${name}.
+Business phone: ${phone}
 
 CRITICAL RULES:
 - Keep responses SHORT (2-3 sentences max for SMS)
-- Be friendly, professional, and helpful
+- Be ${tone}
 - Answer questions about services, pricing, and availability
-- If asked about pricing: say you provide free estimates on-site
-- If asked about availability: offer next available slots (today/tomorrow)
+- Services offered: ${services}
+- If asked about pricing: "${company.aiPricingMsg || "Pricing depends on scope. We provide free on-site estimates."}"
+- If asked about availability: offer next available slots
 - If they want to book: confirm time and ask for their address
-- Always be ready to help with: plumbing, electrical, drywall, TV mounting, furniture assembly, painting, doors, windows, ceiling fans, shelving, general repairs
 - Sound human, not robotic. Use casual but professional tone.
-- Include your phone number (725) 259-3047 when relevant
+- Include business phone number (${phone}) when relevant
 - NEVER give exact prices — always say "free estimate" or "depends on the job"`;
+}
 
 /* ── Twilio webhook for incoming SMS ──────────── */
 export async function POST(request) {
@@ -65,47 +49,108 @@ export async function POST(request) {
 
     console.log(`[SMS] Incoming from ${from}: "${body}"`);
 
-    // Find or create conversation
-    let convo = global.__hustleai_sms.find((c) => c.customerPhone === from);
-    if (!convo) {
-        convo = {
-            id: `sms_${Date.now()}`,
-            customerPhone: from,
-            customerName: from, // Will be updated if we know the name
-            messages: [],
-            status: "active",
-            lastActivity: new Date().toISOString(),
-        };
-        global.__hustleai_sms.unshift(convo);
+    // Look up which company owns this number
+    let company = await getCompanyByPhone(to);
+
+    // Fallback: try to find any company (single-tenant mode)
+    if (!company) {
+        company = await prisma.company.findFirst({
+            include: { subscription: true },
+        });
     }
 
-    // Add customer message
-    convo.messages.push({ role: "customer", text: body, ts: new Date().toISOString() });
-    convo.lastActivity = new Date().toISOString();
+    if (!company) {
+        console.error("[SMS] No company found for number:", to);
+        const twiml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>Sorry, this number is not configured. Please try again later.</Message></Response>`;
+        return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
+    }
 
-    // Build conversation context
-    const history = convo.messages.slice(-10).map((m) => `${m.role === "customer" ? "Customer" : "You"}: ${m.text}`).join("\n");
+    // Find or create conversation
+    let convo = await prisma.conversation.findFirst({
+        where: { companyId: company.id, phone: from, channel: "sms", status: "active" },
+        include: { messages: { orderBy: { createdAt: "desc" }, take: 10 } },
+    });
 
-    // Generate AI reply
+    if (!convo) {
+        convo = await prisma.conversation.create({
+            data: {
+                companyId: company.id,
+                phone: from,
+                channel: "sms",
+                status: "active",
+            },
+            include: { messages: true },
+        });
+    }
+
+    // Save customer message
+    await prisma.message.create({
+        data: {
+            conversationId: convo.id,
+            role: "user",
+            content: body,
+        },
+    });
+
+    // Build conversation context from DB messages
+    const recentMessages = await prisma.message.findMany({
+        where: { conversationId: convo.id },
+        orderBy: { createdAt: "asc" },
+        take: 10,
+    });
+    const history = recentMessages.map((m) =>
+        `${m.role === "user" ? "Customer" : "You"}: ${m.content}`
+    ).join("\n");
+
+    // Generate AI reply using company's config
     let replyText;
     try {
         const model = genAI.getGenerativeModel({
             model: "gemini-2.0-flash",
-            systemInstruction: SMS_SYSTEM_PROMPT,
+            systemInstruction: buildSmsPrompt(company),
         });
         const prompt = `Conversation history:\n${history}\n\nGenerate your next SMS reply. Write ONLY the reply text.`;
         const result = await model.generateContent(prompt);
         replyText = result.response.text().trim();
     } catch (err) {
         console.error("[SMS] AI error:", err.message);
-        replyText = `Thanks for reaching out! I'm currently busy on a job but will get back to you shortly. You can also call me at (725) 259-3047. — Artem`;
+        replyText = `Thanks for reaching out! We're currently busy but will get back to you shortly. You can also call us at ${company.phone || "our office"}. — ${company.name}`;
     }
 
     // Save AI reply
-    convo.messages.push({ role: "ai", text: replyText, ts: new Date().toISOString() });
-    convo.lastActivity = new Date().toISOString();
+    await prisma.message.create({
+        data: {
+            conversationId: convo.id,
+            role: "assistant",
+            content: replyText,
+        },
+    });
+
+    // Update conversation timestamp
+    await prisma.conversation.update({
+        where: { id: convo.id },
+        data: { updatedAt: new Date() },
+    });
 
     console.log(`[SMS] Reply to ${from}: "${replyText}"`);
+
+    // Auto-create lead from SMS if none exists
+    const existingLead = await prisma.lead.findFirst({
+        where: { companyId: company.id, customerPhone: from },
+    });
+    if (!existingLead) {
+        await prisma.lead.create({
+            data: {
+                companyId: company.id,
+                customerName: from,
+                customerPhone: from,
+                source: "SMS",
+                jobType: "General",
+                notes: body,
+                status: "new",
+            },
+        });
+    }
 
     // Return TwiML response
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -113,14 +158,65 @@ export async function POST(request) {
     <Message>${escapeXml(replyText)}</Message>
 </Response>`;
 
-    return new Response(twiml, {
-        headers: { "Content-Type": "text/xml" },
-    });
+    return new Response(twiml, { headers: { "Content-Type": "text/xml" } });
 }
 
-/* ── GET: Fetch all conversations ──────────────── */
-export async function GET() {
-    return Response.json({ conversations: global.__hustleai_sms });
+/* ── GET: Fetch all conversations for company ──── */
+export async function GET(request) {
+    // Try to get companyId from query params or header
+    const { searchParams } = new URL(request.url);
+    const companyId = searchParams.get("companyId") || request.headers.get("x-company-id");
+
+    if (!companyId) {
+        // Single-tenant fallback
+        const company = await prisma.company.findFirst();
+        if (!company) return Response.json({ conversations: [] });
+
+        const conversations = await prisma.conversation.findMany({
+            where: { companyId: company.id, channel: "sms" },
+            include: { messages: { orderBy: { createdAt: "asc" } } },
+            orderBy: { updatedAt: "desc" },
+            take: 50,
+        });
+
+        // Transform to match frontend expected format
+        const formatted = conversations.map((c) => ({
+            id: c.id,
+            customerPhone: c.phone,
+            customerName: c.phone,
+            messages: c.messages.map((m) => ({
+                role: m.role === "user" ? "customer" : "ai",
+                text: m.content,
+                ts: m.createdAt.toISOString(),
+            })),
+            status: c.status,
+            lastActivity: c.updatedAt.toISOString(),
+        }));
+
+        return Response.json({ conversations: formatted });
+    }
+
+    const conversations = await prisma.conversation.findMany({
+        where: { companyId, channel: "sms" },
+        include: { messages: { orderBy: { createdAt: "asc" } } },
+        orderBy: { updatedAt: "desc" },
+        take: 50,
+    });
+
+    const formatted = conversations.map((c) => ({
+        id: c.id,
+        customerPhone: c.phone,
+        customerName: c.phone,
+        messages: c.messages.map((m) => ({
+            role: m.role === "user" ? "customer" : "ai",
+            text: m.content,
+            ts: m.createdAt.toISOString(),
+        })),
+        status: c.status,
+        lastActivity: c.updatedAt.toISOString(),
+    }));
+
+    return Response.json({ conversations: formatted });
 }
 
 /* ── Helper: Escape XML for TwiML ──────────────── */

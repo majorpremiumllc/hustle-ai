@@ -50,7 +50,7 @@ export default function MessagesPage() {
                 <p>SMS conversations with customers — powered by AI auto-responder.</p>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 16, height: "calc(100vh - 200px)", minHeight: 500 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 16, height: "calc(100vh - 200px)", minHeight: 500 }} className="messages-grid">
                 {/* ── Conversation List ─────── */}
                 <div className="card-flat" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
                     <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--glass-border)" }}>

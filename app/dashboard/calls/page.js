@@ -42,7 +42,7 @@ export default function CallsPage() {
                 <p>AI-handled phone calls — transcripts and outcomes.</p>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 16, height: "calc(100vh - 200px)", minHeight: 500 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 16, height: "calc(100vh - 200px)", minHeight: 500 }} className="calls-grid">
                 {/* ── Call List ─────────────── */}
                 <div className="card-flat" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
                     <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--glass-border)" }}>

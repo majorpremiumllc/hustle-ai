@@ -5,20 +5,27 @@
     text-decoration: none;
     color: inherit;
     transition: filter 0.3s ease;
+    position: relative;
 }
 
 .logo:hover {
-    filter: brightness(1.15);
+    filter: brightness(1.2);
 }
 
 .logo:hover .logoIcon {
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.05);
 }
 
 .logoIcon {
     flex-shrink: 0;
-    transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
-    filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.3));
+    transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+    filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.3));
+    overflow: visible;
+}
+
+/* On hover, boost the neural synapse glow */
+.logo:hover .logoIcon {
+    filter: drop-shadow(0 0 16px rgba(0, 210, 255, 0.5)) drop-shadow(0 0 24px rgba(108, 92, 231, 0.3));
 }
 
 .boltPath {
@@ -39,12 +46,30 @@
     }
 
     40% {
-        opacity: 0.6;
+        opacity: 0.7;
     }
 
     100% {
         opacity: 0;
     }
+}
+
+/* Neural synapse nodes */
+.synapse {
+    transition: all 0.4s ease;
+}
+
+.logo:hover .synapse {
+    filter: drop-shadow(0 0 3px rgba(0, 210, 255, 0.8));
+}
+
+/* Connection lines */
+.connLine {
+    transition: stroke-opacity 0.4s ease;
+}
+
+.logo:hover .connLine {
+    stroke-opacity: 0.5 !important;
 }
 
 /* Wordmark */
@@ -53,10 +78,16 @@
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1;
+    position: relative;
 }
 
 .wordHustle {
     color: rgba(255, 255, 255, 0.95);
+    transition: text-shadow 0.4s ease;
+}
+
+.logo:hover .wordHustle {
+    text-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
 }
 
 .wordAI {

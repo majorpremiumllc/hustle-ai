@@ -17,7 +17,7 @@ export default function PrivacyPage() {
                 <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
                     <Link href="/" style={{ fontSize: "1.3rem", fontWeight: 800, color: "var(--text-white)", textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22" style={{ color: "var(--primary-light)" }}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
-                        Grow<span style={{ background: "linear-gradient(135deg,#6C5CE7,#a855f7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI</span>
+                        Hustle<span style={{ background: "linear-gradient(135deg,#6C5CE7,#a855f7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI</span>
                     </Link>
                     <Link href="/" style={{ color: "var(--text-muted)", textDecoration: "none", fontSize: "0.9rem" }}>← Back to Home</Link>
                 </div>

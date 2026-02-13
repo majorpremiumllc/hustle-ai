@@ -11,7 +11,7 @@ import styles from "./NeuralGuideSpine.module.css";
    z-index 5 → always behind page content.
    ═══════════════════════════════════════════════ */
 
-const LABELS = ["Scanning", "Mapping", "Activating", "Optimizing", "Complete"];
+const LABELS = ["Scanning", "Mapping", "Indexing", "Analyzing", "Activating", "Optimizing", "Complete"];
 
 export default function NeuralGuideSpine() {
     const { progress, revealedSections, total } = useUnlockState();

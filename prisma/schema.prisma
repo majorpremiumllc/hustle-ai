@@ -59,6 +59,13 @@ model Company {
   aiEscalationMsg String?  @default("I'll forward this to our project manager so we can assist you properly.")
   aiPricingMsg    String?  @default("Pricing depends on scope and photos. Once we review details, we can provide an estimate.")
 
+  // Voice Cloning (Business plan)
+  voiceId         String?  // ElevenLabs voice ID
+  voiceProvider   String?  @default("default") // default | elevenlabs
+
+  // White-Label (Business plan)
+  whiteLabelConfig String? // JSON: { logo, primaryColor, accentColor, customDomain }
+
   // Onboarding state
   onboardingStep Int @default(0)
   onboardingDone Boolean @default(false)
@@ -70,6 +77,28 @@ model Company {
   callLogs      CallLog[]
   integrations  Integration[]
   phoneNumbers  PhoneNumber[]
+  teamInvites   TeamInvite[]
+  outreachCampaigns OutreachCampaign[]
+  marketOpportunities MarketOpportunity[]
+  agentRuns     AgentRun[]
+  emailLogs     EmailLog[]
+}
+
+// ── Team Invitations ──────────────────────────
+
+model TeamInvite {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  email     String
+  role      String   @default("member") // admin | member
+  token     String   @unique @default(cuid())
+  status    String   @default("pending") // pending | accepted | expired
+  invitedBy String?
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@unique([companyId, email])
 }
 
 // ── Subscription / Billing ─────────────────────
@@ -187,4 +216,80 @@ model PhoneNumber {
   voiceEnabled Boolean @default(true)
   smsEnabled   Boolean @default(true)
   createdAt   DateTime @default(now())
+}
+
+// ── Outreach Campaigns ────────────────────────
+
+model OutreachCampaign {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  name      String
+  channel   String   @default("Email + SMS") // Email | SMS | Email + SMS | Email + Call
+  status    String   @default("draft")       // draft | active | paused | completed
+  sent      Int      @default(0)
+  opened    Int      @default(0)
+  replied   Int      @default(0)
+  converted Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contacts OutreachContact[]
+}
+
+model OutreachContact {
+  id         String            @id @default(cuid())
+  campaignId String
+  campaign   OutreachCampaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  name       String
+  phone      String?
+  email      String?
+  status     String   @default("sent") // sent | opened | replied | converted
+  lastMsg    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ── Market Opportunities ──────────────────────
+
+model MarketOpportunity {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  business  String
+  location  String?
+  industry  String?
+  source    String   @default("Google") // Google | Yelp | Thumbtack
+  potential String   @default("Medium") // Critical | High | Medium | Low
+  issues    String?  // JSON array of issues
+  contacted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ── Agent Runs ────────────────────────────────
+
+model AgentRun {
+  id        String    @id @default(cuid())
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id])
+  agent     String    // market-scanner | email-outreach | sms-outreach | cold-caller | lead-nurture
+  status    String    @default("running") // running | success | failed
+  result    String?   // JSON summary
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+}
+
+// ── Email Logs ────────────────────────────────
+
+model EmailLog {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  to        String
+  subject   String
+  body      String
+  status    String   @default("sent") // sent | opened | bounced
+  agent     String   @default("email-outreach")
+  createdAt DateTime @default(now())
 }

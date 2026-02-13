@@ -164,9 +164,24 @@ export default function LeadsPage() {
                         <h1>Leads {newCount > 0 && <span style={{ fontSize: "0.6em", background: "var(--accent)", color: "white", padding: "2px 8px", borderRadius: 20, verticalAlign: "middle", marginLeft: 8 }}>{newCount} new</span>}</h1>
                         <p>Incoming leads from Thumbtack, Yelp, and SMS.</p>
                     </div>
-                    <button className="btn btn-accent btn-sm" onClick={() => setShowAddForm(!showAddForm)} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <IconPlus /> Add Lead
-                    </button>
+                    <div style={{ display: "flex", gap: 8 }}>
+                        <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => {
+                                const a = document.createElement("a");
+                                a.href = "/api/leads/export";
+                                a.download = `leads_export_${new Date().toISOString().split("T")[0]}.csv`;
+                                a.click();
+                            }}
+                            style={{ display: "flex", alignItems: "center", gap: 6 }}
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                            Export CSV
+                        </button>
+                        <button className="btn btn-accent btn-sm" onClick={() => setShowAddForm(!showAddForm)} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <IconPlus /> Add Lead
+                        </button>
+                    </div>
                 </div>
             </div>
 

@@ -75,7 +75,7 @@ export default function RevenueSimulator() {
     const glowIntensity = Math.min(annualLoss / 100000, 1);
 
     return (
-        <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.visible : ""}`}>
+        <section id="calculator" ref={sectionRef} className={`${styles.section} ${isVisible ? styles.visible : ""}`}>
             <div className={`container ${styles.inner}`}>
 
                 {/* Left: Inputs */}

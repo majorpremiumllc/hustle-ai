@@ -346,7 +346,7 @@ export default function OnboardingPage() {
             <div className={styles.onboardingCard}>
                 {/* Logo */}
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px", fontWeight: 800, fontSize: "1.1rem", color: "var(--text-white)" }}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22" style={{ color: "var(--primary-light)" }}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg> Grow<span className="text-gradient">AI</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22" style={{ color: "var(--primary-light)" }}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg> Hustle<span className="text-gradient">AI</span>
                     <span style={{ marginLeft: "auto", fontSize: "0.8rem", fontWeight: 500, color: "var(--text-muted)" }}>
                         Step {step + 1} of {TOTAL_STEPS}
                     </span>
