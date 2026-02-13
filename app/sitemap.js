@@ -12,6 +12,12 @@ export default function sitemap() {
     ];
 
     const blogSlugs = [
+        "ai-phone-answering-small-business",
+        "automate-appointment-scheduling-ai",
+        "ai-vs-virtual-receptionist-cost",
+        "lead-follow-up-automation-guide",
+        "ai-text-marketing-local-business",
+        "service-business-win-more-clients-ai",
         "ai-automation-service-business",
         "ai-receptionist-vs-answering-service",
         "how-to-get-more-leads-contractors",
