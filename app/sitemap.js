@@ -1,5 +1,5 @@
 export default function sitemap() {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hustleai.co";
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://tryhustleai.com";
     const now = new Date();
 
     const corePages = [
