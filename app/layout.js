@@ -106,7 +106,8 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hustleai.co";
+  const siteUrl = "https://tryhustleai.com";
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-NR739WSXQ8";
 
   const organizationLD = {
     "@context": "https://schema.org",
@@ -188,6 +189,16 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {gaId && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${gaId}');`,
+              }}
+            />
+          </>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLD) }}
