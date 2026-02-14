@@ -74,12 +74,17 @@ export async function POST(request) {
     }
 
     try {
-        // In production, you would provision via Twilio API here:
-        // const twilioNumber = await twilioClient.incomingPhoneNumbers.create({
-        //     phoneNumber: number,
-        //     voiceUrl: `${process.env.BASE_URL}/api/twilio/voice`,
-        //     smsUrl: `${process.env.BASE_URL}/api/twilio/sms`,
-        // });
+        // Provision number via Twilio API
+        const twilio = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://tryhustleai.com";
+        const twilioNumber = await twilio.incomingPhoneNumbers.create({
+            phoneNumber: number,
+            voiceUrl: `${baseUrl}/api/twilio/voice`,
+            voiceMethod: "POST",
+            smsUrl: `${baseUrl}/api/twilio/sms`,
+            smsMethod: "POST",
+            friendlyName: `HustleAI - ${label || "Main"}`,
+        });
 
         const phoneNumber = await prisma.phoneNumber.create({
             data: {
@@ -88,7 +93,7 @@ export async function POST(request) {
                 label: label || "Main",
                 voiceEnabled: voiceEnabled !== false,
                 smsEnabled: smsEnabled !== false,
-                twilioSid: null, // Set from Twilio API in production
+                twilioSid: twilioNumber.sid,
             },
         });
 
@@ -123,10 +128,11 @@ export async function DELETE(request) {
     }
 
     try {
-        // In production, release the Twilio number:
-        // if (existing.twilioSid) {
-        //     await twilioClient.incomingPhoneNumbers(existing.twilioSid).remove();
-        // }
+        // Release the Twilio number
+        if (existing.twilioSid) {
+            const twilio = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+            await twilio.incomingPhoneNumbers(existing.twilioSid).remove();
+        }
 
         await prisma.phoneNumber.delete({ where: { id: numberId } });
         return NextResponse.json({ success: true });

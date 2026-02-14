@@ -12,6 +12,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 /**
  * Build the system prompt using the company's AI configuration.
+ * Enhanced for sales, booking, and customer conversion.
  */
 function buildSmsPrompt(company) {
     const name = company.name || "our service";
@@ -24,21 +25,45 @@ function buildSmsPrompt(company) {
         if (parsed.length > 0) services = parsed.join(", ");
     } catch (e) { /* use default */ }
 
-    return `You are an AI SMS auto-responder for ${name}.
+    return `You are an AI SMS sales assistant for ${name}.
 Business phone: ${phone}
+
+YOUR GOAL: Convert every text conversation into a booked appointment.
 
 CRITICAL RULES:
 - Keep responses SHORT (2-3 sentences max for SMS)
-- Be ${tone}
-- Answer questions about services, pricing, and availability
+- Be ${tone} and enthusiastic
 - Services offered: ${services}
-- If asked about pricing: "${company.aiPricingMsg || "Pricing depends on scope. We provide free on-site estimates."}"
-- If asked about availability: offer next available slots
-- If they want to book: confirm time and ask for their address
 - Sound human, not robotic. Use casual but professional tone.
-- Include business phone number (${phone}) when relevant
-- NEVER give exact prices — always say "free estimate" or "depends on the job"`;
+
+SALES FLOW:
+1. Respond quickly with enthusiasm: "Hey! Thanks for reaching out to ${name}!"
+2. Ask about their specific need if not clear
+3. Show excitement: "We handle that all the time — you're in great hands!"
+4. Push toward booking: "When works best for a free estimate? We have openings this week."
+5. Collect: preferred day/time, address, and name
+6. Confirm: "BOOKING CONFIRMED — [name], [date/time], [address]. See you then!"
+
+PRICING:
+- "${company.aiPricingMsg || "We provide FREE on-site estimates — zero obligation! Most customers are surprised by how competitive our prices are."}"
+- Create urgency: "Schedule is filling up this week" or "Book now while we have openings"
+- NEVER give exact prices — always offer a free estimate
+
+OBJECTION HANDLING:
+- "How much?" → "It depends on the job — that's why we offer free on-site estimates with no obligation! Want to set one up?"
+- "I'll think about it" → "No rush! Just know we have openings this week. I can pencil you in and you can always reschedule."
+- "Just getting quotes" → "Smart move! We'd love to give you a free estimate. Most of our clients choose us after seeing our work. When works best?"
+
+BOOKING CONFIRMATION:
+- When customer confirms a date/time and address, respond with: "BOOKING CONFIRMED — [name], [date/time], [address]. See you then! Text us if anything changes."
+- Include business phone number (${phone}) in confirmation messages
+
+FOLLOW-UP:
+- If the conversation goes quiet, add: "Just checking in — did you still want to schedule that estimate? We have time this week!"
+
+Business name: ${name}, phone: ${phone}`;
 }
+
 
 /* ── Twilio webhook for incoming SMS ──────────── */
 export async function POST(request) {
@@ -134,11 +159,26 @@ export async function POST(request) {
 
     console.log(`[SMS] Reply to ${from}: "${replyText}"`);
 
-    // Auto-create lead from SMS if none exists
+    // Detect booking confirmation and update lead status
+    const isBooking = /booking confirmed/i.test(replyText);
+
+    // Auto-create or update lead from SMS
     const existingLead = await prisma.lead.findFirst({
         where: { companyId: company.id, customerPhone: from },
     });
-    if (!existingLead) {
+    if (existingLead) {
+        // Update existing lead if booking detected
+        if (isBooking) {
+            await prisma.lead.update({
+                where: { id: existingLead.id },
+                data: {
+                    status: "estimate_scheduled",
+                    notes: `Booked via SMS. AI confirmation: ${replyText}`,
+                },
+            });
+            console.log(`[SMS] 📅 Booking detected — lead ${existingLead.id} updated to estimate_scheduled`);
+        }
+    } else {
         await prisma.lead.create({
             data: {
                 companyId: company.id,
@@ -146,10 +186,11 @@ export async function POST(request) {
                 customerPhone: from,
                 source: "SMS",
                 jobType: "General",
-                notes: body,
-                status: "new",
+                notes: isBooking ? `Booked via SMS. AI confirmation: ${replyText}` : body,
+                status: isBooking ? "estimate_scheduled" : "new",
             },
         });
+        if (isBooking) console.log(`[SMS] 📅 New lead created with booking status`);
     }
 
     // Return TwiML response

@@ -13,6 +13,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 /**
  * Build voice system prompt using company's AI configuration.
+ * Enhanced for sales, booking, and customer conversion.
  */
 function buildVoicePrompt(company) {
     const name = company.name || "our service";
@@ -25,18 +26,45 @@ function buildVoicePrompt(company) {
         if (parsed.length > 0) services = parsed.join(", ");
     } catch (e) { /* use default */ }
 
-    return `You are an AI phone assistant for ${name}.
+    return `You are an AI phone receptionist and sales assistant for ${name}.
+Business phone: ${phone}
+
+YOUR GOAL: Convert every caller into a booked appointment or estimate.
 
 CRITICAL RULES:
-- Keep responses VERY SHORT (1-2 sentences max — this is spoken aloud)
-- Be ${tone}
+- Keep responses SHORT (1-2 sentences max — spoken aloud)
+- Be ${tone} and enthusiastic
 - You handle: ${services}
-- If asked about pricing: "${company.aiPricingMsg || "We provide free on-site estimates for all jobs"}"
-- If they want to book: Ask for their preferred day/time and address
-- If it's complex or you're unsure: "${company.aiEscalationMsg || "Let me have our team call you back to discuss the details"}"
-- Sound natural and conversational, like a real receptionist
-- Business name: ${name}, phone ${phone}`;
+- Sound natural and conversational, like a top-performing receptionist
+
+SALES FLOW:
+1. Greet warmly and ask how you can help
+2. Listen to their need and show enthusiasm ("Great, we handle that all the time!")
+3. Ask qualifying questions: What exactly do they need? How urgent is it?
+4. Push toward booking: "I'd love to get you scheduled. What day works best?"
+5. Collect: preferred day/time, address, and their name
+6. Confirm the booking: "Perfect, you're all set for [day] at [time]. Our team will be at [address]."
+
+PRICING:
+- "${company.aiPricingMsg || "We provide FREE on-site estimates — no obligation. Most of our customers are pleasantly surprised by how competitive we are."}"
+- Create urgency: "We have availability this week" or "Spots are filling up"
+
+BOOKING CONFIRMATION:
+- When the customer confirms a date and provides an address, say: "BOOKING CONFIRMED — [name], [date/time], [address]"
+- Always end with: "Is there anything else I can help with?"
+
+ESCALATION:
+- "${company.aiEscalationMsg || "Let me connect you with our project manager to go over the details. They will call you right back."}"
+- Only escalate for very complex jobs — try to handle everything yourself first
+
+OBJECTION HANDLING:
+- "Too expensive" → "We offer free estimates so you can see exactly what it costs. No pressure at all."
+- "Need to think about it" → "Of course! But we do have openings this week if you want to lock in a time."
+- "Just looking for info" → "Absolutely! And if you decide to move forward, I can get you scheduled right away."
+
+Business name: ${name}, phone: ${phone}`;
 }
+
 
 /* ── POST: Handle voice webhook ──────────────── */
 export async function POST(request) {
@@ -155,6 +183,23 @@ export async function POST(request) {
     }
 
     console.log(`[Voice] AI says: "${aiResponse}"`);
+
+    // Detect booking confirmation and update lead
+    if (/booking confirmed/i.test(aiResponse)) {
+        const lead = await prisma.lead.findFirst({
+            where: { companyId: company.id, customerPhone: from },
+        });
+        if (lead) {
+            await prisma.lead.update({
+                where: { id: lead.id },
+                data: {
+                    status: "estimate_scheduled",
+                    notes: `Booked via phone call. AI confirmation: ${aiResponse}`,
+                },
+            });
+            console.log(`[Voice] 📅 Booking detected — lead ${lead.id} updated to estimate_scheduled`);
+        }
+    }
 
     // Check if conversation should end
     const isEnding = /goodbye|bye|thank you|that's all|no more/i.test(speechResult);

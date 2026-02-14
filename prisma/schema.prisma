@@ -82,6 +82,7 @@ model Company {
   marketOpportunities MarketOpportunity[]
   agentRuns     AgentRun[]
   emailLogs     EmailLog[]
+  invoices      Invoice[]
 }
 
 // ── Team Invitations ──────────────────────────
@@ -292,4 +293,55 @@ model EmailLog {
   status    String   @default("sent") // sent | opened | bounced
   agent     String   @default("email-outreach")
   createdAt DateTime @default(now())
+}
+
+// ── Invoices ─────────────────────────────────
+
+model Invoice {
+  id              String   @id @default(cuid())
+  companyId       String
+  company         Company  @relation(fields: [companyId], references: [id])
+  leadId          String?
+  invoiceNumber   String            // INV-001, INV-002, etc.
+  receiptNumber   String?           // REC-001, auto-generated on payment
+  customerName    String
+  customerEmail   String?
+  customerPhone   String?
+  customerAddress String?
+  status          String   @default("draft") // draft | sent | viewed | paid | overdue | cancelled
+  template        String   @default("modern") // clean | modern | bold | minimal
+  subtotal        Float    @default(0)
+  taxRate         Float    @default(0)
+  taxAmount       Float    @default(0)
+  discount        Float    @default(0)
+  serviceFee      Float    @default(2.9)  // Platform fee percentage
+  serviceFeeAmount Float   @default(0)    // Calculated fee amount
+  total           Float    @default(0)    // Final total including service fee
+  currency        String   @default("USD")
+  dueDate         DateTime?
+  paidAt          DateTime?
+  sentAt          DateTime?
+  viewedAt        DateTime?
+  notes           String?
+  terms           String?  @default("Payment is due within 30 days of invoice date.")
+  paymentMethod   String?  // cash | card | check | bank_transfer | online
+  stripePaymentLink String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  items InvoiceItem[]
+
+  @@index([companyId])
+  @@index([status])
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Float   @default(1)
+  unitPrice   Float   @default(0)
+  amount      Float   @default(0)
+  sortOrder   Int     @default(0)
 }

@@ -6,8 +6,9 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 // Plan mapping from Stripe metadata to internal plan names
 const PLAN_LIMITS = {
-    starter: { leadsLimit: 100 },
-    professional: { leadsLimit: 500 },
+    invoice: { leadsLimit: 0 },        // AI Invoice only — no lead management
+    starter: { leadsLimit: 50 },
+    professional: { leadsLimit: 250 },
     business: { leadsLimit: 999999 }, // "unlimited"
 };
 
@@ -20,12 +21,11 @@ export async function POST(request) {
     let event;
 
     try {
-        if (endpointSecret && endpointSecret !== "whsec_PASTE_WEBHOOK_SECRET_HERE") {
-            event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
-        } else {
-            // Dev mode — skip signature verification
-            event = JSON.parse(body);
+        if (!endpointSecret) {
+            console.error("[Stripe Webhook] STRIPE_WEBHOOK_SECRET is not set");
+            return Response.json({ error: "Webhook secret not configured" }, { status: 500 });
         }
+        event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
     } catch (err) {
         console.error("[Stripe Webhook] Signature verification failed:", err.message);
         return Response.json({ error: "Webhook signature failed" }, { status: 400 });
