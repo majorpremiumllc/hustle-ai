@@ -58,7 +58,7 @@ export async function POST(request) {
                     interval: "month",
                     status: "trialing",
                     leadsLimit: 50,
-                    currentPeriodEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7-day trial
+                    currentPeriodEnd: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3-day trial
                 },
             });
 

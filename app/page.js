@@ -102,12 +102,28 @@ const IndustryIcon = ({ type }) => {
 const PLANS = {
   month: [
     {
+      name: "AI Invoice",
+      price: 29,
+      desc: "AI-powered invoicing with 2.9% processing",
+      features: [
+        { text: "Unlimited AI invoices", included: true },
+        { text: "4 premium templates", included: true },
+        { text: "AI auto-fill descriptions", included: true },
+        { text: "US-style receipts & tracking", included: true },
+        { text: "Client payment portal", included: true },
+        { text: "2.9% processing fee per invoice", included: true },
+        { text: "AI Phone & SMS answering", included: false },
+        { text: "Lead management & CRM", included: false },
+        { text: "Integrations (Yelp, Google)", included: false },
+      ],
+    },
+    {
       name: "Starter",
       price: 49,
       desc: "For solo operators & small teams",
       features: [
         { text: "SMS + Voice AI auto-responder", included: true },
-        { text: "Up to 100 leads/month", included: true },
+        { text: "Up to 50 leads/month", included: true },
         { text: "1 AI phone number", included: true },
         { text: "2 integration sources", included: true },
         { text: "Lead dashboard + basic analytics", included: true },
@@ -123,14 +139,14 @@ const PLANS = {
       desc: "For growing service businesses",
       popular: true,
       features: [
-        { text: "SMS + Voice AI calls", included: true },
-        { text: "Up to 500 leads/month", included: true },
+        { text: "Everything in Starter +", included: true },
+        { text: "Up to 250 leads/month", included: true },
         { text: "2 AI phone numbers", included: true },
         { text: "All integrations (Yelp, Thumbtack, Google)", included: true },
         { text: "Full dashboard + advanced analytics", included: true },
         { text: "Custom AI scripts & tone", included: true },
         { text: "Up to 5 team members", included: true },
-        { text: "CRM export + Zapier", included: true },
+        { text: "AI Invoicing included", included: true },
         { text: "Priority email support", included: true },
       ],
     },
@@ -139,19 +155,36 @@ const PLANS = {
       price: 199,
       desc: "For teams, multi-location & agencies",
       features: [
-        { text: "SMS + Voice AI calls", included: true },
+        { text: "Everything in Professional +", included: true },
         { text: "Unlimited leads", included: true },
         { text: "Up to 5 phone numbers", included: true },
-        { text: "All integrations (Yelp, Thumbtack, Google)", included: true },
-        { text: "Full dashboard + custom reports", included: true },
         { text: "Custom AI scripts & voice cloning", included: true },
         { text: "Unlimited team members", included: true },
+        { text: "AI Invoicing included", included: true },
         { text: "CRM export + API access + Zapier", included: true },
         { text: "White-label & dedicated support", included: true },
+        { text: "Full dashboard + custom reports", included: true },
       ],
     },
   ],
   year: [
+    {
+      name: "AI Invoice",
+      price: 23,
+      desc: "AI-powered invoicing with 2.9% processing",
+      annual: 276,
+      features: [
+        { text: "Unlimited AI invoices", included: true },
+        { text: "4 premium templates", included: true },
+        { text: "AI auto-fill descriptions", included: true },
+        { text: "US-style receipts & tracking", included: true },
+        { text: "Client payment portal", included: true },
+        { text: "2.9% processing fee per invoice", included: true },
+        { text: "AI Phone & SMS answering", included: false },
+        { text: "Lead management & CRM", included: false },
+        { text: "Integrations (Yelp, Google)", included: false },
+      ],
+    },
     {
       name: "Starter",
       price: 39,
@@ -159,7 +192,7 @@ const PLANS = {
       annual: 468,
       features: [
         { text: "SMS + Voice AI auto-responder", included: true },
-        { text: "Up to 100 leads/month", included: true },
+        { text: "Up to 50 leads/month", included: true },
         { text: "1 AI phone number", included: true },
         { text: "2 integration sources", included: true },
         { text: "Lead dashboard + basic analytics", included: true },
@@ -176,14 +209,14 @@ const PLANS = {
       popular: true,
       annual: 948,
       features: [
-        { text: "SMS + Voice AI calls", included: true },
-        { text: "Up to 500 leads/month", included: true },
+        { text: "Everything in Starter +", included: true },
+        { text: "Up to 250 leads/month", included: true },
         { text: "2 AI phone numbers", included: true },
         { text: "All integrations (Yelp, Thumbtack, Google)", included: true },
         { text: "Full dashboard + advanced analytics", included: true },
         { text: "Custom AI scripts & tone", included: true },
         { text: "Up to 5 team members", included: true },
-        { text: "CRM export + Zapier", included: true },
+        { text: "AI Invoicing included", included: true },
         { text: "Priority email support", included: true },
       ],
     },
@@ -193,15 +226,15 @@ const PLANS = {
       desc: "For teams, multi-location & agencies",
       annual: 1908,
       features: [
-        { text: "SMS + Voice AI calls", included: true },
+        { text: "Everything in Professional +", included: true },
         { text: "Unlimited leads", included: true },
         { text: "Up to 5 phone numbers", included: true },
-        { text: "All integrations (Yelp, Thumbtack, Google)", included: true },
-        { text: "Full dashboard + custom reports", included: true },
         { text: "Custom AI scripts & voice cloning", included: true },
         { text: "Unlimited team members", included: true },
+        { text: "AI Invoicing included", included: true },
         { text: "CRM export + API access + Zapier", included: true },
         { text: "White-label & dedicated support", included: true },
+        { text: "Full dashboard + custom reports", included: true },
       ],
     },
   ],
@@ -311,7 +344,7 @@ const FAQ_DATA = [
   { q: "What happens to the leads the AI captures?", a: "Every call and message is logged in your dashboard in real-time. You'll see the caller's name, phone number, what they need, and the AI's transcript. You can also export leads to your CRM or get instant notifications via SMS/email." },
   { q: "Can I customize what the AI says?", a: "Absolutely. You control the greeting, tone, services list, pricing guidance, business hours, and booking rules. The AI adapts to your specific business type automatically — whether you're a plumber, salon, electrician, or any of 25+ industries." },
   { q: "Does it work with Yelp, Thumbtack, and Google?", a: "Yes! HustleAI auto-responds to Yelp messages and Thumbtack leads within seconds — before your competitors even see them. Google Business Profile leads are captured directly into your pipeline too." },
-  { q: "What if I want to cancel?", a: "Cancel anytime with one click from your dashboard — no contracts, no cancellation fees, no questions asked. We also offer a free 7-day trial so you can test everything risk-free before committing." },
+  { q: "What if I want to cancel?", a: "Cancel anytime with one click from your dashboard — no contracts, no cancellation fees, no questions asked. We also offer a free 3-day trial so you can test everything risk-free before committing." },
   { q: "How much does it cost compared to a receptionist?", a: "A full-time receptionist costs $2,500–$4,000/month. HustleAI starts at $49/month — that's less than $2/day — and works 24/7/365, weekends, holidays, and 3 AM emergency calls included. Most businesses see ROI within the first week from just one extra booked job." },
 ];
 
@@ -551,7 +584,7 @@ export default function LandingPage() {
               </p>
               <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
                 <MagneticButton href="/signup" className="btn btn-accent btn-lg">
-                  Start Free 7-Day Trial <IconArrowRight className={styles.btnIconInline} />
+                  Start Free 3-Day Trial <IconArrowRight className={styles.btnIconInline} />
                 </MagneticButton>
                 <MagneticButton href="#how-it-works" className="btn btn-secondary btn-lg">
                   Watch How It Works
@@ -765,6 +798,98 @@ export default function LandingPage() {
 
           <div className="glass-divider" />
 
+          {/* ── AI Invoice Showcase ──────────────────────── */}
+          <section style={{ padding: "80px 0" }}>
+            <div className="container">
+              <div className="text-center" style={{ marginBottom: 48 }}>
+                <span className={styles.sectionTag}>New Feature</span>
+                <h2>AI-Powered Invoices That <span className="text-gradient">Get You Paid Faster</span></h2>
+                <p className={styles.sectionSub}>
+                  Describe the job in 30 seconds. AI creates a stunning, branded invoice — and your clients can pay online instantly.
+                </p>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 40, alignItems: "center", maxWidth: 1000, margin: "0 auto" }}>
+                {/* Left side — feature highlights */}
+                <div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                    {[
+                      { icon: "⚡", title: "30-Second Invoice Creation", desc: "Describe the job — AI generates a complete, itemized invoice with market-rate pricing." },
+                      { icon: "💳", title: "Online Payments Built-In", desc: "Clients pay by credit card, debit, or ACH. You get paid same-day, not in 2–4 weeks." },
+                      { icon: "🎨", title: "4 Premium Templates", desc: "Executive Dark, Corporate Classic, Modern Gradient, Warm Creative — pick your brand." },
+                      { icon: "📊", title: "Automatic Tracking", desc: "Know instantly when invoices are viewed, paid, or overdue. Automated reminders included." },
+                    ].map((f, i) => (
+                      <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                        <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(108,92,231,0.1)", border: "1px solid rgba(108,92,231,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{f.icon}</div>
+                        <div>
+                          <div style={{ fontWeight: 700, color: "var(--text-primary)", fontSize: "0.95rem", marginBottom: 3 }}>{f.title}</div>
+                          <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.5 }}>{f.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: 28, display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                    <a href="/ai-invoice" className="btn btn-accent btn-lg" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      See Invoice Templates <IconArrowRight />
+                    </a>
+                    <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>Starting at $29/mo</span>
+                  </div>
+                </div>
+
+                {/* Right side — mini invoice preview */}
+                <div className="card" style={{ borderRadius: 16, overflow: "hidden", padding: 0, boxShadow: "0 30px 80px rgba(108,92,231,0.15), 0 0 0 1px rgba(108,92,231,0.1)" }}>
+                  {/* Invoice header */}
+                  <div style={{ background: "linear-gradient(135deg, #6C5CE7, #0984E3)", padding: "18px 22px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>INVOICE</div>
+                      <div style={{ color: "#fff", fontWeight: 900, fontSize: "1.1rem" }}>Thompson Renovations</div>
+                      <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 10, marginTop: 1 }}>License #CA-78291 · Bonded & Insured</div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ color: "#fff", fontWeight: 700, fontSize: 12 }}>#INV-2026-0284</div>
+                      <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 4, padding: "2px 8px", fontSize: 9, fontWeight: 700, color: "#fff", marginTop: 4, display: "inline-block" }}>NET 30</div>
+                    </div>
+                  </div>
+                  {/* Invoice body */}
+                  <div style={{ padding: "16px 22px 20px", background: "var(--bg-secondary, #0d1117)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14, fontSize: 11 }}>
+                      <div><span style={{ fontWeight: 800, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#6C5CE7" }}>Bill To</span><br /><span style={{ fontWeight: 700 }}>Robert & Sarah Mitchell</span></div>
+                      <div style={{ textAlign: "right" }}><span style={{ fontWeight: 800, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#6C5CE7" }}>Project</span><br /><span style={{ fontWeight: 700 }}>Master Bathroom Remodel</span></div>
+                    </div>
+                    <div style={{ borderTop: "2px solid #6C5CE7", paddingTop: 10 }}>
+                      {[
+                        ["Full bathroom demolition", "$1,850.00"],
+                        ["Walk-in shower — frameless glass", "$4,200.00"],
+                        ["Porcelain floor tile (85 sq ft)", "$1,530.00"],
+                        ["Double vanity w/ quartz top", "$3,400.00"],
+                      ].map(([desc, amt], i) => (
+                        <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", fontSize: 12 }}>
+                          <span style={{ color: "var(--text-secondary, #ccc)" }}>{desc}</span>
+                          <span style={{ fontWeight: 700 }}>{amt}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Subtotal: $13,040.00</div>
+                        <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Tax (8.75%): $1,141.00</div>
+                        <div style={{ fontSize: "1.2rem", fontWeight: 900, color: "#6C5CE7", marginTop: 6 }}>$14,181.00</div>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: 14, padding: "10px", background: "#6C5CE7", borderRadius: 8, textAlign: "center", color: "#fff", fontWeight: 800, fontSize: 12 }}>
+                      💳 Pay Now — Secure Online Payment
+                    </div>
+                    <div style={{ textAlign: "center", marginTop: 4, fontSize: 9, color: "var(--text-muted)" }}>
+                      Stripe · Visa, Mastercard, Amex, ACH
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div className="glass-divider" />
+
           {/* ── Pricing ─────────────────────────────────── */}
           <UnlockSection id="pricing">
             <section id="pricing" className={styles.pricing}>
@@ -899,7 +1024,7 @@ export default function LandingPage() {
                   <span className="text-gradient">Start Growing Revenue.</span>
                 </h2>
                 <p className={styles.sectionSub} style={{ maxWidth: "500px", margin: "16px auto 0" }}>
-                  Join 2,500+ business owners who automated their dispatch with AI. 7-day free trial. No credit card required.
+                  Join 2,500+ business owners who automated their dispatch with AI. 3-day free trial. No credit card required.
                 </p>
                 <a href="/signup" className="btn btn-accent btn-lg" style={{ marginTop: "32px" }}>
                   Start Your Free Trial <IconArrowRight className={styles.btnIconInline} />
@@ -928,6 +1053,7 @@ export default function LandingPage() {
                   <a href="#features">Features</a>
                   <a href="#pricing">Pricing</a>
                   <a href="#how-it-works">How It Works</a>
+                  <a href="/ai-invoice">AI Invoice</a>
                 </div>
                 <div>
                   <h5>Company</h5>

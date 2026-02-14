@@ -142,7 +142,7 @@ export default function DashboardPage() {
                     )}
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12 }}>
+                <div className={styles.agentsGrid}>
                     {(agents?.agents || []).map((agent) => {
                         const isRunning = runningAgent === agent.id;
                         const statusColor = agent.lastRun ? STATUS_COLORS[agent.lastRun.status] || "var(--text-muted)" : "var(--text-muted)";

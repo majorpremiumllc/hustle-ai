@@ -5,16 +5,20 @@ import styles from "../dashboard.module.css";
 
 const PLANS = [
     {
+        id: "invoice", name: "AI Invoice", price: "$29",
+        features: ["Unlimited AI invoices", "4 premium templates", "AI auto-fill", "US-style receipts", "2.9% processing fee"],
+    },
+    {
         id: "starter", name: "Starter", price: "$49",
-        features: ["100 leads/mo", "SMS + Voice AI", "1 AI phone number", "24/7 answering", "Basic analytics"],
+        features: ["50 leads/mo", "SMS + Voice AI", "1 AI phone number", "24/7 answering", "Basic analytics"],
     },
     {
         id: "professional", name: "Professional", price: "$99", popular: true,
-        features: ["500 leads/mo", "SMS + Voice AI", "All integrations", "Custom AI scripts", "5 team members", "CRM Export"],
+        features: ["250 leads/mo", "SMS + Voice AI", "All integrations", "Custom AI scripts", "5 team members", "AI Invoicing"],
     },
     {
         id: "business", name: "Business", price: "$199",
-        features: ["Unlimited leads", "5 phone numbers", "API access", "White-label branding", "Unlimited team", "Voice cloning"],
+        features: ["Unlimited leads", "5 phone numbers", "API access", "White-label branding", "Unlimited team", "AI Invoicing"],
     },
 ];
 
@@ -155,7 +159,7 @@ export default function BillingPage() {
                 {/* Plan Comparison */}
                 <div className="card-flat" style={{ padding: 24 }}>
                     <h3 style={{ color: "var(--text-white)", marginBottom: 16 }}>Available Plans</h3>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
                         {PLANS.map((plan) => {
                             const isCurrent = sub?.plan === plan.id;
                             return (

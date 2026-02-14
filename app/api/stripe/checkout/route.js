@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { PLAN_CONFIG } from "@/lib/stripe-config";
+import { PLAN_CONFIG, getPlanId } from "@/lib/stripe-config";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -13,7 +13,8 @@ export async function POST(request) {
             return Response.json({ error: "planName and interval required" }, { status: 400 });
         }
 
-        const planId = planName.toLowerCase();
+        // Resolve plan name to ID: handles both display names ("AI Invoice") and IDs ("invoice")
+        const planId = PLAN_CONFIG[planName] ? planName : getPlanId(planName);
         const plan = PLAN_CONFIG[planId];
 
         if (!plan) {
@@ -44,7 +45,7 @@ export async function POST(request) {
             ],
             ...(email && { customer_email: email }),
             subscription_data: {
-                trial_period_days: 7,
+                trial_period_days: 3,
                 metadata: {
                     plan: planId,
                     interval: interval,

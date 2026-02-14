@@ -177,8 +177,8 @@ export default function SettingsPage() {
         );
     }
 
-    const planLabel = subscription?.plan === "business" ? "Business" : subscription?.plan === "professional" ? "Professional" : "Starter";
-    const planPrice = subscription?.plan === "business" ? "$199" : subscription?.plan === "professional" ? "$99" : "$49";
+    const planLabel = subscription?.plan === "invoice" ? "AI Invoice" : subscription?.plan === "business" ? "Business" : subscription?.plan === "professional" ? "Professional" : "Starter";
+    const planPrice = subscription?.plan === "invoice" ? "$29" : subscription?.plan === "business" ? "$199" : subscription?.plan === "professional" ? "$99" : "$49";
 
     const tabs = [
         { id: "company", label: "Company" },
@@ -211,23 +211,12 @@ export default function SettingsPage() {
             </div>
 
             {/* Tabs */}
-            <div style={{
-                display: "flex", gap: 4, marginBottom: "var(--space-xl)",
-                background: "var(--bg-input)", borderRadius: "var(--radius-md)",
-                padding: 4, overflowX: "auto",
-            }}>
+            <div className={styles.settingsTabs}>
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        style={{
-                            padding: "8px 16px", borderRadius: "var(--radius-sm)",
-                            border: "none", cursor: "pointer", fontSize: "0.85rem",
-                            fontWeight: 600, whiteSpace: "nowrap",
-                            background: activeTab === tab.id ? "var(--accent)" : "transparent",
-                            color: activeTab === tab.id ? "#000" : "var(--text-muted)",
-                            transition: "all 0.2s ease",
-                        }}
+                        className={`${styles.settingsTabBtn} ${activeTab === tab.id ? styles.settingsTabBtnActive : ""}`}
                     >
                         {tab.label}
                     </button>
@@ -238,7 +227,7 @@ export default function SettingsPage() {
             {activeTab === "company" && (
                 <div className="card-flat">
                     <h4 style={{ marginBottom: "var(--space-lg)" }}>Company Information</h4>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-md)" }}>
+                    <div className={styles.settingsFormGrid}>
                         <div className="input-group">
                             <label>Company Name</label>
                             <input className="input" placeholder="Your company name"
@@ -378,7 +367,7 @@ export default function SettingsPage() {
 
                     {/* Invite form */}
                     {teamLimit.canInvite && (
-                        <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+                        <div className={styles.settingsInlineForm}>
                             <div className="input-group" style={{ flex: 1 }}>
                                 <label>Invite Team Member</label>
                                 <input className="input" type="email" placeholder="email@example.com"
@@ -438,7 +427,7 @@ export default function SettingsPage() {
                     </div>
 
                     {phoneLimit.canAdd && (
-                        <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+                        <div className={styles.settingsInlineForm}>
                             <div className="input-group" style={{ flex: 1 }}>
                                 <label>Add Phone Number</label>
                                 <input className="input" placeholder="+17025550100"
@@ -542,7 +531,7 @@ export default function SettingsPage() {
                     {/* Plan comparison */}
                     <div style={{ marginTop: "var(--space-xl)" }}>
                         <h5 style={{ marginBottom: "var(--space-md)", color: "var(--text-muted)" }}>Plan Comparison</h5>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--space-md)" }}>
+                        <div className={styles.settingsPlanGrid}>
                             {[
                                 { plan: "Starter", price: "$49", leads: "100", numbers: "1", team: "1", features: ["SMS + Voice AI", "Basic Analytics", "Lead Dashboard"] },
                                 { plan: "Professional", price: "$99", leads: "500", numbers: "2", team: "5", features: ["All integrations", "Custom AI Scripts", "CRM Export + Zapier"] },

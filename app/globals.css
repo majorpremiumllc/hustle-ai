@@ -88,6 +88,11 @@
   --max-width: 1200px;
   --sidebar-width: 260px;
   --header-height: 64px;
+
+  /* Mobile App */
+  --tabbar-height: 60px;
+  --fab-size: 56px;
+  --touch-min: 44px;
 }
 
 /* ── Reset ────────────────────────────────────── */
@@ -113,6 +118,8 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 /* Subtle noise texture overlay — z-index must be below interactive elements */
@@ -708,6 +715,18 @@ select.input {
    ══════════════════════════════════════════════ */
 
 /* ── Core Keyframes ──────────────────────────── */
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
 @keyframes fadeInUp {
   from {
@@ -1539,6 +1558,117 @@ select.input {
   .calls-grid>*,
   .messages-grid>* {
     max-height: 50vh;
+  }
+
+  /* Table → Card conversion for data-heavy tables */
+  .table-container {
+    overflow-x: visible !important;
+  }
+
+  .table-container .table {
+    display: block;
+  }
+
+  .table-container .table thead {
+    display: none;
+  }
+
+  .table-container .table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .table-container .table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    align-items: center;
+  }
+
+  .table-container .table tbody td {
+    border: none !important;
+    padding: 0 !important;
+    font-size: 0.85rem;
+  }
+
+  .table-container .table tbody td:first-child {
+    width: 100%;
+    font-weight: 700;
+    color: var(--text-white);
+    font-size: 0.92rem;
+    margin-bottom: 2px;
+  }
+
+  /* Touch-friendly inputs on mobile */
+  .input,
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    font-size: 16px !important;
+    /* prevents iOS zoom */
+    min-height: var(--touch-min);
+  }
+
+  /* Better badge sizing on mobile */
+  .badge {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+  }
+
+  /* Better button touch targets */
+  .btn-sm {
+    min-height: var(--touch-min);
+    padding: 8px 14px;
+  }
+
+  /* Invoice list card style on mobile */
+  .invoice-card-mobile {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+  }
+
+  .invoice-card-mobile .card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* ── Small Phone Enhancements ──────────────────── */
+@media (max-width: 480px) {
+
+  /* Reduce page header */
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Cards tighter padding */
+  .card-flat,
+  .card {
+    padding: 12px !important;
+  }
+
+  /* Invoice page padding */
+  .invoice-page-wrap {
+    padding: 0 8px !important;
   }
 }
 

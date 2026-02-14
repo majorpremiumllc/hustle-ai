@@ -157,14 +157,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
-    padding: 6px 0;
-    font-size: 0.65rem;
+    gap: 3px;
+    padding: 8px 0;
+    font-size: 0.68rem;
     font-weight: 500;
     color: var(--text-muted);
     transition: color var(--transition-fast);
     text-decoration: none;
     flex: 1;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .bottomTab:hover {
@@ -182,16 +183,56 @@
 }
 
 .bottomTabIcon svg {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
 }
 
 .bottomTabActive .bottomTabIcon {
-    filter: drop-shadow(0 0 4px rgba(108, 92, 231, 0.4));
+    filter: drop-shadow(0 0 6px rgba(108, 92, 231, 0.5));
 }
 
 .bottomTabLabel {
     line-height: 1;
+}
+
+/* ── FAB (Floating Action Button) ────────── */
+
+.fab {
+    display: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6C5CE7, #7C3AED);
+    align-items: center;
+    justify-content: center;
+    margin-top: -28px;
+    box-shadow: 0 4px 20px rgba(108, 92, 231, 0.5), 0 0 40px rgba(108, 92, 231, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.fab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(108, 92, 231, 0.6), 0 0 50px rgba(108, 92, 231, 0.2);
+}
+
+.fab:active {
+    transform: scale(0.95);
+}
+
+.fabIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.fabIcon svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2.5;
 }
 
 /* ── Main Content ─────────────────────────── */
@@ -452,6 +493,62 @@
     color: var(--text-white);
 }
 
+/* ── Settings Page ───────────────────────── */
+
+.settingsTabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: var(--space-xl);
+    background: var(--bg-input);
+    border-radius: var(--radius-md);
+    padding: 4px;
+}
+
+.settingsTabBtn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.settingsTabBtnActive {
+    background: var(--accent);
+    color: #000;
+}
+
+.settingsFormGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+}
+
+.settingsInlineForm {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.settingsPlanGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+}
+
+/* ── Agents Grid ─────────────────────────── */
+
+.agentsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
 /* ── Activity Feed ───────────────────────── */
 
 .activityList {
@@ -469,6 +566,8 @@
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     transition: all var(--transition-fast);
+    content-visibility: auto;
+    contain-intrinsic-size: 0 64px;
 }
 
 .activityItem:hover {
@@ -568,6 +667,7 @@
     /* Bottom tab bar */
     .bottomTabs {
         display: flex;
+        align-items: flex-end;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -577,6 +677,10 @@
         border-top: 1px solid var(--border);
         padding: 6px 0;
         padding-bottom: max(6px, env(safe-area-inset-bottom));
+    }
+
+    .fab {
+        display: flex;
     }
 
     .statsGrid {
@@ -591,10 +695,101 @@
     .pageHeader h1 {
         font-size: 1.4rem;
     }
+
+    .settingsFormGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .settingsInlineForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .settingsInlineForm select {
+        width: 100% !important;
+    }
+
+    .settingsPlanGrid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 480px) {
     .statsGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .agentsGrid {
         grid-template-columns: 1fr;
+    }
+
+    .bottomTab {
+        font-size: 0.6rem;
+        gap: 2px;
+        padding: 6px 0;
+    }
+
+    .bottomTabIcon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .fab {
+        width: 50px;
+        height: 50px;
+        margin-top: -25px;
+    }
+
+    .fabIcon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .mainContent {
+        padding: 0 var(--space-sm) var(--space-sm);
+        padding-bottom: 70px;
+    }
+
+    .pageHeader h1 {
+        font-size: 1.2rem;
+    }
+
+    .pageHeader p {
+        font-size: 0.8rem;
+    }
+
+    .settingsTabBtn {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+}
+
+/* ── Reduced Motion ──────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .fab,
+    .bottomTab,
+    .navItem,
+    .activityItem {
+        transition: none !important;
+    }
+}
+
+/* ── Touch Device: Disable Hover Effects ─── */
+
+@media (hover: none) {
+    .bottomTab:hover {
+        color: var(--text-muted);
+    }
+
+    .bottomTabActive:hover {
+        color: var(--primary-light);
+    }
+
+    .activityItem:hover {
+        border-color: var(--glass-border);
+        background: var(--glass-bg);
     }
 }

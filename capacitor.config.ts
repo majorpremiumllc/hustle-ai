@@ -1,24 +1,21 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.servicebot.ai',
-  appName: 'ServiceBot AI',
+  appId: 'com.hustleai.app',
+  appName: 'Hustle AI',
   webDir: 'out',
   server: {
     // ── Production ──
-    // Set this to your deployed URL when publishing to App Store
-    // url: 'https://servicebot.ai',
-
-    // ── Development ──
-    // Comment out the line below and uncomment the production URL above for release
-    url: 'http://localhost:3000',
-    cleartext: true,
+    url: 'https://tryhustleai.com/dashboard',
+    // ── Development (uncomment for local testing) ──
+    // url: 'http://localhost:3000',
+    // cleartext: true,
   },
   ios: {
     contentInset: 'automatic',
     backgroundColor: '#0A0A14',
     preferredContentMode: 'mobile',
-    scheme: 'ServiceBot AI',
+    scheme: 'Hustle AI',
     allowsLinkPreview: false,
   },
   plugins: {
@@ -28,7 +25,6 @@ const config: CapacitorConfig = {
       backgroundColor: '#0A0A14',
       showSpinner: true,
       spinnerColor: '#6C5CE7',
-      androidScaleType: 'CENTER_CROP',
       splashImmersive: true,
     },
     StatusBar: {
@@ -38,6 +34,9 @@ const config: CapacitorConfig = {
     Keyboard: {
       resize: 'body',
       style: 'DARK',
+    },
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
     },
   },
 };

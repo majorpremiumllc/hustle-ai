@@ -189,7 +189,7 @@ export default function LeadsPage() {
             {showAddForm && (
                 <div className="card-flat" style={{ padding: 20, marginBottom: 20 }}>
                     <h4 style={{ color: "var(--text-white)", marginBottom: 12 }}>New Lead</h4>
-                    <form onSubmit={addLead} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <form onSubmit={addLead} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
                         <input placeholder="Customer Name *" required value={newLead.customerName} onChange={(e) => setNewLead({ ...newLead, customerName: e.target.value })} className="input" />
                         <input placeholder="Phone" value={newLead.customerPhone} onChange={(e) => setNewLead({ ...newLead, customerPhone: e.target.value })} className="input" />
                         <input placeholder="Job Type (e.g. TV Mounting)" value={newLead.jobType} onChange={(e) => setNewLead({ ...newLead, jobType: e.target.value })} className="input" />

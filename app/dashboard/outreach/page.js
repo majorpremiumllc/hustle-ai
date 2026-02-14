@@ -125,7 +125,7 @@ export default function OutreachPage() {
                         className="input"
                         value={newChannel}
                         onChange={(e) => setNewChannel(e.target.value)}
-                        style={{ width: 160 }}
+                        style={{ minWidth: 140, flex: "0 1 auto" }}
                     >
                         <option>Email + SMS</option>
                         <option>Email</option>

@@ -51,7 +51,7 @@ export default function TermsPage() {
 
                     <Section title="4. Subscription & Billing">
                         <p><strong style={{ color: "var(--text-white)" }}>Plans:</strong> We offer Starter ($49/mo), Professional ($99/mo), and Business ($199/mo) plans. Annual billing is available at a 20% discount.</p>
-                        <p style={{ marginTop: 8 }}><strong style={{ color: "var(--text-white)" }}>Free Trial:</strong> New accounts receive a 7-day free trial. No credit card is required to start.</p>
+                        <p style={{ marginTop: 8 }}><strong style={{ color: "var(--text-white)" }}>Free Trial:</strong> New accounts receive a 3-day free trial. No credit card is required to start.</p>
                         <p style={{ marginTop: 8 }}><strong style={{ color: "var(--text-white)" }}>Billing:</strong> After the trial period, you will be charged automatically based on your selected plan. Payments are processed securely via Stripe.</p>
                         <p style={{ marginTop: 8 }}><strong style={{ color: "var(--text-white)" }}>Cancellation:</strong> You may cancel your subscription at any time. Your account will remain active until the end of the current billing period.</p>
                         <p style={{ marginTop: 8 }}><strong style={{ color: "var(--text-white)" }}>Refunds:</strong> We offer a full refund within 14 days of your first payment if you are not satisfied with the service.</p>

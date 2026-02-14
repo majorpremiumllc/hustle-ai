@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { SessionProvider } from "next-auth/react";
+import { useState, useEffect, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { SessionProvider, useSession } from "next-auth/react";
+import InstallPrompt from "../components/InstallPrompt";
+import NeuralSplash from "../components/NeuralSplash";
+import PaywallScreen from "../components/PaywallScreen";
 import styles from "./dashboard.module.css";
 
 /* ── SVG Nav Icons ───────────────────────────── */
@@ -22,10 +26,12 @@ const IconLogout = () => <SvgIcon><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"
 const IconBolt = () => <SvgIcon><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></SvgIcon>;
 
 const IconBilling = () => <SvgIcon><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></SvgIcon>;
+const IconInvoice = () => <SvgIcon><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></SvgIcon>;
 
 const NAV_ITEMS = [
     { href: "/dashboard", icon: <IconOverview />, label: "Overview" },
     { href: "/dashboard/leads", icon: <IconLeads />, label: "Leads" },
+    { href: "/dashboard/invoices", icon: <IconInvoice />, label: "Invoices" },
     { href: "/dashboard/messages", icon: <IconMessages />, label: "Messages" },
     { href: "/dashboard/calls", icon: <IconCalls />, label: "Calls" },
     { href: "/dashboard/outreach", icon: <IconOutreach />, label: "Outreach" },
@@ -34,18 +40,56 @@ const NAV_ITEMS = [
     { href: "/dashboard/settings", icon: <IconSettings />, label: "Settings" },
 ];
 
-/* Bottom tab – show only the 5 most important items */
-const BOTTOM_TABS = [
+/* Bottom tab – 4 core items + FAB center */
+const BOTTOM_TABS_LEFT = [
     { href: "/dashboard", icon: <IconOverview />, label: "Home" },
-    { href: "/dashboard/leads", icon: <IconLeads />, label: "Leads" },
-    { href: "/dashboard/messages", icon: <IconMessages />, label: "Messages" },
+    { href: "/dashboard/invoices", icon: <IconInvoice />, label: "Invoices" },
+];
+const BOTTOM_TABS_RIGHT = [
     { href: "/dashboard/calls", icon: <IconCalls />, label: "Calls" },
     { href: "/dashboard/settings", icon: <IconSettings />, label: "Settings" },
 ];
+const IconPlus = () => <SvgIcon><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></SvgIcon>;
 
 function DashboardLayoutInner({ children }) {
     const pathname = usePathname();
+    const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const fabCooldown = useRef(false);
+    const { data: session } = useSession();
+
+    /* ── Splash screen (once per session) ── */
+    const [showSplash, setShowSplash] = useState(false);
+    useEffect(() => {
+        if (!sessionStorage.getItem("splash-shown")) {
+            setShowSplash(true);
+        }
+    }, []);
+    const handleSplashFinish = () => {
+        sessionStorage.setItem("splash-shown", "1");
+        setShowSplash(false);
+    };
+
+    /* ── Paywall check ── */
+    const [subscription, setSubscription] = useState(null);
+    const [subLoading, setSubLoading] = useState(true);
+    useEffect(() => {
+        fetch("/api/subscription")
+            .then(r => r.json())
+            .then(data => { setSubscription(data); setSubLoading(false); })
+            .catch(() => setSubLoading(false));
+    }, []);
+
+    const needsPaywall = !subLoading && session &&
+        (!subscription?.status || subscription?.status === "canceled" || subscription?.status === "unpaid");
+
+    const handleFabClick = (e) => {
+        e.preventDefault();
+        if (fabCooldown.current) return;
+        fabCooldown.current = true;
+        router.push("/dashboard/invoices?create=1");
+        setTimeout(() => { fabCooldown.current = false; }, 300);
+    };
 
     // Close sidebar on route change
     useEffect(() => {
@@ -68,80 +112,104 @@ function DashboardLayoutInner({ children }) {
     }
 
     return (
-        <div className={styles.dashboardLayout}>
-            {/* ── Sidebar Overlay ─────────── */}
-            <div
-                className={`${styles.sidebarOverlay} ${sidebarOpen ? styles.sidebarOverlayVisible : ""}`}
-                onClick={() => setSidebarOpen(false)}
-            />
+        <>
+            {showSplash && <NeuralSplash onFinish={handleSplashFinish} />}
+            {needsPaywall && !showSplash && <PaywallScreen />}
+            <div className={styles.dashboardLayout}>
+                {/* ── Sidebar Overlay ─────────── */}
+                <div
+                    className={`${styles.sidebarOverlay} ${sidebarOpen ? styles.sidebarOverlayVisible : ""}`}
+                    onClick={() => setSidebarOpen(false)}
+                />
 
-            {/* ── Sidebar ────────────────── */}
-            <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
-                <a href="/" className={styles.sidebarLogo}>
-                    <IconBolt />
-                    <span>Hustle<span className="text-gradient">AI</span></span>
-                </a>
+                {/* ── Sidebar ────────────────── */}
+                <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
+                    <Link href="/" className={styles.sidebarLogo}>
+                        <img src="/app-icon.png" alt="" style={{ width: 28, height: 28, borderRadius: 7 }} />
+                        <span>Hustle<span className="text-gradient">AI</span></span>
+                    </Link>
 
-                <nav className={styles.sidebarNav}>
-                    {NAV_ITEMS.map((item) => (
-                        <a
-                            key={item.href}
-                            href={item.href}
-                            className={`${styles.navItem} ${pathname === item.href ? styles.navItemActive : ""}`}
+                    <nav className={styles.sidebarNav}>
+                        {NAV_ITEMS.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={`${styles.navItem} ${pathname === item.href ? styles.navItemActive : ""}`}
+                            >
+                                <span className={styles.navIcon}>{item.icon}</span>
+                                <span>{item.label}</span>
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <div className={styles.sidebarFooter}>
+                        <Link href="/dashboard/onboarding" className={styles.navItem}>
+                            <span className={styles.navIcon}><IconRocket /></span>
+                            <span>Setup Wizard</span>
+                        </Link>
+                        <Link href="/api/auth/signout" className={styles.navItem}>
+                            <span className={styles.navIcon}><IconLogout /></span>
+                            <span>Sign Out</span>
+                        </Link>
+                    </div>
+                </aside>
+
+                {/* ── Main Content ─────────── */}
+                <main className={styles.mainContent}>
+                    {/* Mobile header bar */}
+                    <div className={styles.mobileHeader}>
+                        <button
+                            className={`${styles.hamburger} ${sidebarOpen ? styles.hamburgerActive : ""}`}
+                            onClick={() => setSidebarOpen(!sidebarOpen)}
+                            aria-label="Toggle sidebar"
                         >
-                            <span className={styles.navIcon}>{item.icon}</span>
-                            <span>{item.label}</span>
-                        </a>
+                            <span /><span /><span />
+                        </button>
+                        <Link href="/" className={styles.mobileHeaderLogo}>
+                            <img src="/app-icon.png" alt="" style={{ width: 26, height: 26, borderRadius: 6 }} />
+                            <span>Hustle<span className="text-gradient">AI</span></span>
+                        </Link>
+                        <div style={{ width: 40 }} /> {/* Spacer for centering */}
+                    </div>
+
+                    <InstallPrompt />
+                    {children}
+                </main>
+
+                {/* ── Bottom Tab Bar (mobile) ── */}
+                <nav className={styles.bottomTabs}>
+                    {BOTTOM_TABS_LEFT.map((tab) => (
+                        <Link
+                            key={tab.href}
+                            href={tab.href}
+                            className={`${styles.bottomTab} ${pathname === tab.href ? styles.bottomTabActive : ""}`}
+                        >
+                            <span className={styles.bottomTabIcon}>{tab.icon}</span>
+                            <span className={styles.bottomTabLabel}>{tab.label}</span>
+                        </Link>
+                    ))}
+                    {/* ── FAB: New Invoice ── */}
+                    <button
+                        onClick={handleFabClick}
+                        className={styles.fab}
+                        aria-label="Create new invoice"
+                        role="button"
+                    >
+                        <span className={styles.fabIcon}><IconPlus /></span>
+                    </button>
+                    {BOTTOM_TABS_RIGHT.map((tab) => (
+                        <Link
+                            key={tab.href}
+                            href={tab.href}
+                            className={`${styles.bottomTab} ${pathname === tab.href ? styles.bottomTabActive : ""}`}
+                        >
+                            <span className={styles.bottomTabIcon}>{tab.icon}</span>
+                            <span className={styles.bottomTabLabel}>{tab.label}</span>
+                        </Link>
                     ))}
                 </nav>
-
-                <div className={styles.sidebarFooter}>
-                    <a href="/dashboard/onboarding" className={styles.navItem}>
-                        <span className={styles.navIcon}><IconRocket /></span>
-                        <span>Setup Wizard</span>
-                    </a>
-                    <a href="/api/auth/signout" className={styles.navItem}>
-                        <span className={styles.navIcon}><IconLogout /></span>
-                        <span>Sign Out</span>
-                    </a>
-                </div>
-            </aside>
-
-            {/* ── Main Content ─────────── */}
-            <main className={styles.mainContent}>
-                {/* Mobile header bar */}
-                <div className={styles.mobileHeader}>
-                    <button
-                        className={`${styles.hamburger} ${sidebarOpen ? styles.hamburgerActive : ""}`}
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        aria-label="Toggle sidebar"
-                    >
-                        <span /><span /><span />
-                    </button>
-                    <a href="/" className={styles.mobileHeaderLogo}>
-                        <IconBolt />
-                        <span>Hustle<span className="text-gradient">AI</span></span>
-                    </a>
-                    <div style={{ width: 40 }} /> {/* Spacer for centering */}
-                </div>
-
-                {children}
-            </main>
-
-            {/* ── Bottom Tab Bar (mobile) ── */}
-            <nav className={styles.bottomTabs}>
-                {BOTTOM_TABS.map((tab) => (
-                    <a
-                        key={tab.href}
-                        href={tab.href}
-                        className={`${styles.bottomTab} ${pathname === tab.href ? styles.bottomTabActive : ""}`}
-                    >
-                        <span className={styles.bottomTabIcon}>{tab.icon}</span>
-                        <span className={styles.bottomTabLabel}>{tab.label}</span>
-                    </a>
-                ))}
-            </nav>
-        </div>
+            </div>
+        </>
     );
 }
 

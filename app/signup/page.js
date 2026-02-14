@@ -74,7 +74,7 @@ export default function SignupPage() {
                 </a>
                 <h2>Create your account</h2>
                 <p className={styles.authSub}>
-                    Start your 7-day free trial. No credit card required.
+                    Start your 3-day free trial. No credit card required.
                 </p>
 
                 {error && <div className={styles.authError}>{error}</div>}

@@ -46,7 +46,7 @@ const TOUR_STEPS = [
         selector: "#pricing",
         title: "Plans & Pricing",
         audio: "/audio/tour-pricing.mp3",
-        transcript: "Check out our plans — starting at just $49 per month with a 7-day free trial. No credit card required, set up in under 5 minutes.",
+        transcript: "Check out our plans — starting at just $49 per month with a 3-day free trial. No credit card required, set up in under 5 minutes.",
     },
 ];
 

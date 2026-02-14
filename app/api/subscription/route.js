@@ -44,11 +44,12 @@ export async function GET() {
         }
 
         const prices = {
+            invoice: { month: "$29", year: "$276" },
             starter: { month: "$49", year: "$470" },
             professional: { month: "$99", year: "$948" },
             business: { month: "$199", year: "$1,908" },
         };
-        const planNames = { starter: "Starter", professional: "Professional", business: "Business" };
+        const planNames = { invoice: "AI Invoice", starter: "Starter", professional: "Professional", business: "Business" };
 
         return NextResponse.json({
             plan: sub.plan,

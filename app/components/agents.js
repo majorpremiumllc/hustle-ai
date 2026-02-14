@@ -8,7 +8,7 @@ const PLATFORM_CONTEXT = `
 Platform: HustleAI — AI-Powered Call Answering & Lead Capture
 Supports: 25+ industries (plumbers, salons, electricians, landscapers, restaurants, HVAC, dental, legal, etc.)
 Core Features: 24/7 AI call answering, smart lead capture, automated appointment booking, follow-up sequences, revenue recovery
-Pricing: Starter $49/mo, Professional $99/mo (most popular), Business $199/mo — all with 7-day free trial
+Pricing: Starter $49/mo, Professional $99/mo (most popular), Business $199/mo — all with 3-day free trial
 `;
 
 const AGENTS = [
