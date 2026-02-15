@@ -57,6 +57,19 @@ const nextConfig = {
 
   /* ── Allowed Dev Origins ── */
   allowedDevOrigins: ["127.0.0.1", "localhost"],
+
+  /* ── Server external packages (Node-only native modules) ── */
+  serverExternalPackages: ["@libsql/client", "@libsql/isomorphic-fetch", "@prisma/adapter-libsql"],
+
+  /* ── Webpack: ignore non-JS files in @libsql ── */
+  webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /\.(md|d\.ts)$/,
+      include: /node_modules\/@libsql/,
+      use: "null-loader",
+    });
+    return config;
+  },
 };
 
 export default nextConfig;

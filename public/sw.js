@@ -3,7 +3,7 @@
    Cache-first for static assets, network-first for API
    ───────────────────────────────────────────── */
 
-const CACHE_VERSION = "hustleai-v1";
+const CACHE_VERSION = "hustleai-v2";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 
