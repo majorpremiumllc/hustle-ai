@@ -1,9 +1,12 @@
 "use client";
 
+import React from 'react';
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider, useSession, signOut } from "next-auth/react";
+import { Capacitor } from "@capacitor/core";
+import { Preferences } from "@capacitor/preferences";
 import InstallPrompt from "../components/InstallPrompt";
 import NeuralSplash from "../components/NeuralSplash";
 import PaywallScreen from "../components/PaywallScreen";
@@ -65,6 +68,21 @@ function DashboardLayoutInner({ children }) {
             setShowSplash(true);
         }
     }, []);
+    const handleSignOut = async () => {
+        if (Capacitor.isNativePlatform()) {
+            try {
+                await Preferences.clear();
+            } catch (e) {
+                console.error('Storage clear error', e);
+            }
+            // On native iOS/Android: sign out without server redirect
+            // (server redirect opens Safari which is the bug Apple flagged)
+            await signOut({ redirect: false });
+            router.replace('/');
+        } else {
+            signOut({ callbackUrl: '/' });
+        }
+    };
     const handleSplashFinish = () => {
         sessionStorage.setItem("splash-shown", "1");
         setShowSplash(false);
@@ -147,10 +165,10 @@ function DashboardLayoutInner({ children }) {
                             <span className={styles.navIcon}><IconRocket /></span>
                             <span>Setup Wizard</span>
                         </Link>
-                        <Link href="/api/auth/signout" className={styles.navItem}>
+                        <div onClick={handleSignOut} className={styles.navItem} style={{ cursor: "pointer" }} role="button" tabIndex={0}>
                             <span className={styles.navIcon}><IconLogout /></span>
                             <span>Sign Out</span>
-                        </Link>
+                        </div>
                     </div>
                 </aside>
 

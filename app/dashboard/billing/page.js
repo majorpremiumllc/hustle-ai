@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Capacitor } from "@capacitor/core";
 import styles from "../dashboard.module.css";
 
 const PLANS = [
@@ -26,8 +27,12 @@ export default function BillingPage() {
     const [sub, setSub] = useState(null);
     const [loading, setLoading] = useState(true);
     const [upgrading, setUpgrading] = useState(null);
+    const [isIOS, setIsIOS] = useState(false);
 
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            setIsIOS(Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios');
+        }
         fetch("/api/subscription")
             .then((r) => r.json())
             .then(setSub)
@@ -127,10 +132,15 @@ export default function BillingPage() {
                                         : ""}
                             </p>
                         </div>
-                        {sub?.stripeCustomerId && (
+                        {sub?.stripeCustomerId && !isIOS && (
                             <button className="btn btn-secondary btn-sm" onClick={handleManageBilling}>
                                 Manage Billing →
                             </button>
+                        )}
+                        {sub?.stripeCustomerId && isIOS && (
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: 8 }}>
+                                Manage your billing on our website.
+                            </div>
                         )}
                     </div>
 
@@ -191,6 +201,10 @@ export default function BillingPage() {
                                         <button className="btn btn-secondary btn-sm" style={{ width: "100%", opacity: 0.5 }} disabled>
                                             Current Plan
                                         </button>
+                                    ) : isIOS ? (
+                                        <button className="btn btn-secondary btn-sm" style={{ width: "100%", opacity: 0.5 }} disabled>
+                                            Apple In‑App Purchase (coming soon)
+                                        </button>
                                     ) : (
                                         <button
                                             className={`btn ${plan.id === "business" ? "btn-accent" : "btn-primary"} btn-sm`}
@@ -210,26 +224,32 @@ export default function BillingPage() {
                 {/* Payment Method */}
                 <div className="card-flat" style={{ padding: 24 }}>
                     <h3 style={{ color: "var(--text-white)", marginBottom: 16 }}>Payment Method</h3>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 16, borderRadius: 10, background: "var(--glass-bg)", border: "1px solid var(--glass-border)" }}>
-                        <svg width="40" height="26" viewBox="0 0 40 26" fill="none">
-                            <rect width="40" height="26" rx="4" fill="#1A1F36" />
-                            <rect x="4" y="8" width="12" height="9" rx="1.5" fill="#6C5CE7" opacity="0.7" />
-                            <rect x="12" y="8" width="12" height="9" rx="1.5" fill="#A855F7" opacity="0.5" />
-                        </svg>
-                        <div>
-                            <div style={{ color: "var(--text-white)", fontWeight: 600, fontSize: "0.9rem" }}>
-                                {sub?.stripeCustomerId ? "Card on file via Stripe" : "No card on file"}
-                            </div>
-                            <div style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
-                                {sub?.stripeCustomerId
-                                    ? "Manage via billing portal"
-                                    : sub?.status === "trialing"
-                                        ? "Card will be saved after trial ends"
-                                        : "Add a payment method to upgrade"
-                                }
+                    {isIOS ? (
+                        <div style={{ textAlign: "center", padding: 24, color: "var(--text-muted)", fontSize: "0.85rem" }}>
+                            Payments on iOS are managed through your Apple ID.
+                        </div>
+                    ) : (
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 16, borderRadius: 10, background: "var(--glass-bg)", border: "1px solid var(--glass-border)" }}>
+                            <svg width="40" height="26" viewBox="0 0 40 26" fill="none">
+                                <rect width="40" height="26" rx="4" fill="#1A1F36" />
+                                <rect x="4" y="8" width="12" height="9" rx="1.5" fill="#6C5CE7" opacity="0.7" />
+                                <rect x="12" y="8" width="12" height="9" rx="1.5" fill="#A855F7" opacity="0.5" />
+                            </svg>
+                            <div>
+                                <div style={{ color: "var(--text-white)", fontWeight: 600, fontSize: "0.9rem" }}>
+                                    {sub?.stripeCustomerId ? "Card on file via Stripe" : "No card on file"}
+                                </div>
+                                <div style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
+                                    {sub?.stripeCustomerId
+                                        ? "Manage via billing portal"
+                                        : sub?.status === "trialing"
+                                            ? "Card will be saved after trial ends"
+                                            : "Add a payment method to upgrade"
+                                    }
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Invoice History */}

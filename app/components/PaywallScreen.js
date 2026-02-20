@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Capacitor } from "@capacitor/core";
 
 /* ─────────────────────────────────────────────
    Paywall Screen
@@ -42,6 +43,13 @@ const PLANS = [
 
 export default function PaywallScreen() {
     const [loading, setLoading] = useState(null);
+    const [isIOS, setIsIOS] = useState(false);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setIsIOS(Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios');
+        }
+    }, []);
 
     const handleSelectPlan = async (plan) => {
         setLoading(plan.id);
@@ -96,98 +104,114 @@ export default function PaywallScreen() {
             </div>
 
             {/* Plans */}
-            <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                gap: "16px",
-                width: "100%",
-                maxWidth: "1000px",
-            }}>
-                {PLANS.map((plan) => (
-                    <div key={plan.id} style={{
-                        background: plan.popular
-                            ? "linear-gradient(135deg, rgba(108, 92, 231, 0.15), rgba(0, 210, 255, 0.08))"
-                            : "rgba(255,255,255,0.03)",
-                        border: `1px solid ${plan.popular ? "rgba(108, 92, 231, 0.4)" : "rgba(255,255,255,0.08)"}`,
-                        borderRadius: "16px",
-                        padding: "24px 20px",
-                        position: "relative",
-                        transition: "transform 0.2s ease, border-color 0.2s ease",
-                    }}>
-                        {plan.popular && (
-                            <span style={{
-                                position: "absolute", top: "-10px", right: "16px",
-                                background: "linear-gradient(135deg, #6C5CE7, #00d2ff)",
-                                color: "#fff", fontSize: "0.7rem", fontWeight: 700,
-                                padding: "3px 12px", borderRadius: "99px",
-                            }}>
-                                Most Popular
-                            </span>
-                        )}
-
-                        <h3 style={{ color: "#fff", fontSize: "1.05rem", fontWeight: 700, marginBottom: "4px" }}>
-                            {plan.name}
-                        </h3>
-                        <div style={{ display: "flex", alignItems: "baseline", gap: "4px", marginBottom: "4px" }}>
-                            <span style={{
-                                fontSize: "1.8rem", fontWeight: 800,
-                                color: plan.popular ? "#00d2ff" : "#fff",
-                            }}>
-                                {plan.price}
-                            </span>
-                            <span style={{ fontSize: "0.85rem", color: "#6b6b80" }}>/month</span>
-                        </div>
-                        {plan.leads !== "—" && (
-                            <p style={{ fontSize: "0.8rem", color: "#6b6b80", marginBottom: "14px" }}>
-                                {plan.leads} leads/mo
-                            </p>
-                        )}
-                        {plan.leads === "—" && (
-                            <p style={{ fontSize: "0.8rem", color: "#6b6b80", marginBottom: "14px" }}>
-                                Invoicing only
-                            </p>
-                        )}
-
-                        <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px 0" }}>
-                            {plan.features.map((f, i) => (
-                                <li key={i} style={{
-                                    fontSize: "0.82rem", color: "#c0c0d0",
-                                    padding: "4px 0", display: "flex", alignItems: "center", gap: "8px",
+            {isIOS ? (
+                <div style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: "16px", padding: "24px 20px", textAlign: "center",
+                    maxWidth: "500px", width: "100%"
+                }}>
+                    <h3 style={{ color: "#fff", fontSize: "1.1rem", marginBottom: "12px" }}>Subscription Required</h3>
+                    <p style={{ color: "#c0c0d0", fontSize: "0.9rem", lineHeight: 1.5 }}>
+                        To upgrade your plan, please visit our website from your computer or mobile browser.
+                    </p>
+                </div>
+            ) : (
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                    gap: "16px",
+                    width: "100%",
+                    maxWidth: "1000px",
+                }}>
+                    {PLANS.map((plan) => (
+                        <div key={plan.id} style={{
+                            background: plan.popular
+                                ? "linear-gradient(135deg, rgba(108, 92, 231, 0.15), rgba(0, 210, 255, 0.08))"
+                                : "rgba(255,255,255,0.03)",
+                            border: `1px solid ${plan.popular ? "rgba(108, 92, 231, 0.4)" : "rgba(255,255,255,0.08)"}`,
+                            borderRadius: "16px",
+                            padding: "24px 20px",
+                            position: "relative",
+                            transition: "transform 0.2s ease, border-color 0.2s ease",
+                        }}>
+                            {plan.popular && (
+                                <span style={{
+                                    position: "absolute", top: "-10px", right: "16px",
+                                    background: "linear-gradient(135deg, #6C5CE7, #00d2ff)",
+                                    color: "#fff", fontSize: "0.7rem", fontWeight: 700,
+                                    padding: "3px 12px", borderRadius: "99px",
                                 }}>
-                                    <span style={{ color: "#00d2ff", fontSize: "0.75rem" }}>✓</span>
-                                    {f}
-                                </li>
-                            ))}
-                        </ul>
+                                    Most Popular
+                                </span>
+                            )}
 
-                        <button
-                            onClick={() => handleSelectPlan(plan)}
-                            disabled={loading === plan.id}
-                            style={{
-                                width: "100%", padding: "12px",
-                                borderRadius: "10px", border: "none",
-                                fontWeight: 700, fontSize: "0.88rem",
-                                cursor: loading ? "wait" : "pointer",
-                                background: plan.popular
-                                    ? "linear-gradient(135deg, #6C5CE7, #7C3AED)"
-                                    : "rgba(255,255,255,0.08)",
-                                color: plan.popular ? "#fff" : "#c0c0d0",
-                                transition: "all 0.2s ease",
-                            }}
-                        >
-                            {loading === plan.id ? "Redirecting..." : "Start 3-Day Free Trial"}
-                        </button>
-                    </div>
-                ))}
-            </div>
+                            <h3 style={{ color: "#fff", fontSize: "1.05rem", fontWeight: 700, marginBottom: "4px" }}>
+                                {plan.name}
+                            </h3>
+                            <div style={{ display: "flex", alignItems: "baseline", gap: "4px", marginBottom: "4px" }}>
+                                <span style={{
+                                    fontSize: "1.8rem", fontWeight: 800,
+                                    color: plan.popular ? "#00d2ff" : "#fff",
+                                }}>
+                                    {plan.price}
+                                </span>
+                                <span style={{ fontSize: "0.85rem", color: "#6b6b80" }}>/month</span>
+                            </div>
+                            {plan.leads !== "—" && (
+                                <p style={{ fontSize: "0.8rem", color: "#6b6b80", marginBottom: "14px" }}>
+                                    {plan.leads} leads/mo
+                                </p>
+                            )}
+                            {plan.leads === "—" && (
+                                <p style={{ fontSize: "0.8rem", color: "#6b6b80", marginBottom: "14px" }}>
+                                    Invoicing only
+                                </p>
+                            )}
+
+                            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px 0" }}>
+                                {plan.features.map((f, i) => (
+                                    <li key={i} style={{
+                                        fontSize: "0.82rem", color: "#c0c0d0",
+                                        padding: "4px 0", display: "flex", alignItems: "center", gap: "8px",
+                                    }}>
+                                        <span style={{ color: "#00d2ff", fontSize: "0.75rem" }}>✓</span>
+                                        {f}
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <button
+                                onClick={() => handleSelectPlan(plan)}
+                                disabled={loading === plan.id}
+                                style={{
+                                    width: "100%", padding: "12px",
+                                    borderRadius: "10px", border: "none",
+                                    fontWeight: 700, fontSize: "0.88rem",
+                                    cursor: loading ? "wait" : "pointer",
+                                    background: plan.popular
+                                        ? "linear-gradient(135deg, #6C5CE7, #7C3AED)"
+                                        : "rgba(255,255,255,0.08)",
+                                    color: plan.popular ? "#fff" : "#c0c0d0",
+                                    transition: "all 0.2s ease",
+                                }}
+                            >
+                                {loading === plan.id ? "Redirecting..." : "Start 3-Day Free Trial"}
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {/* Footer */}
-            <p style={{
-                marginTop: "24px", fontSize: "0.75rem",
-                color: "#6b6b80", textAlign: "center",
-            }}>
-                No credit card required · Cancel anytime · Secure checkout via Stripe
-            </p>
+            {!isIOS && (
+                <p style={{
+                    marginTop: "24px", fontSize: "0.75rem",
+                    color: "#6b6b80", textAlign: "center",
+                }}>
+                    No credit card required · Cancel anytime · Secure checkout via Stripe
+                </p>
+            )}
         </div>
     );
 }
