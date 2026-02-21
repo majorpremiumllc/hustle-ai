@@ -4,6 +4,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import ChatWidget from "./components/ChatWidget";
 import AIActivityFeed from "./components/AIActivityFeed";
+import MetricsStrip from "./components/MetricsStrip";
+import StickyTrialCTA from "./components/StickyTrialCTA";
+import RevenueLeakCalculator from "./components/RevenueLeakCalculator";
+import TrustAuthority from "./components/TrustAuthority";
+import "./lib/analytics";
+const CommandPreview = dynamic(() => import("./components/CommandPreview"), { ssr: false });
 import MagneticButton from "./components/MagneticButton";
 import HustleLogo from "./components/HustleLogo";
 import AIModeSwitch from "./components/AIModeSwitch";
@@ -360,7 +366,7 @@ export default function LandingPage() {
   const [demoOpen, setDemoOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const plans = PLANS[billing];
-  const heroFullText = "AI Answers Every Call & Message.";
+  const heroFullText = "Answers Every Call & Books Every Job.";
 
   const handleCheckout = async (planName) => {
     setCheckoutLoading(planName);
@@ -563,7 +569,7 @@ export default function LandingPage() {
               <div className="animate-fadeInUp">
                 <div className={styles.heroBadge}>
                   <span className={styles.heroBadgeDot} />
-                  Your Calls Answered. Your Revenue Protected.
+                  Stop Losing Revenue to Missed Calls
                 </div>
               </div>
 
@@ -575,23 +581,28 @@ export default function LandingPage() {
                 <span>Answering Calls</span>
               </div>
               <h1 className="animate-fadeInUp delay-1">
-                Your AI Employee That<br />
+                Your Revenue Is Leaking.<br />
                 <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
               </h1>
               <p className={`animate-fadeInUp delay-2 ${styles.heroSub}`}>
-                <strong style={{ color: "var(--text-white)" }}>85% of callers who reach voicemail never call back.</strong>{" "}
-                HustleAI answers every call in under 3 seconds, qualifies leads, and books jobs — 24/7, on autopilot.
+                <strong style={{ color: "var(--text-white)" }}>Stop losing booked jobs to missed calls & slow replies.</strong>{" "}
+                AI answers in under 3 seconds, qualifies leads, books appointments — 24/7. Works with your existing number.
               </p>
               <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
-                <MagneticButton href="/signup" className="btn btn-accent btn-lg">
-                  Start Free 3-Day Trial <IconArrowRight className={styles.btnIconInline} />
+                <MagneticButton href="#calculator" className="btn btn-accent btn-lg" onClick={() => { if (window.__hustleTrack) window.__hustleTrack('click_primary_cta'); }}>
+                  Calculate Lost Revenue <IconArrowRight className={styles.btnIconInline} />
                 </MagneticButton>
-                <MagneticButton href="#how-it-works" className="btn btn-secondary btn-lg">
-                  Watch How It Works
+                <MagneticButton href="/signup" className="btn btn-secondary btn-lg" onClick={() => { if (window.__hustleTrack) window.__hustleTrack('click_secondary_cta'); }}>
+                  Start Free Trial
                 </MagneticButton>
                 <button onClick={() => setDemoOpen(true)} className={`btn btn-ghost btn-lg ${styles.demoBtn}`}>
                   ▶ Try a 10-sec Demo
                 </button>
+              </div>
+              <div className={`animate-fadeInUp delay-3`} style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginTop: '12px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.78rem', color: 'rgba(160,160,184,0.6)', display: 'flex', alignItems: 'center', gap: '6px' }}>✓ Set up in 10 minutes</span>
+                <span style={{ fontSize: '0.78rem', color: 'rgba(160,160,184,0.6)', display: 'flex', alignItems: 'center', gap: '6px' }}>✓ Works with your existing number</span>
+                <span style={{ fontSize: '0.78rem', color: 'rgba(160,160,184,0.6)', display: 'flex', alignItems: 'center', gap: '6px' }}>✓ No contracts</span>
               </div>
 
               {/* AI Activity Feed */}
@@ -620,6 +631,12 @@ export default function LandingPage() {
               <HolographicOrb />
             </div>
           </section>
+
+          {/* ── Metrics Strip ──────────────────────────────── */}
+          <MetricsStrip />
+
+          {/* ── Revenue Leak Calculator ──────────────────── */}
+          <RevenueLeakCalculator />
 
           {/* ── Revenue Counter ──────────────────────────── */}
           <RevenueCounter />
@@ -682,6 +699,11 @@ export default function LandingPage() {
               </div>
             </section>
           </UnlockSection>
+
+          <div className="glass-divider" />
+
+          {/* ── Command Center Preview ────────────────────── */}
+          <CommandPreview />
 
           <div className="glass-divider" />
 
@@ -1038,6 +1060,9 @@ export default function LandingPage() {
             </section>
           </UnlockSection>
 
+          {/* ── Trust / Authority ─────────────────────────── */}
+          <TrustAuthority />
+
           {/* ── Footer ──────────────────────────────────── */}
           <footer className={styles.footer}>
             <div className={`container ${styles.footerInner}`}>
@@ -1046,6 +1071,7 @@ export default function LandingPage() {
                   <HustleLogo variant="full" size={26} />
                 </div>
                 <p style={{ marginTop: "8px", fontSize: "0.85rem" }}>AI-powered business growth platform.</p>
+                <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "4px" }}>A product of Major Premium LLC</p>
               </div>
               <div className={styles.footerLinks}>
                 <div>
@@ -1056,24 +1082,30 @@ export default function LandingPage() {
                   <a href="/ai-invoice">AI Invoice</a>
                 </div>
                 <div>
+                  <h5>Industries</h5>
+                  <a href="/ai-for-handyman">AI for Handyman</a>
+                  <a href="/ai-for-plumbing">AI for Plumbing</a>
+                  <a href="/ai-for-hvac">AI for HVAC</a>
+                  <a href="/ai-for-roofing">AI for Roofing</a>
+                </div>
+                <div>
                   <h5>Company</h5>
-                  <a href="#">About</a>
-                  <a href="#">Contact</a>
                   <a href="/privacy">Privacy Policy</a>
                   <a href="/terms">Terms of Service</a>
                 </div>
                 <div>
                   <h5>Support</h5>
-                  <a href="#">Help Center</a>
-                  <a href="#">Status</a>
-                  <a href="#">API Docs</a>
+                  <a href="mailto:majorpremiumllc@gmail.com">Contact</a>
+                  <a href="/login">Dashboard</a>
                 </div>
               </div>
               <div className={styles.footerBottom}>
-                <p>&copy; 2026 HustleAI. All rights reserved.</p>
+                <p>&copy; 2026 HustleAI · Major Premium LLC · All rights reserved.</p>
               </div>
             </div>
           </footer>
+
+          <StickyTrialCTA />
 
           <ChatWidget />
           <DemoModal isOpen={demoOpen} onClose={() => setDemoOpen(false)} />

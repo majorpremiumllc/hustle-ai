@@ -61,15 +61,8 @@ const nextConfig = {
   /* ── Server external packages (Node-only native modules) ── */
   serverExternalPackages: ["@libsql/client", "@libsql/isomorphic-fetch", "@prisma/adapter-libsql"],
 
-  /* ── Webpack: ignore non-JS files in @libsql ── */
-  webpack: (config, { isServer }) => {
-    config.module.rules.push({
-      test: /\.(md|d\.ts)$/,
-      include: /node_modules\/@libsql/,
-      use: "null-loader",
-    });
-    return config;
-  },
+  /* ── Turbopack: ignore non-JS files in @libsql ── */
+  /* @libsql is already in serverExternalPackages, so null-loader is not needed */
 };
 
 export default nextConfig;

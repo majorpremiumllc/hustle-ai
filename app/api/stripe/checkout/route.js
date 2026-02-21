@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { PLAN_CONFIG, getPlanId } from "@/lib/stripe-config";
+import { PLAN_CONFIG, getPlanId, getStripeMetadata } from "@/lib/stripe-config";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -22,6 +22,7 @@ export async function POST(request) {
         }
 
         const pricing = interval === "year" ? plan.yearly : plan.monthly;
+        const projectMeta = getStripeMetadata(planId, interval);
 
         // Create the checkout session with inline price
         const session = await stripe.checkout.sessions.create({
@@ -34,6 +35,7 @@ export async function POST(request) {
                         product_data: {
                             name: `HustleAI ${plan.name}`,
                             description: `HustleAI ${plan.name} Plan — ${interval === "year" ? "Annual" : "Monthly"} billing`,
+                            metadata: { project: projectMeta.project },
                         },
                         unit_amount: pricing.amount,
                         recurring: {
@@ -46,17 +48,11 @@ export async function POST(request) {
             ...(email && { customer_email: email }),
             subscription_data: {
                 trial_period_days: 3,
-                metadata: {
-                    plan: planId,
-                    interval: interval,
-                },
+                metadata: projectMeta,
             },
             success_url: `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/dashboard?payment=success&plan=${planId}`,
             cancel_url: `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/#pricing`,
-            metadata: {
-                plan: planId,
-                interval: interval,
-            },
+            metadata: projectMeta,
         });
 
         return Response.json({ url: session.url });

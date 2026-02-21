@@ -8,12 +8,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import prisma from "@/lib/prisma";
 import { getCompanyByPhone } from "@/lib/plan-limits";
+import { validateTwilioWebhook, twilioErrorResponse } from "@/lib/twilio-auth";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 /**
  * Build voice system prompt using company's AI configuration.
- * Enhanced for sales, booking, and customer conversion.
  */
 function buildVoicePrompt(company) {
     const name = company.name || "our service";
@@ -57,22 +57,23 @@ ESCALATION:
 - "${company.aiEscalationMsg || "Let me connect you with our project manager to go over the details. They will call you right back."}"
 - Only escalate for very complex jobs — try to handle everything yourself first
 
-OBJECTION HANDLING:
-- "Too expensive" → "We offer free estimates so you can see exactly what it costs. No pressure at all."
-- "Need to think about it" → "Of course! But we do have openings this week if you want to lock in a time."
-- "Just looking for info" → "Absolutely! And if you decide to move forward, I can get you scheduled right away."
-
 Business name: ${name}, phone: ${phone}`;
 }
 
 
 /* ── POST: Handle voice webhook ──────────────── */
 export async function POST(request) {
-    const formData = await request.formData();
-    const from = formData.get("From") || "";
-    const speechResult = formData.get("SpeechResult") || "";
-    const callSid = formData.get("CallSid") || `call_${Date.now()}`;
-    const calledNumber = formData.get("Called") || formData.get("To") || "";
+    // ── Signature Validation ──
+    const validation = await validateTwilioWebhook(request);
+    if (!validation.valid) {
+        return twilioErrorResponse();
+    }
+
+    const { params: formParams } = validation;
+    const from = formParams.From || "";
+    const speechResult = formParams.SpeechResult || "";
+    const callSid = formParams.CallSid || `call_${Date.now()}`;
+    const calledNumber = formParams.Called || formParams.To || "";
 
     console.log(`[Voice] From: ${from}, Speech: "${speechResult}"`);
 
@@ -160,7 +161,7 @@ export async function POST(request) {
             .join("\n");
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             systemInstruction: buildVoicePrompt(company),
         });
         const prompt = `Phone conversation:\n${history}\n\nGenerate your next SPOKEN response (1-2 sentences max). Write ONLY the words to speak.`;

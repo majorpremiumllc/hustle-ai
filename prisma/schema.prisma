@@ -66,6 +66,20 @@ model Company {
   // White-Label (Business plan)
   whiteLabelConfig String? // JSON: { logo, primaryColor, accentColor, customDomain }
 
+  // Twilio Subaccount (Multi-tenant isolation)
+  twilioSubAccountSid  String?  // Twilio subaccount SID for this client
+  twilioSubAuthToken   String?  // Twilio subaccount auth token
+  missedCallTextBack   Boolean  @default(true)  // Enable missed-call auto text-back
+  missedCallMessage    String?  // Custom missed-call text message
+
+  // Client Config Engine (Phase 2)
+  businessHours     String?  // JSON: { mon: {open:"08:00",close:"18:00"}, ... }
+  emergencyNumber   String?  // Fallback number for after-hours
+  language          String   @default("en")  // en | es | fr
+  leadRoutingMode   String   @default("auto")  // auto | round-robin | owner-only
+  afterHoursMessage String?  // Custom message when outside business hours
+  maxSmsPerDay      Int      @default(100)  // Per-client daily SMS cap
+
   // Onboarding state
   onboardingStep Int @default(0)
   onboardingDone Boolean @default(false)
@@ -83,6 +97,9 @@ model Company {
   agentRuns     AgentRun[]
   emailLogs     EmailLog[]
   invoices      Invoice[]
+  smsConsents   SmsConsent[]
+  complianceLogs ComplianceLog[]
+  telecomHealth  TelecomHealth[]
 }
 
 // ── Team Invitations ──────────────────────────
@@ -216,6 +233,7 @@ model PhoneNumber {
   active      Boolean @default(true)
   voiceEnabled Boolean @default(true)
   smsEnabled   Boolean @default(true)
+  campaignStatus String? @default("not-registered")  // 10DLC: not-registered | pending | in-review | approved | rejected | suspended
   createdAt   DateTime @default(now())
 }
 
@@ -344,4 +362,64 @@ model InvoiceItem {
   unitPrice   Float   @default(0)
   amount      Float   @default(0)
   sortOrder   Int     @default(0)
+}
+
+// ── SMS Consent Tracking ─────────────────────
+
+model SmsConsent {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  phone       String   // Customer phone number
+  status      String   @default("opted-in")  // opted-in | opted-out
+  source      String   @default("sms")       // sms | web-form | phone | manual
+  optInAt     DateTime @default(now())
+  optOutAt    DateTime?
+  optOutMethod String?  // STOP keyword | manual | api
+  consentText  String?  // What the customer agreed to
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([companyId, phone])
+  @@index([companyId])
+  @@index([phone])
+}
+
+// ── Compliance Event Log ─────────────────────
+
+model ComplianceLog {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  event       String   // opt-in | opt-out | stop-received | help-received | rate-limit-hit | consent-recorded
+  phone       String?
+  details     String?  // JSON details
+  createdAt   DateTime @default(now())
+
+  @@index([companyId])
+  @@index([event])
+}
+
+// ── Telecom Health Metrics ───────────────────
+
+model TelecomHealth {
+  id              String   @id @default(cuid())
+  companyId       String
+  company         Company  @relation(fields: [companyId], references: [id])
+  period          String   // daily | weekly | monthly
+  periodStart     DateTime
+  messagesSent    Int      @default(0)
+  messagesDelivered Int    @default(0)
+  messagesFailed  Int      @default(0)
+  messagesBlocked Int      @default(0)
+  optOuts         Int      @default(0)
+  optIns          Int      @default(0)
+  deliveryRate    Float    @default(100)  // percentage
+  optOutRate      Float    @default(0)    // percentage
+  errorCodes      String?  // JSON: { "30003": 2, "30008": 1, ... }
+  spamRiskScore   Float    @default(0)    // 0-100, higher = more risk
+  createdAt       DateTime @default(now())
+
+  @@unique([companyId, period, periodStart])
+  @@index([companyId])
 }

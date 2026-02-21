@@ -47,7 +47,7 @@ Write ONLY the reply message text, nothing else. No subject line, no quotes arou
 
         try {
             const model = genAI.getGenerativeModel({
-                model: "gemini-2.0-flash",
+                model: "gemini-2.5-flash",
                 systemInstruction: HANDYMAN_SYSTEM_PROMPT,
             });
 

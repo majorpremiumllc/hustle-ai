@@ -1,0 +1,322 @@
+.section {
+    padding: 80px 0;
+    position: relative;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6C5CE7;
+    padding: 5px 14px;
+    background: rgba(108, 92, 231, 0.1);
+    border: 1px solid rgba(108, 92, 231, 0.2);
+    border-radius: 999px;
+    width: fit-content;
+}
+
+.title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: #fff;
+}
+
+.gradient {
+    background: linear-gradient(135deg, #00D2FF, #6C5CE7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: rgba(160, 160, 184, 0.9);
+    line-height: 1.6;
+}
+
+.outcomes {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.outcome {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.outcomeDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #6C5CE7;
+    box-shadow: 0 0 12px rgba(108, 92, 231, 0.5);
+    flex-shrink: 0;
+    margin-top: 6px;
+}
+
+.dotAccent {
+    background: #00D2FF;
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.5);
+}
+
+.dotSuccess {
+    background: #00B894;
+    box-shadow: 0 0 12px rgba(0, 184, 148, 0.5);
+}
+
+.outcome strong {
+    display: block;
+    font-size: 0.95rem;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.outcome span {
+    font-size: 0.82rem;
+    color: rgba(160, 160, 184, 0.7);
+    line-height: 1.4;
+}
+
+.cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #00D2FF, #00B4D8);
+    color: #0A0A14;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(0, 210, 255, 0.3);
+    width: fit-content;
+    margin-top: 8px;
+}
+
+.cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 210, 255, 0.5);
+}
+
+/* ── Browser Frame ────────── */
+
+.preview {
+    perspective: 1200px;
+}
+
+.browserFrame {
+    background: rgba(22, 33, 62, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(108, 92, 231, 0.1);
+    transform: rotateY(-3deg) rotateX(2deg);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.browserFrame:hover {
+    transform: rotateY(0deg) rotateX(0deg);
+}
+
+.browserHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.browserDots {
+    display: flex;
+    gap: 6px;
+}
+
+.browserDots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.browserDots span:nth-child(1) {
+    background: #FF6B6B;
+}
+
+.browserDots span:nth-child(2) {
+    background: #FDCB6E;
+}
+
+.browserDots span:nth-child(3) {
+    background: #00B894;
+}
+
+.browserUrl {
+    flex: 1;
+    font-size: 0.7rem;
+    color: rgba(160, 160, 184, 0.5);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+/* ── Dashboard Mock ────────── */
+
+.dashboardMock {
+    display: flex;
+    min-height: 260px;
+}
+
+.mockSidebar {
+    width: 120px;
+    background: rgba(0, 0, 0, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mockLogo {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #6C5CE7, #00D2FF);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.mockNavItem {
+    font-size: 0.65rem;
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: rgba(160, 160, 184, 0.5);
+    cursor: default;
+}
+
+.mockNavActive {
+    background: rgba(108, 92, 231, 0.15);
+    color: #A29BFE;
+    font-weight: 600;
+}
+
+.mockMain {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mockStats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.mockStat {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+}
+
+.mockStatValue {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.mockStatGreen {
+    color: #00B894;
+}
+
+.mockStatBlue {
+    color: #00D2FF;
+}
+
+.mockStatLabel {
+    font-size: 0.55rem;
+    color: rgba(160, 160, 184, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+}
+
+.mockChart {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.mockChartTitle {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: rgba(160, 160, 184, 0.6);
+    margin-bottom: 10px;
+}
+
+.mockBars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 80px;
+}
+
+.mockBar {
+    flex: 1;
+    background: linear-gradient(180deg, #6C5CE7 0%, rgba(108, 92, 231, 0.2) 100%);
+    border-radius: 4px 4px 0 0;
+    min-height: 8px;
+    transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .browserFrame {
+        transform: none;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+}
