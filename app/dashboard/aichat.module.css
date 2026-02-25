@@ -28,7 +28,7 @@
     transform: translateX(-50%);
     width: 500px;
     height: 400px;
-    background: radial-gradient(ellipse, rgba(108, 92, 231, 0.08) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(212, 168, 83, 0.08) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
     animation: glowDrift 8s ease-in-out infinite alternate;
@@ -40,7 +40,7 @@
     right: -100px;
     width: 400px;
     height: 300px;
-    background: radial-gradient(ellipse, rgba(0, 210, 255, 0.05) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(0, 229, 255, 0.05) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
     animation: glowDrift 10s ease-in-out infinite alternate-reverse;
@@ -115,8 +115,8 @@
     width: 72px;
     height: 72px;
     border-radius: 20px;
-    background: linear-gradient(135deg, rgba(108, 92, 231, 0.15), rgba(0, 210, 255, 0.1));
-    border: 1px solid rgba(108, 92, 231, 0.2);
+    background: linear-gradient(135deg, rgba(212, 168, 83, 0.15), rgba(0, 229, 255, 0.1));
+    border: 1px solid rgba(212, 168, 83, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -126,7 +126,7 @@
 
 .logoOrb svg {
     z-index: 2;
-    filter: drop-shadow(0 0 12px rgba(162, 155, 254, 0.6));
+    filter: drop-shadow(0 0 12px rgba(249, 218, 139, 0.6));
 }
 
 .orbPulse,
@@ -134,7 +134,7 @@
     position: absolute;
     inset: 0;
     border-radius: 20px;
-    border: 1px solid rgba(108, 92, 231, 0.15);
+    border: 1px solid rgba(212, 168, 83, 0.15);
     animation: orbPulseRing 3s ease-out infinite;
 }
 
@@ -178,7 +178,7 @@
 }
 
 .gradientText {
-    background: linear-gradient(135deg, #A29BFE 0%, #00D2FF 50%, #00ff88 100%);
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 50%, var(--success) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -233,10 +233,10 @@
 }
 
 .suggestionChip:hover {
-    background: rgba(108, 92, 231, 0.1);
-    border-color: rgba(108, 92, 231, 0.25);
+    background: rgba(212, 168, 83, 0.1);
+    border-color: rgba(212, 168, 83, 0.25);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.12);
+    box-shadow: 0 8px 24px rgba(212, 168, 83, 0.12);
 }
 
 .suggestionChip:active {
@@ -298,8 +298,8 @@
     width: 32px;
     height: 32px;
     border-radius: 10px;
-    background: linear-gradient(135deg, rgba(108, 92, 231, 0.15), rgba(0, 210, 255, 0.1));
-    border: 1px solid rgba(108, 92, 231, 0.15);
+    background: linear-gradient(135deg, rgba(212, 168, 83, 0.15), rgba(0, 229, 255, 0.1));
+    border: 1px solid rgba(212, 168, 83, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -329,10 +329,10 @@
 }
 
 .messageUser .messageBubble {
-    background: linear-gradient(135deg, #6C5CE7, #5A4BD1);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     border-bottom-right-radius: 6px;
-    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.25);
+    box-shadow: 0 4px 16px rgba(212, 168, 83, 0.25);
 }
 
 /* ── Typing Indicator ────────────────────── */
@@ -347,7 +347,7 @@
 .typingIndicator span {
     width: 7px;
     height: 7px;
-    background: linear-gradient(135deg, #A29BFE, #00D2FF);
+    background: linear-gradient(135deg, var(--primary-light), var(--success));
     border-radius: 50%;
     animation: typingBounce 1.4s ease-in-out infinite;
 }
@@ -397,9 +397,9 @@
 }
 
 .inputWrapper:focus-within {
-    border-color: rgba(108, 92, 231, 0.4);
+    border-color: rgba(212, 168, 83, 0.4);
     box-shadow:
-        0 0 0 3px rgba(108, 92, 231, 0.08),
+        0 0 0 3px rgba(212, 168, 83, 0.08),
         0 8px 32px rgba(0, 0, 0, 0.15);
     background: rgba(255, 255, 255, 0.06);
 }
@@ -439,7 +439,7 @@
     border-radius: 14px;
     border: none;
     cursor: pointer;
-    background: linear-gradient(135deg, #6C5CE7, #00D2FF);
+    background: linear-gradient(135deg, var(--primary), var(--success));
     color: white;
     display: flex;
     align-items: center;
@@ -450,7 +450,7 @@
 
 .sendBtn:hover:not(:disabled) {
     transform: scale(1.08);
-    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+    box-shadow: 0 6px 20px rgba(212, 168, 83, 0.4);
 }
 
 .sendBtn:active:not(:disabled) {
@@ -473,12 +473,12 @@
 /* ── Inline code styling ─────────────────── */
 
 .messageBubble :global(.inline-code) {
-    background: rgba(108, 92, 231, 0.15);
+    background: rgba(212, 168, 83, 0.15);
     padding: 1px 6px;
     border-radius: 4px;
     font-family: "SF Mono", monospace;
     font-size: 0.84em;
-    color: #A29BFE;
+    color: var(--primary-light);
 }
 
 /* ── Markdown in messages ────────────────── */
@@ -490,7 +490,7 @@
 
 .messageBubble em {
     font-style: italic;
-    color: var(--primary-light, #A29BFE);
+    color: var(--primary-light);
 }
 
 /* ── Responsive ──────────────────────────── */

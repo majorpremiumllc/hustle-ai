@@ -91,6 +91,20 @@ export default function BillingPage() {
         );
     }
 
+    if (isIOS) {
+        return (
+            <div>
+                <div className={styles.pageHeader}>
+                    <h1>Subscription & Billing</h1>
+                    <p>Manage your account.</p>
+                </div>
+                <div className="card-flat" style={{ padding: 40, textAlign: "center", color: "var(--text-muted)" }}>
+                    Your subscription is managed through the HustleAI platform.
+                </div>
+            </div>
+        );
+    }
+
     const statusColors = {
         active: "badge-success",
         trialing: "badge-warning",
@@ -202,8 +216,10 @@ export default function BillingPage() {
                                             Current Plan
                                         </button>
                                     ) : isIOS ? (
-                                        <button className="btn btn-secondary btn-sm" style={{ width: "100%", opacity: 0.5 }} disabled>
-                                            Apple In‑App Purchase (coming soon)
+                                        <button className="btn btn-secondary btn-sm" style={{ width: "100%" }}
+                                            onClick={() => window.open('https://apps.apple.com/account/subscriptions', '_blank')}
+                                        >
+                                            Manage in Apple Settings
                                         </button>
                                     ) : (
                                         <button

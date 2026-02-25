@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Capacitor } from "@capacitor/core";
 import styles from "../dashboard.module.css";
 
 export default function SettingsPage() {
@@ -27,8 +28,12 @@ export default function SettingsPage() {
 
     // Toast
     const [toast, setToast] = useState(null);
+    const [isIOS, setIsIOS] = useState(false);
 
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            setIsIOS(Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios');
+        }
         loadData();
     }, []);
 
@@ -186,7 +191,8 @@ export default function SettingsPage() {
         { id: "team", label: "Team" },
         { id: "phones", label: "Phone Numbers" },
         { id: "integrations", label: "Integrations" },
-        { id: "billing", label: "Billing" },
+        ...(isIOS ? [] : [{ id: "billing", label: "Billing" }]),
+        { id: "account", label: "Account" },
     ];
 
     return (
@@ -386,7 +392,7 @@ export default function SettingsPage() {
                     {!teamLimit.canInvite && (
                         <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
                             Team member limit reached ({teamLimit.used}/{teamLimit.limit}).{" "}
-                            <a href="/dashboard/billing" style={{ color: "var(--accent)" }}>Upgrade plan</a> to add more.
+                            {!isIOS && <><a href="/dashboard/billing" style={{ color: "var(--accent)" }}>Upgrade plan</a> to add more.</>}
                         </p>
                     )}
                 </div>
@@ -446,7 +452,7 @@ export default function SettingsPage() {
                     {!phoneLimit.canAdd && phoneNumbers.length > 0 && (
                         <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
                             Phone number limit reached ({phoneLimit.used}/{phoneLimit.limit}).{" "}
-                            <a href="/dashboard/billing" style={{ color: "var(--accent)" }}>Upgrade plan</a> to add more.
+                            {!isIOS && <><a href="/dashboard/billing" style={{ color: "var(--accent)" }}>Upgrade plan</a> to add more.</>}
                         </p>
                     )}
                 </div>
@@ -563,6 +569,60 @@ export default function SettingsPage() {
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Account Tab — Delete Account */}
+            {activeTab === "account" && (
+                <div className="card-flat">
+                    <h4 style={{ marginBottom: "var(--space-lg)" }}>Account</h4>
+
+                    <div style={{
+                        padding: 20, borderRadius: "var(--radius-md)",
+                        border: "1px solid rgba(255,60,60,0.3)",
+                        background: "rgba(255,60,60,0.05)",
+                    }}>
+                        <h5 style={{ color: "#ff4444", marginBottom: 8 }}>Danger Zone</h5>
+                        <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: 16 }}>
+                            Permanently delete your account and all associated data. This action cannot be undone.
+                            All your leads, conversations, invoices, campaigns, and settings will be permanently removed.
+                        </p>
+                        <button
+                            className="btn"
+                            style={{
+                                background: "rgba(255,60,60,0.15)",
+                                color: "#ff4444",
+                                border: "1px solid rgba(255,60,60,0.3)",
+                            }}
+                            onClick={async () => {
+                                const confirmed = confirm(
+                                    "Are you sure you want to permanently delete your account?\n\nThis will delete ALL your data including leads, conversations, invoices, and settings.\n\nThis action CANNOT be undone."
+                                );
+                                if (!confirmed) return;
+
+                                const doubleConfirm = prompt("Type DELETE to confirm account deletion:");
+                                if (doubleConfirm !== "DELETE") {
+                                    showToast("Account deletion cancelled", "error");
+                                    return;
+                                }
+
+                                try {
+                                    const res = await fetch("/api/account", { method: "DELETE" });
+                                    if (res.ok) {
+                                        showToast("Account deleted successfully");
+                                        window.location.href = "/";
+                                    } else {
+                                        const data = await res.json();
+                                        showToast(data.error || "Failed to delete account", "error");
+                                    }
+                                } catch (e) {
+                                    showToast("Error deleting account", "error");
+                                }
+                            }}
+                        >
+                            Delete Account
+                        </button>
                     </div>
                 </div>
             )}

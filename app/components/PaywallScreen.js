@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
+import { signOut } from "next-auth/react";
 
 /* ─────────────────────────────────────────────
    Paywall Screen
@@ -112,9 +113,20 @@ export default function PaywallScreen() {
                     maxWidth: "500px", width: "100%"
                 }}>
                     <h3 style={{ color: "#fff", fontSize: "1.1rem", marginBottom: "12px" }}>Subscription Required</h3>
-                    <p style={{ color: "#c0c0d0", fontSize: "0.9rem", lineHeight: 1.5 }}>
-                        To upgrade your plan, please visit our website from your computer or mobile browser.
+                    <p style={{ color: "#c0c0d0", fontSize: "0.9rem", lineHeight: 1.5, marginBottom: "20px" }}>
+                        This app is a companion to the HustleAI platform. Please ensure your account has an active subscription.
                     </p>
+                    <button
+                        onClick={() => signOut({ callbackUrl: '/' })}
+                        style={{
+                            padding: "10px 24px",
+                            borderRadius: "8px", border: "1px solid rgba(255,255,255,0.2)",
+                            background: "transparent", color: "#fff",
+                            fontWeight: 600, cursor: "pointer",
+                        }}
+                    >
+                        Sign Out
+                    </button>
                 </div>
             ) : (
                 <div style={{

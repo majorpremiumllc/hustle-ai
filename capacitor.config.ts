@@ -6,10 +6,11 @@ const config: CapacitorConfig = {
   webDir: 'out',
   server: {
     // ── Production ──
-    url: 'https://tryhustleai.com/dashboard',
+    url: 'https://tryhustleai.com',
     // ── Development (uncomment for local testing) ──
     // url: 'http://localhost:3000',
     // cleartext: true,
+    allowNavigation: ['tryhustleai.com', '*.tryhustleai.com'],
   },
   ios: {
     contentInset: 'automatic',

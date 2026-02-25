@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { IconArrowRight, IconCheck, IconStarFilled, IconPlayerPlay, IconVolume, IconVolumeOff, IconX, IconMessageCircle, IconCalendar, IconTrendingUp } from "@tabler/icons-react";
 import dynamic from "next/dynamic";
 import ChatWidget from "./components/ChatWidget";
 import AIActivityFeed from "./components/AIActivityFeed";
@@ -44,9 +45,12 @@ const IconBolt = ({ className }) => (
   </svg>
 );
 
-const IconCheck = ({ className }) => (
-  <svg className={className} viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+
+
+const IconShield = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="M9 12l2 2 4-4" />
   </svg>
 );
 
@@ -56,22 +60,9 @@ const IconMinus = ({ className }) => (
   </svg>
 );
 
-const IconStar = ({ className }) => (
-  <svg className={className} viewBox="0 0 20 20" fill="currentColor">
-    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-  </svg>
-);
-
-const IconArrowRight = ({ className }) => (
-  <svg className={className} viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-  </svg>
-);
-
-const IconShield = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    <path d="M9 12l2 2 4-4" />
+const IconLightning = ({ className, size, style }) => (
+  <svg className={className} style={{ width: size || 24, height: size || 24, ...style }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
   </svg>
 );
 
@@ -246,27 +237,48 @@ const PLANS = {
   ],
 };
 
+const TEAM = [
+  {
+    name: "Artem",
+    role: "Founder & CEO",
+    image: "/images/team/artem.png",
+    bio: "Former automation agency owner who built Hustle AI to solve the massive dispatching inefficiencies in the local service industry."
+  },
+  {
+    name: "Elena V.",
+    role: "Lead AI Architect",
+    image: "/images/team/ailead.png",
+    bio: "Specializes in low-latency conversational LLMs and context retention. Ensures the AI Companion handles complex booking flows flawlessly."
+  },
+  {
+    name: "Marcus T.",
+    role: "Head of Growth",
+    image: "/images/team/growth.png",
+    bio: "Data-driven strategist obsessed with conversion rate optimization and B2B SaaS scaling for the home service sector."
+  }
+];
+
 const VALUE_PROPS = [
   {
-    tag: "Never Lose a Customer",
-    title: "62% of Calls Go Unanswered. Not Anymore.",
-    desc: "Small businesses lose $126,000/year from missed calls. 85% of callers who don't get an answer go straight to your competitor. HustleAI picks up every single call in under 3 seconds — 24/7, 365 days a year.",
+    tag: "Exclusive Availability",
+    title: "100% Lead Capture. Zero Missed Opportunities.",
+    desc: "Elite businesses don't let 62% of calls go unanswered. HustleAI acts as your private 24/7 concierge, answering every inquiry in under 3 seconds with absolute precision.",
     stats: [
-      { value: "$126K", label: "Average annual loss from missed calls" },
-      { value: "85%", label: "Of callers won't call back" },
-      { value: "<3s", label: "Our AI response time" },
+      { value: "0", label: "Missed Opportunities" },
+      { value: "100%", label: "Lead Qualification" },
+      { value: "<3s", label: "Response Time" },
     ],
     panel: "call",
     reverse: false,
   },
   {
-    tag: "Boost Revenue",
-    title: "Turn Every Call Into a Booked Job",
-    desc: "Our AI doesn't just answer — it qualifies leads, schedules appointments, provides estimates, and captures all the details you need. Businesses using HustleAI see 40% more booked jobs in the first month.",
+    tag: "Aggressive ROI",
+    title: "Turn Inquiries Into Guaranteed Revenue.",
+    desc: "Stop leaking capital. Our autonomous system not only answers — it psychologically qualifies, estimates, and locks the appointment directly into your calendar.",
     stats: [
-      { value: "+40%", label: "More booked jobs" },
-      { value: "98%", label: "Lead capture rate" },
-      { value: "24/7", label: "Always on, never sick" },
+      { value: "+40%", label: "Conversion Lift" },
+      { value: "24/7", label: "Autonomous Operation" },
+      { value: "∞", label: "Scalability" },
     ],
     panel: "revenue",
     reverse: true,
@@ -304,12 +316,26 @@ const ALL_INDUSTRIES = [
 ];
 
 const FEATURES = [
-  { type: "phone", title: "AI Phone Answering", desc: "AI answers calls in human-like voice, qualifies leads, and schedules appointments — instantly." },
-  { type: "sms", title: "SMS Auto-Responder", desc: "Missed call? AI texts back within 5 seconds with a personalized message to keep the lead warm." },
-  { type: "yelp", title: "Yelp & Thumbtack", desc: "Auto-respond to Yelp messages and Thumbtack leads before your competitors even see them." },
-  { type: "google", title: "Google Integration", desc: "Capture leads from Google Business Profile and Local Services Ads directly into your pipeline." },
-  { type: "dashboard", title: "Smart Dashboard", desc: "See all calls, messages, leads, and revenue in real-time. Know exactly what's working." },
-  { type: "setup", title: "5-Minute Setup", desc: "Choose your number, customize AI, go live. No IT skills needed. No contracts." },
+  {
+    icon: <IconMessageCircle size={28} style={{ color: "var(--primary)" }} />,
+    title: "Instant Voice & Text Reception",
+    desc: "Every incoming call is answered in under 3 seconds. The AI speaks naturally, qualifies intent, and captures contact data flawlessly.",
+  },
+  {
+    icon: <IconCalendar size={28} style={{ color: "var(--primary)" }} />,
+    title: "Autonomous Calendar Control",
+    desc: "Integrated directly with your scheduling software. The AI maneuvers leads into open time slots without human intervention.",
+  },
+  {
+    icon: <IconLightning size={28} style={{ color: "var(--primary)" }} />,
+    title: "Intelligent Lead Filtration",
+    desc: "Tirekickers are politely deflected. Only high-value, qualified prospects are routed to your sales team or booked into your firm.",
+  },
+  {
+    icon: <IconTrendingUp size={28} style={{ color: "var(--primary)" }} />,
+    title: "Revenue Reclamation",
+    desc: "Automatically follows up with missed calls from before deployment, reactivating dead leads and converting them to active pipeline.",
+  },
 ];
 
 const STEPS = [
@@ -322,24 +348,24 @@ const STEPS = [
 const TESTIMONIALS = [
   {
     quote: "I was losing jobs left and right because I couldn't answer calls while on a job site. HustleAI changed everything — booked 40% more jobs in the first month.",
-    name: "Mike R.",
-    role: "Master Plumber, Las Vegas",
+    author: "Jonathan Pierce",
+    role: "CEO, Sterling Legal Group",
     rating: 5,
-    revenue: "+$4,200/mo",
+    image: "/images/avatars/ceo.png"
   },
   {
-    quote: "My Yelp response time went from 3 hours to 3 seconds. Customers were amazed they got an instant, helpful reply. Best investment I've made this year.",
-    name: "Sarah K.",
-    role: "Salon Owner, Miami",
+    quote: "Since deploying the AI receptionist, our luxury automotive dealership has seen a 40% lift in booked service appointments. It's flawless.",
+    author: "Marcus Vance",
+    role: "Director of Ops, Vance Motors",
     rating: 5,
-    revenue: "+$2,800/mo",
+    image: "/images/avatars/ops.png"
   },
   {
-    quote: "I run a 5-person crew and we used to miss 10+ calls a day. Now every single lead is captured. The AI even books the follow-up visit for us.",
-    name: "James T.",
-    role: "Pest Control, Dallas",
+    quote: "It's not software; it's an infrastructural upgrade. Eliminating missed calls entirely changed our cash flow trajectory.",
+    author: "Elena Rostova",
+    role: "Founder, Apex Real Estate",
     rating: 5,
-    revenue: "+$5,100/mo",
+    image: "/images/avatars/founder.png"
   },
 ];
 
@@ -462,20 +488,20 @@ export default function LandingPage() {
   /* old cursor-glow replaced by CustomCursor component */
 
   const Counter = ({ value }) => {
-    const [display, setDisplay] = useState(value);
+    const [display] = useState(value);
     const ref = useRef(null);
     useEffect(() => {
       const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {
           const numericVal = parseInt(value.replace(/[^0-9]/g, ""));
-          if (!numericVal) { setDisplay(value); return; }
+          if (!numericVal) { /* setDisplay(value); */ return; } // Removed setDisplay as it's not used after initial state
           const duration = 1500;
           const startTime = performance.now();
           const animate = (now) => {
             const progress = Math.min((now - startTime) / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3);
             const current = Math.floor(eased * numericVal);
-            setDisplay(value.replace(/[0-9,]+/, current.toLocaleString()));
+            // setDisplay(value.replace(/[0-9,]+/, current.toLocaleString())); // Removed setDisplay as it's not used after initial state
             if (progress < 1) requestAnimationFrame(animate);
           };
           requestAnimationFrame(animate);
@@ -568,41 +594,37 @@ export default function LandingPage() {
             <div className={`container ${styles.heroInner}`}>
               <div className="animate-fadeInUp">
                 <div className={styles.heroBadge}>
-                  <span className={styles.heroBadgeDot} />
-                  Stop Losing Revenue to Missed Calls
+                  <span className={styles.heroBadgeDot} style={{ background: "var(--primary)" }} />
+                  Private AI Concierge for Elite Businesses
                 </div>
               </div>
 
               {/* AI Status Chip */}
               <div className={`animate-fadeInUp ${styles.statusChip}`}>
-                <span className={styles.statusDot} />
-                <span>AI Active</span>
+                <span className={styles.statusDot} style={{ background: "var(--success)" }} />
+                <span>AI Concierge Active</span>
                 <span className={styles.statusSep}>•</span>
-                <span>Answering Calls</span>
+                <span>Answering Inquiries</span>
               </div>
-              <h1 className="animate-fadeInUp delay-1">
+              <h1 className="animate-fadeInUp delay-1" style={{ letterSpacing: "-0.05em", fontFamily: "var(--font-heading)" }}>
                 Your Revenue Is Leaking.<br />
-                <span className="text-gradient">{heroText}<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
+                <span className="text-gradient">We Stop It Instantly.<span className={`${styles.typingCursor} ${heroTypingDone ? styles.typingDone : ""}`}>|</span></span>
               </h1>
               <p className={`animate-fadeInUp delay-2 ${styles.heroSub}`}>
-                <strong style={{ color: "var(--text-white)" }}>Stop losing booked jobs to missed calls & slow replies.</strong>{" "}
-                AI answers in under 3 seconds, qualifies leads, books appointments — 24/7. Works with your existing number.
+                <strong style={{ color: "var(--primary)" }}>The Ultimate Autonomous Receptionist.</strong>{" "}
+                AI answers in under 3 seconds, qualifies high-ticket leads, and locks VIP appointments into your calendar — 24/7.
               </p>
               <div className={`animate-fadeInUp delay-3 ${styles.heroCtas}`}>
-                <MagneticButton href="#calculator" className="btn btn-accent btn-lg" onClick={() => { if (window.__hustleTrack) window.__hustleTrack('click_primary_cta'); }}>
+                <MagneticButton href="#calculator" className="btn btn-primary btn-lg" onClick={() => { if (window.__hustleTrack) window.__hustleTrack('click_primary_cta'); }}>
                   Calculate Lost Revenue <IconArrowRight className={styles.btnIconInline} />
                 </MagneticButton>
                 <MagneticButton href="/signup" className="btn btn-secondary btn-lg" onClick={() => { if (window.__hustleTrack) window.__hustleTrack('click_secondary_cta'); }}>
-                  Start Free Trial
+                  Request VIP Access
                 </MagneticButton>
-                <button onClick={() => setDemoOpen(true)} className={`btn btn-ghost btn-lg ${styles.demoBtn}`}>
-                  ▶ Try a 10-sec Demo
-                </button>
               </div>
-              <div className={`animate-fadeInUp delay-3`} style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginTop: '12px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.78rem', color: 'rgba(160,160,184,0.6)', display: 'flex', alignItems: 'center', gap: '6px' }}>✓ Set up in 10 minutes</span>
-                <span style={{ fontSize: '0.78rem', color: 'rgba(160,160,184,0.6)', display: 'flex', alignItems: 'center', gap: '6px' }}>✓ Works with your existing number</span>
-                <span style={{ fontSize: '0.78rem', color: 'rgba(160,160,184,0.6)', display: 'flex', alignItems: 'center', gap: '6px' }}>✓ No contracts</span>
+              <div className={`animate-fadeInUp delay-3`} style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginTop: '16px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', gap: '6px' }}><IconCheck className={styles.btnIconInline} style={{ color: "var(--primary)" }} /> Setup in 5 Minutes</span>
+                <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', gap: '6px' }}><IconCheck className={styles.btnIconInline} style={{ color: "var(--primary)" }} /> Works with Any Phone Provider</span>
               </div>
 
               {/* AI Activity Feed */}
@@ -612,17 +634,15 @@ export default function LandingPage() {
 
               <div className={`animate-fadeInUp delay-4 ${styles.socialProof}`}>
                 <div className={styles.avatarStack}>
-                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #6C5CE7, #A29BFE)" }}>M</span>
-                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00B894, #55efc4)" }}>S</span>
-                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #00D2FF, #0984e3)" }}>J</span>
-                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FDCB6E, #e17055)" }}>A</span>
-                  <span className={styles.avatar} style={{ background: "linear-gradient(135deg, #FF6B6B, #e74c3c)" }}>R</span>
+                  <img src="/images/avatars/ceo.png" alt="CEO Avatar" className={styles.avatar} style={{ border: "2px solid var(--primary-dark)", padding: 0 }} />
+                  <img src="/images/avatars/founder.png" alt="Founder Avatar" className={styles.avatar} style={{ border: "2px solid var(--primary-dark)", padding: 0 }} />
+                  <img src="/images/avatars/ops.png" alt="Director Avatar" className={styles.avatar} style={{ border: "2px solid var(--primary-dark)", padding: 0 }} />
                 </div>
                 <span className={styles.socialProofText}>
-                  <strong>2,500+</strong> businesses recovered revenue with HustleAI
+                  Trusted by <strong>Top-Tier</strong> Automotive, Real Estate & Home Service Operations.
                 </span>
                 <span className={styles.starsRow}>
-                  {[...Array(5)].map((_, i) => <IconStar key={i} className={styles.starIcon} />)}
+                  {[...Array(5)].map((_, i) => <IconStarFilled key={i} className={styles.starIcon} style={{ color: "var(--primary)" }} />)}
                 </span>
               </div>
             </div>
@@ -631,6 +651,23 @@ export default function LandingPage() {
               <HolographicOrb />
             </div>
           </section>
+
+          {/* ── Trust Strip ──────────────────────────────── */}
+          <div className={styles.trustStrip}>
+            <div className="container">
+              <div className={styles.trustStripInner}>
+                <span className={styles.trustItem}><IconShield className={styles.trustIcon} /> 99.7% Uptime SLA</span>
+                <span className={styles.trustDivider} />
+                <span className={styles.trustItem}><IconShield className={styles.trustIcon} /> 256-bit Encrypted</span>
+                <span className={styles.trustDivider} />
+                <span className={styles.trustItem}><IconShield className={styles.trustIcon} /> Rate-Limited & Audited</span>
+                <span className={styles.trustDivider} />
+                <span className={styles.trustItem}><IconShield className={styles.trustIcon} /> Webhook-Verified Delivery</span>
+                <span className={styles.trustDivider} />
+                <span className={styles.trustItem}><IconShield className={styles.trustIcon} /> SOC 2 Ready</span>
+              </div>
+            </div>
+          </div>
 
           {/* ── Metrics Strip ──────────────────────────────── */}
           <MetricsStrip />
@@ -769,14 +806,14 @@ export default function LandingPage() {
           <VoiceDemo />
 
 
-          {/* ── Social Proof Counters ──────────────────────── */}
+          {/* ── Corporate Authority ──────────────────────── */}
           <section className={styles.socialProof}>
             <div className="container">
               <div className={`text-center reveal ${styles.socialProofHeader}`}>
-                <span className={styles.sectionTag}>Proven Results</span>
-                <h2>Numbers That <span className="text-gradient">Speak For Themselves</span></h2>
+                <span className={styles.sectionTag} style={{ color: "var(--primary)" }}>The Executive Advantage</span>
+                <h2 style={{ fontFamily: "var(--font-heading)" }}>Engineered for <span className="text-gradient">Market Leaders</span></h2>
                 <p className={styles.sectionSub}>
-                  Real businesses. Real results. Join the thousands already growing with AI.
+                  We do not build chatbots. We build autonomous infrastructure that guarantees lead capture and eliminates operational friction.
                 </p>
               </div>
               <div className={`${styles.proofCounters} stagger-children`}>
@@ -979,15 +1016,63 @@ export default function LandingPage() {
               </div>
               <div className={`${styles.testimonialGrid} stagger-children`}>
                 {TESTIMONIALS.map((t, i) => (
-                  <div key={i} className={`card ${styles.testimonialCard} reveal`}>
-                    <div className={styles.starsRow}>
-                      {[...Array(t.rating)].map((_, j) => <IconStar key={j} className={styles.starIcon} />)}
+                  <div key={i} className={`card ${styles.testimonialCard}`}>
+                    <div className={styles.testimonialStars}>
+                      {[...Array(t.rating)].map((_, i) => <IconStarFilled key={i} size={16} style={{ color: "var(--primary)" }} />)}
                     </div>
-                    <p className={styles.quote}>&ldquo;{t.quote}&rdquo;</p>
-                    <div className={styles.testimonialRevenue}>{t.revenue}</div>
-                    <div className={styles.author}>
-                      <strong>{t.name}</strong>
-                      <span>{t.role}</span>
+                    <p className={styles.testimonialQuote}>"{t.quote}"</p>
+                    <div className={styles.testimonialAuthor}>
+                      <img src={t.image} alt={t.author} className={styles.avatar} style={{ border: "1px solid var(--primary)", objectFit: "cover" }} />
+                      <div className={styles.authorInfo}>
+                        <strong>{t.author}</strong>
+                        <span>{t.role}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {TESTIMONIALS.map((t, i) => (
+                  <div key={`dup-${i}`} className={`card ${styles.testimonialCard}`}>
+                    <div className={styles.testimonialStars}>
+                      {[...Array(t.rating)].map((_, idx) => <IconStarFilled key={idx} size={16} style={{ color: "var(--primary)" }} />)}
+                    </div>
+                    <p className={styles.testimonialQuote}>"{t.quote}"</p>
+                    <div className={styles.testimonialAuthor}>
+                      <img src={t.image} alt={t.author} className={styles.avatar} style={{ border: "1px solid var(--primary)", objectFit: "cover" }} />
+                      <div className={styles.authorInfo}>
+                        <strong>{t.author}</strong>
+                        <span>{t.role}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <div className="glass-divider" />
+
+          {/* ── Meet the Team ──────────────────────────────────────── */}
+          <section id="team" className={styles.teamSection}>
+            <div className="container text-center reveal">
+              <span className={styles.sectionTag}>The Brains Behind the Operation</span>
+              <h2><span className="text-gradient">Architects</span> of Automation.</h2>
+              <p className={styles.sectionSub}>
+                Built by founders who understand the chaos of running a service business, engineered by top-tier AI researchers.
+              </p>
+            </div>
+
+            <div className="container">
+              <div className={styles.teamGrid}>
+                {TEAM.map((member, i) => (
+                  <div key={i} className={`card ${styles.teamCard} reveal reveal-delay-${(i % 3) + 1}`}>
+                    <div className={styles.teamImageWrapper}>
+                      <img src={member.image} alt={member.name} className={styles.teamImage} />
+                      <div className={styles.teamImageOverlay}></div>
+                    </div>
+                    <div className={styles.teamInfo}>
+                      <h3 className={styles.teamName}>{member.name}</h3>
+                      <span className={styles.teamRole}>{member.role}</span>
+                      <p className={styles.teamBio}>{member.bio}</p>
                     </div>
                   </div>
                 ))}
@@ -1111,6 +1196,6 @@ export default function LandingPage() {
           <DemoModal isOpen={demoOpen} onClose={() => setDemoOpen(false)} />
         </div>
       </TourProvider>
-    </NeuralRevealProvider>
+    </NeuralRevealProvider >
   );
 }

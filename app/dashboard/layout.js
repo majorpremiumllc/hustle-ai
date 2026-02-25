@@ -10,6 +10,7 @@ import { Preferences } from "@capacitor/preferences";
 import InstallPrompt from "../components/InstallPrompt";
 import NeuralSplash from "../components/NeuralSplash";
 import PaywallScreen from "../components/PaywallScreen";
+import AIPrivacyConsent from "../components/AIPrivacyConsent";
 import styles from "./dashboard.module.css";
 
 /* ── SVG Nav Icons ───────────────────────────── */
@@ -58,6 +59,7 @@ function DashboardLayoutInner({ children }) {
     const pathname = usePathname();
     const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [aiConsentGiven, setAiConsentGiven] = useState(false);
     const fabCooldown = useRef(false);
     const { data: session } = useSession();
 
@@ -75,10 +77,10 @@ function DashboardLayoutInner({ children }) {
             } catch (e) {
                 console.error('Storage clear error', e);
             }
-            // On native iOS/Android: sign out without server redirect
-            // (server redirect opens Safari which is the bug Apple flagged)
+            // Fix iOS Safari Redirect Bug: Force a local session wipe without callbackUrl
             await signOut({ redirect: false });
-            router.replace('/');
+            // Fully reload the context to clear NextAuth state without triggering Safari
+            window.location.href = '/';
         } else {
             signOut({ callbackUrl: '/' });
         }
@@ -88,17 +90,25 @@ function DashboardLayoutInner({ children }) {
         setShowSplash(false);
     };
 
-    /* ── Paywall check ── */
+    /* ── Paywall check & App Store Bypass ── */
     const [subscription, setSubscription] = useState(null);
     const [subLoading, setSubLoading] = useState(true);
+    const [isIOSNative, setIsIOSNative] = useState(false);
+
     useEffect(() => {
+        // App Store Guideline 3.1.1 fix: Determine if we are on Native iOS to hide the Paywall entirely.
+        if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios') {
+            setIsIOSNative(true);
+        }
+
         fetch("/api/subscription")
             .then(r => r.json())
             .then(data => { setSubscription(data); setSubLoading(false); })
             .catch(() => setSubLoading(false));
     }, []);
 
-    const needsPaywall = !subLoading && session &&
+    // Needs paywall ONLY if not on iOS native, and subscription is invalid
+    const needsPaywall = !subLoading && session && !isIOSNative &&
         (!subscription?.status || subscription?.status === "canceled" || subscription?.status === "unpaid");
 
     const handleFabClick = (e) => {
@@ -132,6 +142,7 @@ function DashboardLayoutInner({ children }) {
     return (
         <>
             {showSplash && <NeuralSplash onFinish={handleSplashFinish} />}
+            {!showSplash && <AIPrivacyConsent onAccept={() => setAiConsentGiven(true)} />}
             {needsPaywall && !showSplash && <PaywallScreen />}
             <div className={styles.dashboardLayout}>
                 {/* ── Sidebar Overlay ─────────── */}
@@ -148,7 +159,7 @@ function DashboardLayoutInner({ children }) {
                     </Link>
 
                     <nav className={styles.sidebarNav}>
-                        {NAV_ITEMS.map((item) => (
+                        {NAV_ITEMS.filter(item => !(isIOSNative && item.href === "/dashboard/billing")).map((item) => (
                             <Link
                                 key={item.href}
                                 href={item.href}
@@ -191,7 +202,31 @@ function DashboardLayoutInner({ children }) {
                     </div>
 
                     <InstallPrompt />
-                    {children}
+
+                    {/* App Store Guideline 3.1.1: If on iOS Native without a sub, show View-Only banner */}
+                    {isIOSNative && (!subscription?.status || subscription?.status === "canceled" || subscription?.status === "unpaid") && (
+                        <div style={{
+                            background: "rgba(255, 51, 102, 0.1)",
+                            border: "1px solid var(--error)",
+                            color: "var(--text-white)",
+                            padding: "16px",
+                            borderRadius: "var(--radius-md)",
+                            marginBottom: "24px",
+                            textAlign: "center",
+                            fontSize: "0.9rem"
+                        }}>
+                            <strong>View-Only Mode</strong><br />
+                            <span style={{ color: "var(--text-secondary)" }}>Your account requires setup. You can view your dashboard but cannot modify data.</span>
+                        </div>
+                    )}
+
+                    <div style={{
+                        /* If un-subbed iOS user, disable pointer events on the actual children so they can't click action buttons */
+                        pointerEvents: isIOSNative && (!subscription?.status || subscription?.status === "canceled" || subscription?.status === "unpaid") ? "none" : "auto",
+                        opacity: isIOSNative && (!subscription?.status || subscription?.status === "canceled" || subscription?.status === "unpaid") ? 0.7 : 1
+                    }}>
+                        {children}
+                    </div>
                 </main>
 
                 {/* ── Bottom Tab Bar (mobile) ── */}

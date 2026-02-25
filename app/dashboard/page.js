@@ -17,9 +17,9 @@ const IconSparkle = () => (
         <path d="M19 15L19.9 17.1L22 18L19.9 18.9L19 21L18.1 18.9L16 18L18.1 17.1L19 15Z" fill="url(#sparkGrad2)" stroke="none" />
         <path d="M5 2L5.6 3.4L7 4L5.6 4.6L5 6L4.4 4.6L3 4L4.4 3.4L5 2Z" fill="url(#sparkGrad3)" stroke="none" />
         <defs>
-            <linearGradient id="sparkGrad" x1="4" y1="2" x2="20" y2="18"><stop stopColor="#A29BFE" /><stop offset="1" stopColor="#00D2FF" /></linearGradient>
-            <linearGradient id="sparkGrad2" x1="16" y1="15" x2="22" y2="21"><stop stopColor="#6C5CE7" /><stop offset="1" stopColor="#00D2FF" /></linearGradient>
-            <linearGradient id="sparkGrad3" x1="3" y1="2" x2="7" y2="6"><stop stopColor="#A29BFE" /><stop offset="1" stopColor="#00ff88" /></linearGradient>
+            <linearGradient id="sparkGrad" x1="4" y1="2" x2="20" y2="18"><stop stopColor="var(--primary-light)" /><stop offset="1" stopColor="var(--primary)" /></linearGradient>
+            <linearGradient id="sparkGrad2" x1="16" y1="15" x2="22" y2="21"><stop stopColor="var(--primary)" /><stop offset="1" stopColor="var(--success)" /></linearGradient>
+            <linearGradient id="sparkGrad3" x1="3" y1="2" x2="7" y2="6"><stop stopColor="var(--primary-light)" /><stop offset="1" stopColor="var(--success)" /></linearGradient>
         </defs>
     </svg>
 );
