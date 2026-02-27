@@ -55,6 +55,9 @@ export default function AIGreeter() {
 
         const greeted = sessionStorage.getItem(STORAGE_KEY);
         if (!greeted) {
+            /* Skip greeter on mobile — sticky CTA takes priority */
+            if (window.innerWidth <= 768) return;
+
             const t = setTimeout(() => {
                 if (mountedRef.current) {
                     setState("prompt");
@@ -188,7 +191,7 @@ export default function AIGreeter() {
 
             {/* ── Prompt Button (bottom-right) ── */}
             {state === "prompt" && (
-                <div className={styles.greeter}>
+                <div className={styles.greeter} style={{ bottom: '80px' }}>
                     <button className={styles.promptBtn} onClick={startGreeting}>
                         <div className={styles.avatarWrap}>
                             <Image src="/images/ai-agent.png" alt="AI Assistant" width={48} height={48} className={styles.avatarThumb} />
@@ -206,7 +209,7 @@ export default function AIGreeter() {
 
             {/* ── Speaking / Tour Prompt Card ── */}
             {(state === "speaking" || state === "tour-prompt") && (
-                <div className={styles.infoCard}>
+                <div className={styles.infoCard} style={{ bottom: '80px' }}>
                     <button className={styles.dismissBtn} onClick={dismiss} aria-label="Close">✕</button>
 
                     {/* Header */}

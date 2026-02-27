@@ -154,6 +154,7 @@ export default function ChatWidget() {
                 className={`${styles.fab} ${open ? styles.fabHidden : ""}`}
                 onClick={() => setOpen(true)}
                 aria-label="Open chat"
+                style={{ bottom: '80px' }}
             >
                 <IconChat />
                 <span className={styles.fabPulse} />

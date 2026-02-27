@@ -89,7 +89,7 @@
 /* ── Prompt Button (bottom-right) ── */
 .greeter {
     position: fixed;
-    bottom: 24px;
+    bottom: 90px;
     right: 24px;
     z-index: 10000;
     animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -209,7 +209,7 @@
 /* ── Info Card (fixed bottom-right) ── */
 .infoCard {
     position: fixed;
-    bottom: 24px;
+    bottom: 88px;
     right: 24px;
     z-index: 10000;
     width: 340px;
@@ -429,6 +429,14 @@
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
+    .greeter {
+        bottom: 80px;
+    }
+
+    .infoCard {
+        bottom: 80px;
+    }
+
     .flyingAgent {
         width: 60px;
         height: 60px;
@@ -442,6 +450,7 @@
     .infoCard {
         width: 300px;
         padding: 14px;
+        bottom: 80px;
     }
 
     .promptBtn {
@@ -466,7 +475,7 @@
 
 @media (max-width: 480px) {
     .greeter {
-        bottom: 16px;
+        bottom: 80px;
         right: 12px;
         left: 12px;
     }
@@ -479,7 +488,7 @@
         width: calc(100vw - 24px);
         right: 12px;
         left: 12px;
-        bottom: 12px;
+        bottom: 76px;
     }
 
     .flyingAgent {

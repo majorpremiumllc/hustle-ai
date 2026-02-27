@@ -911,6 +911,7 @@
 .footer {
   border-top: 1px solid var(--border);
   padding: var(--space-3xl) 0 var(--space-xl);
+  padding-bottom: 80px;
 }
 
 .footerInner {

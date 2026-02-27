@@ -6,7 +6,7 @@
 
 .fab {
     position: fixed;
-    bottom: 28px;
+    bottom: 90px;
     right: 28px;
     z-index: 999;
     width: 60px;
@@ -86,7 +86,7 @@
 
 .panel {
     position: fixed;
-    bottom: 28px;
+    bottom: 90px;
     right: 28px;
     z-index: 1000;
     width: 400px;
@@ -488,6 +488,12 @@
 
 /* ── Responsive ───────────────────────────── */
 
+@media (max-width: 768px) {
+    .fab {
+        bottom: 84px;
+    }
+}
+
 @media (max-width: 480px) {
     .panel {
         width: calc(100vw - 16px);
@@ -498,7 +504,7 @@
     }
 
     .fab {
-        bottom: 20px;
+        bottom: 84px;
         right: 20px;
         width: 54px;
         height: 54px;
